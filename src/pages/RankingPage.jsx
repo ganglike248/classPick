@@ -45,12 +45,12 @@ export default function RankingPage() {
       <TopBand />
       <main className="page-wrap" style={{ maxWidth: "800px" }}>
         {/* 헤더 */}
-        <div className="card" style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "22px", fontWeight: 700, marginBottom: "6px" }}>
+        <div className="card" style={{ textAlign: "center", padding: "28px 24px", borderTop: "3px solid #e54b4b" }}>
+          <div style={{ fontSize: "24px", fontWeight: 700, marginBottom: "6px", letterSpacing: "-0.5px" }}>
             🏆 랭킹
           </div>
-          <div className="helper-text">
-            도전 세트 v1 · {TOTAL_COURSES}과목 · {TOTAL_CREDITS}학점
+          <div style={{ fontSize: "13px", color: "#8c96ae" }}>
+            도전 세트 v1 &nbsp;·&nbsp; {TOTAL_COURSES}과목 &nbsp;·&nbsp; {TOTAL_CREDITS}학점
           </div>
         </div>
 
@@ -120,20 +120,20 @@ export default function RankingPage() {
                       : "-";
 
                     const rowBg =
-                      idx === 0 ? "#fffbe6" : idx === 1 ? "#f9f9f9" : idx === 2 ? "#f5f5f5" : undefined;
+                      idx === 0 ? "#fffaed" : idx === 1 ? "#f8f9fb" : idx === 2 ? "#f5f7fa" : undefined;
 
                     return (
                       <tr key={row.id} style={rowBg ? { background: rowBg } : {}}>
                         <td>
-                          <strong style={{ fontSize: idx < 3 ? "16px" : "13px" }}>
+                          <strong style={{ fontSize: idx < 3 ? "17px" : "13px" }}>
                             {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : idx + 1}
                           </strong>
                         </td>
                         <td>
-                          <strong>{row.nickname}</strong>
+                          <strong style={{ color: idx === 0 ? "#c47a00" : "#1e2532" }}>{row.nickname}</strong>
                         </td>
                         <td>
-                          <strong style={{ color: count === TOTAL_COURSES ? "#478ef0" : "#333" }}>
+                          <strong style={{ color: count === TOTAL_COURSES ? "#478ef0" : "#374151" }}>
                             {count}
                           </strong>
                           <span className="helper-text">/{TOTAL_COURSES}개 ({credits}학점)</span>
@@ -142,30 +142,30 @@ export default function RankingPage() {
                           <strong style={{ color: "#478ef0" }}>{elapsedSec}초</strong>
                         </td>
                         <td>
-                          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
                             <div
                               style={{
                                 flex: 1,
-                                background: "#e8eef7",
-                                borderRadius: "2px",
-                                height: "8px",
+                                background: "#eef3fd",
+                                borderRadius: "4px",
+                                height: "7px",
                               }}
                             >
                               <div
                                 style={{
-                                  background: rate === 100 ? "#478ef0" : "#a8c5f0",
+                                  background: rate === 100 ? "#478ef0" : "#93b8f0",
                                   width: `${rate}%`,
                                   height: "100%",
-                                  borderRadius: "2px",
+                                  borderRadius: "4px",
                                 }}
                               />
                             </div>
-                            <span style={{ fontSize: "10px", color: "#666", minWidth: "28px" }}>
+                            <span style={{ fontSize: "10px", color: "#8c96ae", minWidth: "28px" }}>
                               {rate}%
                             </span>
                           </div>
                         </td>
-                        <td style={{ fontSize: "11px", color: "#888" }}>{dateStr}</td>
+                        <td style={{ fontSize: "11px", color: "#8c96ae" }}>{dateStr}</td>
                       </tr>
                     );
                   })}
@@ -180,11 +180,12 @@ export default function RankingPage() {
           <button
             className="btn btn-block"
             style={{
-              padding: "10px 0",
+              padding: "11px 0",
               backgroundColor: "#e54b4b",
               color: "#fff",
               borderColor: "#e54b4b",
-              fontWeight: 600,
+              fontWeight: 700,
+              borderRadius: "6px",
             }}
             onClick={() => navigate("/challenge")}
           >
@@ -192,14 +193,14 @@ export default function RankingPage() {
           </button>
           <button
             className="btn btn-block"
-            style={{ padding: "10px 0" }}
+            style={{ padding: "11px 0", borderRadius: "6px" }}
             onClick={() => navigate("/")}
           >
             설정 화면으로
           </button>
         </div>
       </main>
-      <Footer variant="setup" />
+      <Footer />
     </>
   );
 }

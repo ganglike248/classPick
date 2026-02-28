@@ -5,13 +5,12 @@ export default function TopBand() {
 
   return (
     <header className="top-band">
-      <div className="semester-badge">
-        <div className="semester-badge__left">
-          <div style={{ fontSize: "20px", fontWeight: 600, color: "#ffffff" }}>
-            {time}
-          </div>
+      <div className="top-band__inner">
+        <div className="top-band__brand">
+          <span className="top-band__name">수강신청 연습</span>
+          <span className="top-band__sub">모의 연습 시스템</span>
         </div>
-        <div className="semester-badge__label">수강신청 연습 시스템</div>
+        <div className="top-band__time">{time}</div>
       </div>
     </header>
   );

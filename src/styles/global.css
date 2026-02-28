@@ -1,4 +1,4 @@
-/* 기본 리셋 */
+/* ===== 기본 리셋 ===== */
 * {
   box-sizing: border-box;
 }
@@ -6,7 +6,8 @@
 body {
   margin: 0;
   font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
-  color: #222;
+  color: #1e2532;
+  background: #f2f4f9;
 }
 
 a {
@@ -16,18 +17,21 @@ a {
 
 button {
   font-family: inherit;
+  cursor: pointer;
 }
 
-/* 공통 레이아웃 */
+/* ===== 공통 레이아웃 ===== */
 .page-wrap {
   width: 1000px;
-  margin: 0 auto 40px;
+  margin: 0 auto 48px;
 }
 
 .section-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: #1e2532;
+  letter-spacing: -0.2px;
 }
 
 .section-desc {
@@ -35,33 +39,50 @@ button {
   color: #c0392b;
 }
 
-/* 상단 배너 */
+/* ===== 상단 헤더 ===== */
 .top-band {
-  background: #d4d6db;
-  padding: 30px 0;
-  display: flex;
-  justify-content: center;
+  background: #1a2235;
+  border-bottom: 1px solid #111827;
 }
 
-.semester-badge {
-  width: 320px;
-  height: 80px;
-  background: #e54b4b;
-  color: #fff;
+.top-band__inner {
+  width: 1000px;
+  margin: 0 auto;
+  height: 58px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: space-between;
 }
 
-.semester-badge__label {
-  font-size: 20px;
+.top-band__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
 }
 
-/* 상단 내비 */
+.top-band__name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+}
+
+.top-band__sub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.top-band__time {
+  font-size: 17px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+/* ===== 메인 수강신청 내비 (RegisterPage 전용) ===== */
 .main-nav {
-  background: #555f6a;
+  background: #2d3748;
   color: #fff;
 }
 
@@ -72,23 +93,26 @@ button {
 }
 
 .main-nav__item {
-  padding: 14px 22px;
+  padding: 13px 22px;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .main-nav__item--active {
   background: #e54b4b;
 }
 
-/* 카드 / 박스 공통 */
+/* ===== 카드 ===== */
 .card {
   background: #fff;
-  border: 1px solid #d0d2d8;
-  padding: 20px;
-  margin-top: 20px;
+  border: 1px solid #e6eaf3;
+  border-radius: 10px;
+  padding: 22px;
+  margin-top: 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* 테이블 공통 */
+/* ===== 테이블 ===== */
 .table-wrap {
   overflow-x: auto;
 }
@@ -101,31 +125,47 @@ button {
 
 .data-table th,
 .data-table td {
-  border: 1px solid #d4d6db;
-  padding: 6px 8px;
+  border: 1px solid #e6eaf3;
+  padding: 7px 10px;
   text-align: center;
 }
 
 .data-table th {
-  background: #f5f5f7;
+  background: #f7f9fd;
   font-weight: 600;
+  color: #4a5568;
+  font-size: 12px;
 }
 
 .data-table td.text-left {
   text-align: left;
 }
 
-/* 버튼 */
+/* ===== 버튼 ===== */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 14px;
-  border-radius: 2px;
-  font-size: 12px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
   cursor: pointer;
-  border: 1px solid #c0c4cc;
-  background: #ffffff;
+  border: 1px solid #d0d6e8;
+  background: #fff;
+  color: #374151;
+  font-weight: 500;
+  transition: background 0.12s, border-color 0.12s;
+  line-height: 1;
+}
+
+.btn:hover:not(:disabled) {
+  background: #f5f7fd;
+  border-color: #a8b4d0;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .btn-primary {
@@ -138,21 +178,36 @@ button {
   color: #fff;
 }
 
+.btn-danger:hover:not(:disabled) {
+  background: #cc3e3e;
+  border-color: #cc3e3e;
+}
+
 .btn-block {
   width: 100%;
 }
 
 .btn-sm {
-  padding: 4px 10px;
-  font-size: 11px;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 5px;
 }
 
-/* 입력 폼 */
+/* ===== 입력 ===== */
 .input-text {
-  border: 1px solid #c0c4cc;
-  padding: 4px 6px;
-  font-size: 12px;
+  border: 1px solid #d0d6e8;
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-size: 13px;
   font-family: inherit;
+  color: #1e2532;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input-text:focus {
+  border-color: #478ef0;
+  box-shadow: 0 0 0 3px rgba(71, 142, 240, 0.14);
 }
 
 .input-small {
@@ -160,31 +215,35 @@ button {
   text-align: center;
 }
 
-/* 캐릭터 설명 텍스트 */
+/* ===== 헬퍼 텍스트 ===== */
 .helper-text {
   font-size: 11px;
-  color: #777;
+  color: #8c96ae;
 }
 
-/* ===== 로그인 페이지 ===== */
+/* ===== 설정 페이지 2-컬럼 레이아웃 ===== */
 .login-layout {
-  margin-top: 30px;
+  margin-top: 24px;
   display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 32px;
+  grid-template-columns: 290px 1fr;
+  gap: 18px;
+  align-items: start;
 }
 
 .login-panel__title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  margin-top: 0px;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  margin-top: 0;
+  color: #1e2532;
+  letter-spacing: -0.3px;
 }
 
 .login-panel__field-label {
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 13px;
+  margin-bottom: 6px;
   font-weight: 600;
+  color: #374151;
 }
 
 .login-panel__stored {
@@ -192,7 +251,7 @@ button {
   font-size: 11px;
 }
 
-/* 과목 프리셋 테이블 */
+/* ===== 프리셋 테이블 ===== */
 .preset-table th:nth-child(1),
 .preset-table td:nth-child(1),
 .preset-table th:nth-child(2),
@@ -200,14 +259,14 @@ button {
   width: 80px;
 }
 
-/* ===== 메인 수강신청 페이지 ===== */
+/* ===== 수강신청 페이지 정보 테이블 ===== */
 .info-table td,
 .info-table th {
   font-size: 13px;
-  padding: 6px 10px;
+  padding: 7px 12px;
 }
 
-/* 캡차 영역 */
+/* ===== 캡차 ===== */
 .captcha-box {
   display: inline-flex;
   align-items: center;
@@ -233,7 +292,7 @@ button {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.48);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -242,23 +301,26 @@ button {
 
 .modal-box {
   background: #fff;
-  border: 1px solid #c0c4cc;
-  padding: 24px;
+  border: 1px solid #e6eaf3;
+  border-radius: 12px;
+  padding: 28px;
   width: min(560px, 90vw);
   max-height: 80vh;
   overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
 }
 
 .modal-title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
-  margin: 0 0 16px;
+  margin: 0 0 18px;
+  color: #1e2532;
 }
 
 .modal-body {
   font-size: 13px;
   line-height: 1.8;
-  color: #333;
+  color: #374151;
   margin-bottom: 20px;
 }
 
@@ -268,83 +330,88 @@ button {
   justify-content: flex-end;
 }
 
-/* 푸터 */
+/* ===== 푸터 ===== */
 .footer {
-  border-top: 1px solid #d4d6db;
-  padding: 16px 0;
-  margin-top: 36px;
+  border-top: 1px solid #e6eaf3;
+  padding: 20px 0;
+  margin-top: 48px;
   font-size: 11px;
   text-align: center;
-  color: #777;
+  color: #9ca3af;
+  background: #f8fafd;
 }
 
+/* ===== 액션 버튼 (수강신청 테이블 내) ===== */
 .action-btn {
   min-width: 60px;
   height: 26px;
   padding: 0;
-  border-radius: 0;
+  border-radius: 4px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid #b0b0b0;
-  background: #f4f4f4;
-  color: #333;
+  border: 1px solid #d0d6e8;
+  background: #f5f7fd;
+  color: #374151;
+  cursor: pointer;
 }
 
 .action-btn:hover {
-  background: #e8e8e8;
+  background: #eaeffa;
 }
 
+/* ===== 로그아웃 버튼 ===== */
 .nav-logout-btn {
   margin-left: auto;
   align-self: center;
-  padding: 4px 14px;
+  padding: 5px 14px;
   font-size: 12px;
-  border-radius: 2px;
+  border-radius: 5px;
   border: 1px solid #e54b4b;
   background: #e54b4b;
   color: #fff;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .nav-logout-btn:hover {
-  background: #c93b3b;
-  border-color: #c93b3b;
+  background: #cc3e3e;
+  border-color: #cc3e3e;
 }
 
-/* 과목 수 등 배지 */
+/* ===== 배지 ===== */
 .badge {
   display: inline-flex;
   align-items: center;
-  background: #e8eef7;
-  color: #478ef0;
-  border-radius: 10px;
-  padding: 1px 8px;
+  background: #eef3fd;
+  color: #3b82f6;
+  border-radius: 20px;
+  padding: 2px 9px;
   font-size: 11px;
   font-weight: 600;
-  margin-left: 6px;
+  margin-left: 7px;
 }
 
-/* 강조 정보 박스 */
+/* ===== 강조 콜아웃 ===== */
 .info-callout {
   background: #f0f7ff;
-  border: 1px solid #bdd5f7;
+  border: 1px solid #c3daf9;
   border-left: 4px solid #478ef0;
   padding: 10px 14px;
   font-size: 12px;
-  border-radius: 2px;
+  border-radius: 6px;
   margin-bottom: 12px;
 }
 
 .info-callout--warn {
-  background: #fff5f5;
-  border-color: #fdb5b5;
+  background: #fff8f8;
+  border-color: #fac5c5;
   border-left-color: #e54b4b;
 }
 
-/* 섹션 헤더 (제목 + 액션 버튼 row) */
+/* ===== 섹션 헤더 ===== */
 .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }

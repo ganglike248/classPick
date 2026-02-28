@@ -74,35 +74,40 @@ export default function ResultPage() {
       <TopBand />
       <main className="page-wrap" style={{ maxWidth: "700px" }}>
         {/* 헤더 - 소요 시간 히어로 */}
-        <div className="card" style={{ textAlign: "center", padding: "28px 20px" }}>
-          <div style={{ fontSize: "13px", color: "#888", marginBottom: "8px", fontWeight: 600, letterSpacing: "0.5px" }}>
+        <div className="card" style={{ textAlign: "center", padding: "32px 24px", borderTop: "3px solid #478ef0" }}>
+          <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "10px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase" }}>
             수강신청 결과
           </div>
-          <div style={{ fontSize: "44px", fontWeight: 700, color: "#478ef0", letterSpacing: "-1px", lineHeight: 1 }}>
+          <div style={{ fontSize: "46px", fontWeight: 700, color: "#478ef0", letterSpacing: "-1px", lineHeight: 1 }}>
             {formatElapsedLong(totalElapsedMs)}
           </div>
-          <div style={{ fontSize: "13px", color: "#aaa", marginTop: "4px" }}>
-            ({(totalElapsedMs / 1000).toFixed(2)}초)
+          <div style={{ fontSize: "13px", color: "#b0b8cc", marginTop: "6px" }}>
+            총 {(totalElapsedMs / 1000).toFixed(2)}초
           </div>
-          <div style={{ marginTop: "12px", display: "flex", justifyContent: "center", gap: "16px" }}>
-            <span style={{ fontSize: "13px" }}>
-              신청 성공{" "}
-              <strong style={{ color: "#478ef0" }}>{registeredCourseIds.length}</strong>
-              <span className="helper-text">/{totalTarget}개</span>
-            </span>
+          <div style={{ marginTop: "18px", display: "flex", justifyContent: "center", gap: "0", borderTop: "1px solid #f0f3fa", paddingTop: "16px" }}>
+            <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid #f0f3fa" }}>
+              <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "4px" }}>신청 성공</div>
+              <div>
+                <strong style={{ fontSize: "20px", color: "#478ef0" }}>{registeredCourseIds.length}</strong>
+                <span style={{ fontSize: "12px", color: "#8c96ae" }}>/{totalTarget}개</span>
+              </div>
+            </div>
             {missedCourseIds.length > 0 && (
-              <span style={{ fontSize: "13px" }}>
-                마감/미신청{" "}
-                <strong style={{ color: "#e54b4b" }}>{missedCourseIds.length}</strong>
-                <span className="helper-text">개</span>
-              </span>
+              <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid #f0f3fa" }}>
+                <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "4px" }}>마감/미신청</div>
+                <div>
+                  <strong style={{ fontSize: "20px", color: "#e54b4b" }}>{missedCourseIds.length}</strong>
+                  <span style={{ fontSize: "12px", color: "#8c96ae" }}>개</span>
+                </div>
+              </div>
             )}
-            <span style={{ fontSize: "13px" }}>
-              <span className="helper-text">{modeLabel} · 난이도 {diffLabel}</span>
-              {type === "challenge" && (
-                <span className="helper-text"> · {nickname}</span>
-              )}
-            </span>
+            <div style={{ flex: 1, padding: "0 12px" }}>
+              <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "4px" }}>모드 · 난이도</div>
+              <div style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>
+                {modeLabel} · {diffLabel}
+                {type === "challenge" && <div style={{ fontSize: "11px", color: "#8c96ae", fontWeight: 400 }}>{nickname}</div>}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -178,11 +183,12 @@ export default function ResultPage() {
           <button
             className="btn btn-block"
             style={{
-              padding: "10px 0",
-              backgroundColor: "rgb(71,142,240)",
+              padding: "11px 0",
+              backgroundColor: "#478ef0",
               color: "#fff",
-              borderColor: "rgb(71,142,240)",
-              fontWeight: 600,
+              borderColor: "#478ef0",
+              fontWeight: 700,
+              borderRadius: "6px",
             }}
             onClick={handleRetry}
           >
@@ -192,11 +198,12 @@ export default function ResultPage() {
             <button
               className="btn btn-block"
               style={{
-                padding: "10px 0",
+                padding: "11px 0",
                 backgroundColor: "#e54b4b",
                 color: "#fff",
                 borderColor: "#e54b4b",
-                fontWeight: 600,
+                fontWeight: 700,
+                borderRadius: "6px",
               }}
               onClick={() => navigate("/ranking")}
             >
@@ -205,7 +212,7 @@ export default function ResultPage() {
           )}
         </div>
       </main>
-      <Footer variant="setup" />
+      <Footer />
     </>
   );
 }

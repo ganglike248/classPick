@@ -182,16 +182,20 @@ export default function SetupPage() {
       <main className="page-wrap login-layout">
         {/* 왼쪽: 입장 + 신청가능 학점 설정 */}
         <section className="card">
-          <h1 className="login-panel__title">연습용 수강신청</h1>
+          <div style={{ marginBottom: "20px" }}>
+            <h1 className="login-panel__title">수강신청 연습</h1>
+            <div style={{ fontSize: "12px", color: "#8c96ae" }}>과목을 설정하고 수강신청을 연습하세요</div>
+          </div>
 
           {/* 시작 버튼 - 주요 CTA */}
           <button
             className="btn btn-primary btn-block"
             style={{
-              backgroundColor: "rgb(71, 142, 240)",
-              color: "white",
-              borderRadius: "5px",
-              padding: "16px 0",
+              backgroundColor: "#478ef0",
+              color: "#fff",
+              borderColor: "#478ef0",
+              borderRadius: "6px",
+              padding: "14px 0",
               fontSize: "15px",
               fontWeight: 700,
               marginBottom: "14px",
@@ -209,8 +213,8 @@ export default function SetupPage() {
               gap: "8px",
               paddingTop: "12px",
               paddingBottom: "12px",
-              borderTop: "1px solid #e8eaef",
-              borderBottom: "1px solid #e8eaef",
+              borderTop: "1px solid #e6eaf3",
+              borderBottom: "1px solid #e6eaf3",
             }}
           >
             <span className="login-panel__field-label" style={{ margin: 0, whiteSpace: "nowrap" }}>
@@ -241,9 +245,9 @@ export default function SetupPage() {
           {/* 랭킹 도전 모드 */}
           <div
             style={{
-              marginTop: "12px",
-              paddingTop: "12px",
-              borderTop: "1px dashed #e0e2e8",
+              marginTop: "14px",
+              paddingTop: "14px",
+              borderTop: "1px solid #e6eaf3",
             }}
           >
             <button
@@ -252,15 +256,16 @@ export default function SetupPage() {
                 backgroundColor: "#e54b4b",
                 color: "#fff",
                 borderColor: "#e54b4b",
-                padding: "10px 0",
-                fontWeight: 600,
-                borderRadius: "3px",
+                padding: "11px 0",
+                fontWeight: 700,
+                borderRadius: "6px",
+                fontSize: "13px",
               }}
               onClick={() => navigate("/challenge")}
             >
               🏆 랭킹 도전 모드
             </button>
-            <div className="helper-text" style={{ textAlign: "center", marginTop: "4px" }}>
+            <div className="helper-text" style={{ textAlign: "center", marginTop: "5px" }}>
               모든 사용자가 동일한 과목으로 경쟁합니다
             </div>
           </div>
@@ -268,19 +273,19 @@ export default function SetupPage() {
           {/* 초기화 */}
           <div
             style={{
-              marginTop: "10px",
-              paddingTop: "10px",
-              borderTop: "1px dashed #e0e2e8",
+              marginTop: "12px",
+              paddingTop: "12px",
+              borderTop: "1px solid #e6eaf3",
             }}
           >
             <button
               className="btn btn-danger btn-block"
-              style={{ borderRadius: "3px", padding: "6px 0", fontSize: "12px" }}
+              style={{ borderRadius: "6px", padding: "7px 0", fontSize: "12px" }}
               onClick={handleReset}
             >
               과목 설정 초기화
             </button>
-            <div className="helper-text" style={{ marginTop: "4px", textAlign: "center" }}>
+            <div className="helper-text" style={{ marginTop: "5px", textAlign: "center" }}>
               오류 발생 시 초기화 후 재시도해 주세요
             </div>
           </div>
@@ -288,26 +293,33 @@ export default function SetupPage() {
 
         {/* 오른쪽: 초기 과목 설정 */}
         <section className="card">
-          <div className="section-title">초기 과목 설정</div>
-          <ul className="helper-text" style={{ marginBottom: "10px", paddingLeft: "18px", lineHeight: 1.9 }}>
-            <li><strong>수강꾸러미</strong> — 신청 버튼으로 신청할 과목</li>
-            <li><strong>이미 신청된 과목</strong> — 시작 시 이미 등록된 상태인 과목</li>
-            <li><strong>코드 입력 과목</strong> — 강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)</li>
-          </ul>
+          <div style={{ marginBottom: "14px" }}>
+            <div className="section-title">초기 과목 설정</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+              <div className="helper-text">
+                <strong style={{ color: "#374151" }}>수강꾸러미</strong> — 신청 버튼으로 신청할 과목
+              </div>
+              <div className="helper-text">
+                <strong style={{ color: "#374151" }}>이미 신청된 과목</strong> — 시작 시 이미 등록된 상태인 과목
+              </div>
+              <div className="helper-text">
+                <strong style={{ color: "#374151" }}>코드 입력 과목</strong> — 강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)
+              </div>
+            </div>
+          </div>
 
           {/* 수강꾸러미 */}
           <div
-            className="section-title"
             style={{
-              fontSize: "14px",
               marginTop: "16px",
-              borderTop: "1px dashed #e0e2e8",
-              paddingTop: "10px",
+              paddingTop: "14px",
+              borderTop: "1px solid #e6eaf3",
               display: "flex",
               alignItems: "center",
+              marginBottom: "8px",
             }}
           >
-            수강꾸러미
+            <span style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}>수강꾸러미</span>
             {cartRows.length > 0 && (
               <span className="badge">{cartRows.length}과목</span>
             )}
@@ -320,8 +332,8 @@ export default function SetupPage() {
           />
 
           {/* 이미 신청된 과목 */}
-          <div className="section-title" style={{ fontSize: "14px", marginTop: "18px", display: "flex", alignItems: "center" }}>
-            이미 신청된 과목
+          <div style={{ marginTop: "20px", paddingTop: "14px", borderTop: "1px solid #e6eaf3", display: "flex", alignItems: "center", marginBottom: "8px" }}>
+            <span style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}>이미 신청된 과목</span>
             {regRows.length > 0 && (
               <span className="badge">{regRows.length}과목</span>
             )}
@@ -333,14 +345,14 @@ export default function SetupPage() {
             onRemove={handleRemove}
           />
 
-          {/* 코드 입력으로 추가할 과목 */}
-          <div className="section-title" style={{ fontSize: "14px", marginTop: "18px", display: "flex", alignItems: "center" }}>
-            코드 입력 과목
+          {/* 코드 입력 과목 */}
+          <div style={{ marginTop: "20px", paddingTop: "14px", borderTop: "1px solid #e6eaf3", display: "flex", alignItems: "center", marginBottom: "4px" }}>
+            <span style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}>코드 입력 과목</span>
             {codeRows.length > 0 && (
               <span className="badge">{codeRows.length}과목</span>
             )}
           </div>
-          <p className="helper-text" style={{ marginBottom: "10px" }}>
+          <p className="helper-text" style={{ marginBottom: "8px", marginTop: "4px" }}>
             화면에 표시되지 않으며, 강좌번호를 직접 입력해야 신청됩니다. 학점 제한에 포함됩니다.
           </p>
           <CourseTable
