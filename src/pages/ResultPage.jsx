@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { PRACTICE_RESULT_KEY } from "../utils/storage";
 import { DIFFICULTY_CONFIGS, formatElapsedMs, formatElapsedLong } from "../utils/practiceUtils";
 import TopBand from "../components/layout/TopBand";
@@ -7,9 +7,16 @@ import Footer from "../components/layout/Footer";
 
 export default function ResultPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [result, setResult] = useState(null);
 
   useEffect(() => {
+    // 연습 모드: navigate state로 전달된 결과 (로컬 저장 없음)
+    if (location.state) {
+      setResult(location.state);
+      return;
+    }
+    // 랭킹 도전 모드: localStorage에서 읽기
     try {
       const raw = localStorage.getItem(PRACTICE_RESULT_KEY);
       if (!raw) {
@@ -20,7 +27,7 @@ export default function ResultPage() {
     } catch {
       navigate("/");
     }
-  }, [navigate]);
+  }, [navigate, location.state]);
 
   if (!result) return null;
 
@@ -72,7 +79,8 @@ export default function ResultPage() {
             수강신청 결과
           </div>
           <div className="helper-text">
-            {modeLabel} · 난이도 {diffLabel} · 닉네임: {nickname}
+            {modeLabel} · 난이도 {diffLabel}
+            {type === "challenge" && ` · 닉네임: ${nickname}`}
           </div>
         </div>
 

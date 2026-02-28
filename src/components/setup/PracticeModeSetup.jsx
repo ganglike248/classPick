@@ -7,8 +7,6 @@ export default function PracticeModeSetup({
   onToggle,
   difficulty,
   onDifficultyChange,
-  nickname,
-  onNicknameChange,
 }) {
   return (
     <div
@@ -70,21 +68,6 @@ export default function PracticeModeSetup({
                 </button>
               ))}
             </div>
-          </div>
-
-          <div>
-            <div className="helper-text" style={{ marginBottom: "4px" }}>
-              닉네임 (선택, 최대 12자)
-            </div>
-            <input
-              type="text"
-              className="input-text"
-              maxLength={12}
-              value={nickname}
-              onChange={(e) => onNicknameChange(e.target.value)}
-              placeholder="입력 안 하면 '익명'"
-              style={{ width: "100%" }}
-            />
           </div>
 
           <div className="helper-text" style={{ color: "#e54b4b" }}>

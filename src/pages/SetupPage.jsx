@@ -55,7 +55,6 @@ export default function SetupPage() {
   // 실전 모드 설정
   const [practiceEnabled, setPracticeEnabled] = useState(false);
   const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
-  const [practiceNickname, setPracticeNickname] = useState("");
   const [showPracticeModal, setShowPracticeModal] = useState(false);
 
   const settersMap = { cart: setCartRows, reg: setRegRows, code: setCodeRows };
@@ -141,7 +140,6 @@ export default function SetupPage() {
       const practiceModeSettings = {
         type: "practice",
         difficulty: practiceDifficulty,
-        nickname: practiceNickname.trim() || "익명",
         startedAt: null,
         courseDeadlines: null,
         courseTimings: {},
@@ -249,8 +247,6 @@ export default function SetupPage() {
             onToggle={() => setPracticeEnabled((v) => !v)}
             difficulty={practiceDifficulty}
             onDifficultyChange={setPracticeDifficulty}
-            nickname={practiceNickname}
-            onNicknameChange={setPracticeNickname}
           />
 
           <PresetManager getCurrentPreset={getCurrentPreset} onLoad={handleLoadPreset} />
@@ -376,10 +372,6 @@ export default function SetupPage() {
                   <tr>
                     <td style={{ color: "#666", paddingBottom: "3px" }}>난이도</td>
                     <td style={{ fontWeight: 600 }}>{diffLabel} (과목당 {diffRange?.min}~{diffRange?.max}초 내 마감)</td>
-                  </tr>
-                  <tr>
-                    <td style={{ color: "#666" }}>닉네임</td>
-                    <td style={{ fontWeight: 600 }}>{practiceNickname.trim() || "익명"}</td>
                   </tr>
                 </tbody>
               </table>

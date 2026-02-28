@@ -237,13 +237,16 @@ export default function RegisterPage() {
       }
     }
 
-    try {
-      localStorage.setItem(PRACTICE_RESULT_KEY, JSON.stringify(result));
-    } catch (e) {
-      console.error("결과 저장 실패:", e);
+    if (pm.type === "challenge") {
+      try {
+        localStorage.setItem(PRACTICE_RESULT_KEY, JSON.stringify(result));
+      } catch (e) {
+        console.error("결과 저장 실패:", e);
+      }
+      navigate("/result");
+    } else {
+      navigate("/result", { state: result });
     }
-
-    navigate("/result");
   }
 
   const handleApplyFromCart = (id) => {
