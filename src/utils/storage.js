@@ -1,4 +1,5 @@
 export const STORAGE_KEY = "courseRegistrationPracticeState";
+export const PRACTICE_RESULT_KEY = "classPick_practiceResult";
 export const PRESET_KEYS = ["preset1", "preset2", "preset3"];
 
 export function validateState(raw) {
@@ -36,6 +37,14 @@ export function validateState(raw) {
   raw.registeredCourseIds = raw.registeredCourseIds.filter((id) => raw.courses[id]);
   raw.codeInputCourseIds = raw.codeInputCourseIds.filter((id) => raw.courses[id]);
 
+  // practiceMode 정규화
+  if (raw.practiceMode && typeof raw.practiceMode === "object" && raw.practiceMode.type) {
+    const pm = raw.practiceMode;
+    if (!pm.courseTimings || typeof pm.courseTimings !== "object") pm.courseTimings = {};
+  } else {
+    raw.practiceMode = null;
+  }
+
   return raw;
 }
 
@@ -58,7 +67,7 @@ export function saveState(state) {
   }
 }
 
-export function buildInitialState(cartRows, regRows, codeRows, maxCredits) {
+export function buildInitialState(cartRows, regRows, codeRows, maxCredits, practiceMode = null) {
   const courses = {};
   const cartIds = [], regIds = [], codeIds = [];
 
@@ -89,6 +98,7 @@ export function buildInitialState(cartRows, regRows, codeRows, maxCredits) {
     cartCourseIds: cartIds,
     registeredCourseIds: regIds,
     codeInputCourseIds: codeIds,
+    practiceMode,
   };
 }
 

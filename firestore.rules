@@ -1,0 +1,33 @@
+// Firebase Console > Firestore Database > Rules 탭에 붙여넣으세요.
+//
+// 사전 준비:
+//   1. Firebase Console > Authentication > Sign-in method > Anonymous 활성화
+//   2. Firebase Console > Firestore Database > 데이터베이스 만들기 (프로덕션 모드로 시작)
+//   3. 아래 규칙을 Rules 탭에 붙여넣고 게시
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /rankings/{docId} {
+      // 누구나 랭킹 조회 가능
+      allow read: if true;
+
+      // 세션 생성: 익명 로그인 필수, uid 일치, 시작 상태, endedAt 없음
+      allow create: if request.auth != null
+                    && request.auth.uid == request.resource.data.uid
+                    && request.resource.data.status == 'in_progress'
+                    && !('endedAt' in request.resource.data)
+                    && !('result' in request.resource.data);
+
+      // 세션 완료: 본인만, 한 번만, in_progress → completed
+      allow update: if request.auth != null
+                    && request.auth.uid == resource.data.uid
+                    && resource.data.status == 'in_progress'
+                    && request.resource.data.status == 'completed'
+                    && !('endedAt' in resource.data);
+
+      // 삭제 불가 (기록 조작 방지)
+      allow delete: if false;
+    }
+  }
+}
