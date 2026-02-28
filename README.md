@@ -10,27 +10,22 @@
 
 ## 스크린샷
 
-<!-- 아래 주석을 지우고 스크린샷 이미지를 넣어 주세요 -->
-
 ### 설정 화면
-
-<!-- ![설정 화면](docs/screenshots/setup.png) -->
+<img width="824" height="860" alt="image" src="https://github.com/user-attachments/assets/aa3279e0-a843-4a0d-96ca-9f870f62d285" />
 
 ### 수강신청 화면
-
-<!-- ![수강신청 화면](docs/screenshots/register.png) -->
+<img width="810" height="922" alt="image" src="https://github.com/user-attachments/assets/e6d6a8f5-db24-49e9-93dd-0165d7bb1b0b" />
 
 ### 실전 모드 로그인 대기 화면
-
-<!-- ![로그인 대기 화면](docs/screenshots/practice-login.png) -->
+<img width="1060" height="862" alt="image" src="https://github.com/user-attachments/assets/649c204d-766b-400f-bb4e-a0b3afd0fd0f" />
 
 ### 랭킹 도전 화면
+<img width="774" height="914" alt="image" src="https://github.com/user-attachments/assets/c108939f-0d95-48c1-89ab-2f92a09472f8" />
+<img width="1031" height="767" alt="image" src="https://github.com/user-attachments/assets/3861e95f-7099-45c8-a15f-e652249c167f" />
 
-<!-- ![랭킹 도전 화면](docs/screenshots/challenge.png) -->
 
 ### 랭킹 조회 화면
-
-<!-- ![랭킹 화면](docs/screenshots/ranking.png) -->
+<img width="1052" height="698" alt="image" src="https://github.com/user-attachments/assets/4c594d01-3707-4ecf-a951-a129fa607c6e" />
 
 ---
 
