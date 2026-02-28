@@ -67,7 +67,7 @@ export default function PrivacyPage() {
           <button
             className="btn"
             style={{ fontSize: "13px" }}
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/")}
           >
             돌아가기
           </button>
