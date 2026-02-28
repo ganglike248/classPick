@@ -415,3 +415,33 @@ button {
   justify-content: space-between;
   margin-bottom: 12px;
 }
+
+/* ===== 수강신청 페이지 — 이전 스타일 유지 (둥근 테두리 제거) ===== */
+.register-page .card {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.register-page .btn {
+  border-radius: 2px;
+}
+
+.register-page .btn-sm {
+  border-radius: 2px;
+}
+
+.register-page .input-text {
+  border-radius: 0;
+}
+
+.register-page .input-text:focus {
+  box-shadow: none;
+}
+
+.register-page .action-btn {
+  border-radius: 0;
+}
+
+.register-page .info-callout {
+  border-radius: 2px;
+}

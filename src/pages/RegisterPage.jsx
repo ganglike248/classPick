@@ -418,7 +418,7 @@ export default function RegisterPage() {
           type={pm.type}
         />
       )}
-      <main className="page-wrap">
+      <main className="page-wrap register-page">
         <StudentInfo student={state.student} totalCredits={totalCredits} />
         <CartCourses
           cartCourseIds={state.cartCourseIds}
