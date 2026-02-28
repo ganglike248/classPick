@@ -96,6 +96,7 @@ export default function CourseAddForm({ onAdd, existsCheck }) {
             ref={nameRef}
             type="text"
             className="input-text"
+            maxLength={50}
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyUp={(e) => e.key === "Enter" && creditRef.current?.focus()}

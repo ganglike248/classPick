@@ -52,14 +52,6 @@ export default function SetupPage() {
   );
 
   const settersMap = { cart: setCartRows, reg: setRegRows, code: setCodeRows };
-  const rowsMap = { cart: cartRows, reg: regRows, code: codeRows };
-
-  const handleMove = useCallback((row, targetSection) => {
-    const src = row._section || findSection(row.id, cartRows, regRows, codeRows);
-    if (!src || src === targetSection) return;
-    settersMap[src]((prev) => prev.filter((r) => r.id !== row.id));
-    settersMap[targetSection]((prev) => [...prev, { id: row.id, name: row.name, credit: row.credit }]);
-  }, [cartRows, regRows, codeRows]);
 
   function findSection(id, cart, reg, code) {
     if (cart.some((r) => r.id === id)) return "cart";
@@ -107,7 +99,7 @@ export default function SetupPage() {
     setCartRows(presetData.cartRows || []);
     setRegRows(presetData.regRows || []);
     setCodeRows(presetData.codeRows || []);
-    setMaxCredit(presetData.maxCredit || 20);
+    setMaxCredit(presetData.maxCredit ?? 20);
   }, []);
 
   const handleEnter = () => {

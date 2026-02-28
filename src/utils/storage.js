@@ -17,6 +17,25 @@ export function validateState(raw) {
   if (typeof s.grade !== "string") s.grade = "3학년";
   if (typeof s.term !== "string") s.term = "6학기";
 
+  // courses 내부 항목 유효성 보정: 비정상 항목은 제거
+  for (const id of Object.keys(raw.courses)) {
+    const c = raw.courses[id];
+    if (
+      typeof c !== "object" ||
+      c === null ||
+      typeof c.id !== "string" ||
+      typeof c.name !== "string" ||
+      typeof c.credit !== "number" ||
+      c.credit <= 0
+    ) {
+      delete raw.courses[id];
+    }
+  }
+  // ID 배열에는 있지만 courses에 없는 항목 정리
+  raw.cartCourseIds = raw.cartCourseIds.filter((id) => raw.courses[id]);
+  raw.registeredCourseIds = raw.registeredCourseIds.filter((id) => raw.courses[id]);
+  raw.codeInputCourseIds = raw.codeInputCourseIds.filter((id) => raw.courses[id]);
+
   return raw;
 }
 
@@ -32,7 +51,11 @@ export function loadStoredState() {
 }
 
 export function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.error("상태 저장 실패:", e);
+  }
 }
 
 export function buildInitialState(cartRows, regRows, codeRows, maxCredits) {
@@ -91,7 +114,12 @@ export function savePreset(key, name, presetData) {
     data: presetData,
     timestamp: new Date().toISOString(),
   };
-  localStorage.setItem(key, JSON.stringify(presetObj));
+  try {
+    localStorage.setItem(key, JSON.stringify(presetObj));
+  } catch (e) {
+    console.error("프리셋 저장 실패:", e);
+    throw e; // 호출부(PresetManager)에서 사용자에게 알릴 수 있도록 re-throw
+  }
 }
 
 export function deletePreset(key) {

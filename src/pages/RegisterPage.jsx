@@ -54,13 +54,13 @@ export default function RegisterPage() {
     const current = totalCredits;
     const max = state.student.maxCredits;
 
-    if (current + addCredit > max) {
-      alert(`신청가능 학점을 초과합니다.\n현재 ${current}학점, 추가 ${addCredit}학점, 최대 ${max}학점`);
+    if (state.registeredCourseIds.includes(id)) {
+      alert("이미 신청된 과목입니다.");
       return;
     }
 
-    if (state.registeredCourseIds.includes(id)) {
-      alert("이미 신청된 과목입니다.");
+    if (current + addCredit > max) {
+      alert(`신청가능 학점을 초과합니다.\n현재 ${current}학점, 추가 ${addCredit}학점, 최대 ${max}학점`);
       return;
     }
 

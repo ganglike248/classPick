@@ -23,7 +23,7 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
       alert("이름을 입력해 주세요.");
       return;
     }
-    if (name.length > 20) {
+    if (name.trim().length > 20) {
       alert("이름은 최대 20자까지 입력 가능합니다.");
       return;
     }
@@ -34,9 +34,13 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
       return;
     }
 
-    savePreset(key, name, getCurrentPreset());
-    refresh();
-    alert(`'${name}' 프리셋이 저장되었습니다.`);
+    try {
+      savePreset(key, name, getCurrentPreset());
+      refresh();
+      alert(`'${name.trim()}' 프리셋이 저장되었습니다.`);
+    } catch {
+      alert("저장 공간이 부족하여 프리셋을 저장할 수 없습니다.");
+    }
   };
 
   const handleLoad = () => {

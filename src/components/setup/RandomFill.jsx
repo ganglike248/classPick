@@ -10,6 +10,8 @@ export default function RandomFill({ onFill, getAllIds }) {
     let rc = parseInt(regCount, 10);
     if (Number.isNaN(cc) || cc < 0) cc = 0;
     if (Number.isNaN(rc) || rc < 0) rc = 0;
+    if (cc > 20) cc = 20;
+    if (rc > 20) rc = 20;
 
     const taken = getAllIds();
 

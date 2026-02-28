@@ -43,7 +43,9 @@ export function hasCourseId(cartRows, regRows, codeRows, id) {
 
 export function formatPresetDate(timestamp) {
   if (!timestamp) return "";
-  return new Date(timestamp).toLocaleDateString("ko-KR", {
+  const d = new Date(timestamp);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("ko-KR", {
     month: "short",
     day: "numeric",
     hour: "2-digit",
