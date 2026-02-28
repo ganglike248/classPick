@@ -233,8 +233,8 @@ export default function RegisterPage() {
       challengeDocId: pm.challengeDocId,
     };
 
-    // 챌린지 모드: Firebase endedAt + 결과 기록
-    if (pm.type === "challenge" && pm.challengeDocId) {
+    // 챌린지 모드: 100% 달성 시에만 Firebase에 기록
+    if (pm.type === "challenge" && pm.challengeDocId && missedCourseIds.length === 0) {
       try {
         const registeredCredits = registeredCourseIds.reduce(
           (sum, id) => sum + (currentState.courses[id]?.credit ?? 3),

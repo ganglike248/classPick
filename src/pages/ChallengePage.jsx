@@ -215,6 +215,10 @@ export default function ChallengePage() {
                 <td>신청 시도 시에만 알 수 있음 (표시 없음)</td>
               </tr>
               <tr>
+                <th style={{ textAlign: "left" }}>랭킹 등록 조건</th>
+                <td><strong style={{ color: "#e54b4b" }}>전 과목 신청 성공</strong> 시에만 기록됨</td>
+              </tr>
+              <tr>
                 <th style={{ textAlign: "left" }}>시간 기록</th>
                 <td>Firebase 서버 기준 · 조작 불가</td>
               </tr>

@@ -479,7 +479,8 @@ export default function SetupPage() {
               </p>
               <ul style={{ margin: 0, paddingLeft: "18px" }}>
                 <li style={{ marginBottom: "4px" }}>별도 설정 없이 [🏆 랭킹 도전 모드] 버튼으로 바로 시작합니다.</li>
-                <li>닉네임을 입력하면 랭킹에 이름이 표시됩니다.</li>
+                <li style={{ marginBottom: "4px" }}>닉네임을 입력하면 랭킹에 이름이 표시됩니다.</li>
+                <li><strong>모든 과목을 전부 신청 성공</strong>해야만 랭킹에 기록됩니다. 하나라도 마감되어 놓치면 기록되지 않습니다.</li>
               </ul>
             </section>
 
