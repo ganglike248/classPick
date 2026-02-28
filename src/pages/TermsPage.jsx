@@ -37,9 +37,20 @@ export default function TermsPage() {
             </ul>
           </section>
 
+          <section style={{ marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532", marginBottom: "8px" }}>
+              제3조 (데이터 수집 및 이용)
+            </h2>
+            <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.8, margin: 0 }}>
+              본 사이트는 서비스 개선을 위해 Firebase를 통해 <strong>익명의 사용 데이터</strong>를
+              수집할 수 있습니다. 수집되는 데이터는 개인을 식별할 수 없는 형태이며,
+              상업적 목적으로 이용되지 않습니다. 자세한 내용은 개인정보처리방침을 참고하세요.
+            </p>
+          </section>
+
           <section style={{ marginBottom: "32px" }}>
             <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532", marginBottom: "8px" }}>
-              제3조 (지적재산권)
+              제4조 (지적재산권)
             </h2>
             <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.8, margin: 0 }}>
               본 사이트의 UI/UX는 일반적인 수강신청 시스템을 참고하여 제작되었으며,
