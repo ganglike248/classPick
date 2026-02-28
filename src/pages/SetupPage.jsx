@@ -398,10 +398,14 @@ export default function SetupPage() {
               <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
                 이 서비스는 무엇인가요?
               </div>
-              <p style={{ margin: 0 }}>
+              <p style={{ margin: "0 0 8px" }}>
                 대학교 수강신청을 미리 연습할 수 있는 <strong>모의 수강신청 시스템</strong>이에요.
                 실제 수강신청처럼 과목을 설정하고, 캡차 인증 후 신청하는 전 과정을 체험할 수 있어요.
                 처음 수강신청을 앞둔 신입생이나, 빠른 신청 속도를 키우고 싶은 분께 유용해요!
+              </p>
+              <p style={{ margin: 0 }}>
+                자유롭게 연습하는 것에 익숙해졌다면, <strong>실전 모드</strong>로 실제 수강신청 당일 상황을 똑같이 재현해보세요.
+                그리고 자신 있어졌다면 <strong>랭킹 도전 모드</strong>에 도전해서 다른 사람들과 실력을 겨뤄보세요! 🏆
               </p>
             </section>
 
