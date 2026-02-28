@@ -1,7 +1,7 @@
 export const DIFFICULTY_CONFIGS = {
-  easy:   { min: 60,  max: 120, label: "하" },
-  medium: { min: 30,  max: 60,  label: "중" },
-  hard:   { min: 10,  max: 30,  label: "상" },
+  easy:   { min: 60,  max: 120, label: "하", globalTimeout: 120 },
+  medium: { min: 30,  max: 60,  label: "중", globalTimeout: 60 },
+  hard:   { min: 10,  max: 30,  label: "상", globalTimeout: 30 },
 };
 
 /** courseIds 배열에 대해 각각 무작위 마감 timestamp를 생성 */

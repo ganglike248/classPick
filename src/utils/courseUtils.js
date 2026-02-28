@@ -1,9 +1,15 @@
 export const SAMPLE_NAMES = [
-  "객체지향프로그래밍", "알고리즘분석", "컴퓨터구조", "이산수학",
-  "웹서비스프로그래밍", "컴파일러설계", "임베디드시스템", "시스템프로그래밍",
-  "선형대수학", "확률및통계", "경제학원론", "심리학개론", "철학의이해",
-  "비판적사고와글쓰기", "창의와혁신", "사회학개론", "역사와문화",
-  "과학기술과사회", "환경과생태", "경영학원론",
+  // 컴퓨터/공학
+  "자료구조및실습", "운영체제론", "웹서비스프로그래밍",
+  // 수학/자연과학
+  "미적분학1", "선형대수학", "일반물리학및실험", "확률및통계",
+  // 경상/경영
+  "경영학원론", "경제학원론", "회계학원론", "마케팅원론",
+  // 인문/사회
+  "글쓰기와커뮤니케이션", "철학의이해", "심리학개론", "사회학개론",
+  "역사와문화", "법학개론",
+  // 교양
+  "체육실기", "건강과웰빙", "창의와혁신",
 ];
 
 export function checkDuplicates(cartRows, regRows, codeRows) {
@@ -20,7 +26,7 @@ export function generateRandomId(taken) {
   while (attempts < 1000) {
     attempts++;
     const front = String(10000 + Math.floor(Math.random() * 90000));
-    const back = String(Math.floor(Math.random() * 99) + 1).padStart(2, "0");
+    const back = String(Math.floor(Math.random() * 5) + 1).padStart(2, "0");
     const id = `${front}-${back}`;
     if (!taken.has(id)) {
       taken.add(id);

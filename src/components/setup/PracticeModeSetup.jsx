@@ -11,9 +11,7 @@ export default function PracticeModeSetup({
   return (
     <div
       style={{
-        marginTop: "10px",
         paddingTop: "10px",
-        borderTop: "1px dashed #e0e2e8",
       }}
     >
       <div
@@ -21,7 +19,7 @@ export default function PracticeModeSetup({
           display: "flex",
           alignItems: "center",
           gap: "10px",
-          marginBottom: enabled ? "10px" : "0",
+          marginBottom: "10px"
         }}
       >
         <div className="login-panel__field-label" style={{ margin: 0 }}>
@@ -63,7 +61,7 @@ export default function PracticeModeSetup({
                   }}
                   onClick={() => onDifficultyChange(d)}
                 >
-                  {DIFFICULTY_CONFIGS[d].label} (
+                  {DIFFICULTY_CONFIGS[d].label} <br/> (
                   {DIFFICULTY_CONFIGS[d].min}~{DIFFICULTY_CONFIGS[d].max}초)
                 </button>
               ))}

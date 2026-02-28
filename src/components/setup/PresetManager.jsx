@@ -81,8 +81,9 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
     <div
       style={{
         marginBottom: "16px",
-        borderTop: "1px dashed #e0e2e8",
+        borderTop: "1px solid #e0e2e8",
         paddingTop: "10px",
+        marginTop: "10px",
       }}
     >
       <div className="login-panel__field-label">프리셋 저장/불러오기</div>

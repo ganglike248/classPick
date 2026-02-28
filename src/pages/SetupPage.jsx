@@ -133,8 +133,8 @@ export default function SetupPage() {
 
   const handleEnter = () => {
     if (practiceEnabled) {
-      if (cartRows.length === 0) {
-        alert("실전 모드를 사용하려면 수강꾸러미에 과목을 추가해 주세요.");
+      if (cartRows.length === 0 && codeRows.length === 0) {
+        alert("실전 모드를 사용하려면 수강꾸러미 또는 코드 입력 과목을 하나 이상 추가해 주세요.");
         return;
       }
       const practiceModeSettings = {

@@ -13,6 +13,7 @@ import { useCaptcha } from "../hooks/useCaptcha";
 import {
   generateCourseDeadlines,
   isClosed,
+  DIFFICULTY_CONFIGS,
 } from "../utils/practiceUtils";
 import { startChallengeSession, finishChallengeSession } from "../utils/rankingUtils";
 import { CHALLENGE_ID } from "../data/challengeData";
@@ -70,13 +71,8 @@ export default function RegisterPage() {
       const startedAt = Date.now();
       const { type, difficulty } = s.practiceMode;
 
-      // 마감 타이머 생성 대상:
-      // - 일반 연습: cartCourseIds만
-      // - 챌린지: cartCourseIds + codeInputCourseIds
-      const deadlineTargets =
-        type === "challenge"
-          ? [...s.cartCourseIds, ...s.codeInputCourseIds]
-          : s.cartCourseIds;
+      // 마감 타이머 생성 대상: cartCourseIds + codeInputCourseIds (모드 공통)
+      const deadlineTargets = [...s.cartCourseIds, ...s.codeInputCourseIds];
 
       const courseDeadlines = generateCourseDeadlines(deadlineTargets, difficulty, startedAt);
 
@@ -123,10 +119,7 @@ export default function RegisterPage() {
     if (!pm) return;
 
     const deadlines = pm.courseDeadlines || {};
-    const checkTargets =
-      pm.type === "challenge"
-        ? [...s.cartCourseIds, ...s.codeInputCourseIds]
-        : s.cartCourseIds;
+    const checkTargets = [...s.cartCourseIds, ...s.codeInputCourseIds];
 
     const isAllDone = () => {
       const curr = stateRef.current;
@@ -164,6 +157,36 @@ export default function RegisterPage() {
     showWhiteScreen,
   ]);
 
+  // 글로벌 타임아웃: 난이도별 제한 시간 경과 시 메인으로 강제 복귀 (실전 모드 전용)
+  useEffect(() => {
+    if (showWhiteScreen || !state?.practiceMode?.startedAt) return;
+    const pm = stateRef.current?.practiceMode;
+    if (!pm || pm.type !== "practice") return;
+
+    const config = DIFFICULTY_CONFIGS[pm.difficulty] ?? DIFFICULTY_CONFIGS.medium;
+    const timeoutMs = config.globalTimeout * 1000;
+    const remaining = timeoutMs - (Date.now() - pm.startedAt);
+
+    if (remaining <= 0) {
+      if (!hasEndedRef.current) {
+        hasEndedRef.current = true;
+        alert("시간이 경과되어 모든 강좌가 마감되었습니다.");
+        navigate("/");
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (!hasEndedRef.current) {
+        hasEndedRef.current = true;
+        alert("시간이 경과되어 모든 강좌가 마감되었습니다.");
+        navigate("/");
+      }
+    }, remaining);
+
+    return () => clearTimeout(timer);
+  }, [state?.practiceMode?.startedAt, showWhiteScreen]);
+
   if (!state) return null;
 
   const totalCredits = state.registeredCourseIds.reduce(
@@ -188,10 +211,7 @@ export default function RegisterPage() {
     const endedAt = Date.now();
     const deadlines = pm.courseDeadlines || {};
 
-    const checkTargets =
-      pm.type === "challenge"
-        ? [...currentState.cartCourseIds, ...currentState.codeInputCourseIds]
-        : currentState.cartCourseIds;
+    const checkTargets = [...currentState.cartCourseIds, ...currentState.codeInputCourseIds];
 
     const registeredCourseIds = currentState.registeredCourseIds;
     const missedCourseIds = checkTargets.filter(

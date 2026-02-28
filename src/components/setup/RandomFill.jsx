@@ -8,13 +8,14 @@ export default function RandomFill({ onFill, getAllIds }) {
       const cartRows = [];
       const codeRows = [];
 
+      const shuffled = [...SAMPLE_NAMES].sort(() => Math.random() - 0.5);
       for (let i = 0; i < 3; i++) {
         const id = generateRandomId(taken);
-        cartRows.push({ id, name: SAMPLE_NAMES[i % SAMPLE_NAMES.length], credit: 3 });
+        cartRows.push({ id, name: shuffled[i], credit: 3 });
       }
       for (let i = 0; i < 3; i++) {
         const id = generateRandomId(taken);
-        codeRows.push({ id, name: SAMPLE_NAMES[(3 + i) % SAMPLE_NAMES.length], credit: 3 });
+        codeRows.push({ id, name: shuffled[3 + i], credit: 3 });
       }
 
       onFill(cartRows, codeRows);
