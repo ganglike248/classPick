@@ -71,5 +71,12 @@ export async function fetchRankings(challengeId) {
     return (aMs ?? 0) - (bMs ?? 0);
   });
 
-  return docs;
+  // 닉네임별 최고 기록만 유지 (정렬 후 첫 등장 = 최고 기록)
+  const seen = new Set();
+  return docs.filter((d) => {
+    const key = d.nickname ?? "익명";
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
