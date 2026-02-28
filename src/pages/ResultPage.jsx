@@ -73,54 +73,47 @@ export default function ResultPage() {
     <>
       <TopBand />
       <main className="page-wrap" style={{ maxWidth: "700px" }}>
-        {/* 헤더 */}
-        <div className="card" style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "20px", fontWeight: 700, marginBottom: "8px" }}>
+        {/* 헤더 - 소요 시간 히어로 */}
+        <div className="card" style={{ textAlign: "center", padding: "28px 20px" }}>
+          <div style={{ fontSize: "13px", color: "#888", marginBottom: "8px", fontWeight: 600, letterSpacing: "0.5px" }}>
             수강신청 결과
           </div>
-          <div className="helper-text">
-            {modeLabel} · 난이도 {diffLabel}
-            {type === "challenge" && ` · 닉네임: ${nickname}`}
+          <div style={{ fontSize: "44px", fontWeight: 700, color: "#478ef0", letterSpacing: "-1px", lineHeight: 1 }}>
+            {formatElapsedLong(totalElapsedMs)}
           </div>
-        </div>
-
-        {/* 요약 */}
-        <div className="card">
-          <div className="section-title">결과 요약</div>
-          <table className="data-table info-table" style={{ width: "100%" }}>
-            <tbody>
-              <tr>
-                <th style={{ textAlign: "left", width: "40%" }}>신청 성공</th>
-                <td>
-                  <strong style={{ color: "#478ef0" }}>
-                    {registeredCourseIds.length}
-                  </strong>{" "}
-                  / {totalTarget}개 ({registeredCredits}학점)
-                </td>
-              </tr>
-              <tr>
-                <th style={{ textAlign: "left" }}>마감 / 미신청</th>
-                <td>
-                  <strong style={{ color: missedCourseIds.length > 0 ? "#e54b4b" : "#333" }}>
-                    {missedCourseIds.length}
-                  </strong>
-                  개
-                </td>
-              </tr>
-              <tr>
-                <th style={{ textAlign: "left" }}>총 소요 시간</th>
-                <td>
-                  <strong>{formatElapsedLong(totalElapsedMs)}</strong>
-                  <span className="helper-text"> ({(totalElapsedMs / 1000).toFixed(1)}초)</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div style={{ fontSize: "13px", color: "#aaa", marginTop: "4px" }}>
+            ({(totalElapsedMs / 1000).toFixed(2)}초)
+          </div>
+          <div style={{ marginTop: "12px", display: "flex", justifyContent: "center", gap: "16px" }}>
+            <span style={{ fontSize: "13px" }}>
+              신청 성공{" "}
+              <strong style={{ color: "#478ef0" }}>{registeredCourseIds.length}</strong>
+              <span className="helper-text">/{totalTarget}개</span>
+            </span>
+            {missedCourseIds.length > 0 && (
+              <span style={{ fontSize: "13px" }}>
+                마감/미신청{" "}
+                <strong style={{ color: "#e54b4b" }}>{missedCourseIds.length}</strong>
+                <span className="helper-text">개</span>
+              </span>
+            )}
+            <span style={{ fontSize: "13px" }}>
+              <span className="helper-text">{modeLabel} · 난이도 {diffLabel}</span>
+              {type === "challenge" && (
+                <span className="helper-text"> · {nickname}</span>
+              )}
+            </span>
+          </div>
         </div>
 
         {/* 신청 성공 과목 상세 */}
         <div className="card">
-          <div className="section-title">신청 성공 과목</div>
+          <div className="section-title" style={{ display: "flex", alignItems: "center" }}>
+            신청 성공 과목
+            {registeredWithTime.length > 0 && (
+              <span className="badge">{registeredWithTime.length}개 · {registeredCredits}학점</span>
+            )}
+          </div>
           {registeredWithTime.length === 0 ? (
             <div className="helper-text">신청된 과목이 없습니다.</div>
           ) : (
@@ -181,30 +174,29 @@ export default function ResultPage() {
         )}
 
         {/* 버튼 */}
-        <div
-          className="card"
-          style={{ display: "flex", gap: "8px", justifyContent: "center" }}
-        >
+        <div className="card" style={{ display: "flex", gap: "8px" }}>
           <button
-            className="btn btn-sm"
+            className="btn btn-block"
             style={{
-              padding: "8px 24px",
+              padding: "10px 0",
               backgroundColor: "rgb(71,142,240)",
               color: "#fff",
               borderColor: "rgb(71,142,240)",
+              fontWeight: 600,
             }}
             onClick={handleRetry}
           >
-            다시 하기
+            처음으로
           </button>
           {type === "challenge" && (
             <button
-              className="btn btn-sm"
+              className="btn btn-block"
               style={{
-                padding: "8px 24px",
+                padding: "10px 0",
                 backgroundColor: "#e54b4b",
                 color: "#fff",
                 borderColor: "#e54b4b",
+                fontWeight: 600,
               }}
               onClick={() => navigate("/ranking")}
             >

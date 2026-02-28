@@ -310,3 +310,41 @@ button {
   background: #c93b3b;
   border-color: #c93b3b;
 }
+
+/* 과목 수 등 배지 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  background: #e8eef7;
+  color: #478ef0;
+  border-radius: 10px;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* 강조 정보 박스 */
+.info-callout {
+  background: #f0f7ff;
+  border: 1px solid #bdd5f7;
+  border-left: 4px solid #478ef0;
+  padding: 10px 14px;
+  font-size: 12px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.info-callout--warn {
+  background: #fff5f5;
+  border-color: #fdb5b5;
+  border-left-color: #e54b4b;
+}
+
+/* 섹션 헤더 (제목 + 액션 버튼 row) */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}

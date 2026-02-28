@@ -78,7 +78,7 @@ export default function ChallengePage() {
       <main className="page-wrap" style={{ maxWidth: "700px" }}>
         {/* 헤더 */}
         <div className="card" style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "20px", fontWeight: 700, marginBottom: "8px" }}>
+          <div style={{ fontSize: "22px", fontWeight: 700, marginBottom: "6px" }}>
             🏆 랭킹 도전 모드
           </div>
           <div className="helper-text">
@@ -86,9 +86,95 @@ export default function ChallengePage() {
           </div>
         </div>
 
-        {/* 과목 목록 */}
+        {/* 참가 등록 - 주요 CTA */}
         <div className="card">
-          <div className="section-title">수강꾸러미 과목 (클릭하여 신청)</div>
+          <div className="section-title">참가 등록</div>
+          <div className="helper-text" style={{ marginBottom: "10px" }}>
+            랭킹에 표시될 닉네임을 입력하고 도전을 시작하세요 (최대 12자)
+          </div>
+          <input
+            type="text"
+            className="input-text"
+            maxLength={12}
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="닉네임 입력"
+            style={{ width: "100%", marginBottom: "12px", padding: "8px 10px", fontSize: "14px" }}
+            onKeyDown={(e) => e.key === "Enter" && handleStartClick()}
+          />
+          <button
+            className="btn btn-primary btn-block"
+            style={{
+              padding: "14px 0",
+              backgroundColor: "#e54b4b",
+              color: "#fff",
+              borderColor: "#e54b4b",
+              fontSize: "15px",
+              fontWeight: 700,
+              borderRadius: "3px",
+              marginBottom: "8px",
+            }}
+            onClick={handleStartClick}
+            disabled={isLoading}
+          >
+            {isLoading ? "준비 중..." : "🏁 도전 시작"}
+          </button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              className="btn btn-sm btn-block"
+              style={{ padding: "8px 0" }}
+              onClick={() => navigate("/ranking")}
+            >
+              🏆 랭킹 보기
+            </button>
+            <button
+              className="btn btn-sm btn-block"
+              style={{ padding: "8px 0", color: "#777" }}
+              onClick={() => navigate("/")}
+            >
+              ← 설정 화면으로
+            </button>
+          </div>
+        </div>
+
+        {/* ⚠️ 코드 입력 과목 - 경고 강조 */}
+        <div className="card">
+          <div className="info-callout--warn" style={{ padding: "12px 16px", marginBottom: "12px", borderRadius: "3px" }}>
+            <div style={{ fontWeight: 700, color: "#c0392b", marginBottom: "4px", fontSize: "14px" }}>
+              ⚠️ 코드 직접 입력 과목 — 반드시 외워두세요!
+            </div>
+            <div style={{ fontSize: "12px", color: "#c0392b" }}>
+              수강신청 시작 후에는 이 정보가 보이지 않습니다. 아래 강좌번호를 메모하거나 외운 뒤 시작하세요.
+            </div>
+          </div>
+          <table className="data-table" style={{ width: "100%" }}>
+            <thead>
+              <tr>
+                <th>강좌번호 (입력할 코드)</th>
+                <th>교과목명</th>
+                <th>학점</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CHALLENGE_CODE_COURSES.map((c) => (
+                <tr key={c.id}>
+                  <td>
+                    <strong style={{ fontSize: "14px", color: "#c0392b", fontFamily: "monospace" }}>{c.id}</strong>
+                  </td>
+                  <td className="text-left">{c.name}</td>
+                  <td>{c.credit}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* 수강꾸러미 과목 */}
+        <div className="card">
+          <div className="section-title" style={{ display: "flex", alignItems: "center" }}>
+            수강꾸러미 과목
+            <span className="badge">{CHALLENGE_CART_COURSES.length}과목</span>
+          </div>
           <table className="data-table" style={{ width: "100%", marginBottom: "4px" }}>
             <thead>
               <tr>
@@ -109,35 +195,6 @@ export default function ChallengePage() {
           </table>
         </div>
 
-        <div className="card">
-          <div className="section-title" style={{ color: "#e54b4b" }}>
-            코드 직접 입력 과목 ⚠️ 반드시 외워두세요!
-          </div>
-          <div className="helper-text" style={{ marginBottom: "8px", color: "#e54b4b" }}>
-            시작 후에는 이 정보가 보이지 않습니다. 강좌번호를 메모해두세요.
-          </div>
-          <table className="data-table" style={{ width: "100%" }}>
-            <thead>
-              <tr>
-                <th>강좌번호 (입력할 코드)</th>
-                <th>교과목명</th>
-                <th>학점</th>
-              </tr>
-            </thead>
-            <tbody>
-              {CHALLENGE_CODE_COURSES.map((c) => (
-                <tr key={c.id}>
-                  <td>
-                    <strong style={{ fontSize: "14px", color: "#333" }}>{c.id}</strong>
-                  </td>
-                  <td className="text-left">{c.name}</td>
-                  <td>{c.credit}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
         {/* 도전 조건 */}
         <div className="card">
           <div className="section-title">도전 조건</div>
@@ -148,9 +205,9 @@ export default function ChallengePage() {
                 <td>{CHALLENGE_MAX_CREDITS}학점</td>
               </tr>
               <tr>
-                <th style={{ textAlign: "left" }}>난이도</th>
+                <th style={{ textAlign: "left" }}>마감 난이도</th>
                 <td>
-                  {diffConfig.label} (과목당 {diffConfig.min}~{diffConfig.max}초 내 마감)
+                  {diffConfig.label} — 과목당 {diffConfig.min}~{diffConfig.max}초 내 마감
                 </td>
               </tr>
               <tr>
@@ -159,56 +216,10 @@ export default function ChallengePage() {
               </tr>
               <tr>
                 <th style={{ textAlign: "left" }}>시간 기록</th>
-                <td>Firebase 서버 기준 측정 (클라이언트 조작 불가)</td>
+                <td>Firebase 서버 기준 · 조작 불가</td>
               </tr>
             </tbody>
           </table>
-        </div>
-
-        {/* 닉네임 + 시작 버튼 */}
-        <div className="card">
-          <div className="login-panel__field-label">닉네임 입력</div>
-          <input
-            type="text"
-            className="input-text"
-            maxLength={12}
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="랭킹에 표시될 닉네임 (최대 12자)"
-            style={{ width: "100%", marginBottom: "12px" }}
-            onKeyDown={(e) => e.key === "Enter" && handleStartClick()}
-          />
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button
-              className="btn btn-primary btn-block"
-              style={{
-                padding: "12px 0",
-                backgroundColor: "#e54b4b",
-                color: "#fff",
-                borderColor: "#e54b4b",
-                fontSize: "14px",
-                fontWeight: 600,
-              }}
-              onClick={handleStartClick}
-              disabled={isLoading}
-            >
-              {isLoading ? "준비 중..." : "🏁 도전 시작"}
-            </button>
-            <button
-              className="btn btn-sm"
-              style={{ padding: "12px 16px" }}
-              onClick={() => navigate("/ranking")}
-            >
-              랭킹 보기
-            </button>
-          </div>
-          <button
-            className="btn btn-sm"
-            style={{ marginTop: "8px", fontSize: "11px", color: "#999" }}
-            onClick={() => navigate("/")}
-          >
-            ← 설정 화면으로
-          </button>
         </div>
       </main>
       <Footer variant="setup" />

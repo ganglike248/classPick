@@ -92,9 +92,9 @@ export default function SetupPage() {
     [cartRows, regRows, codeRows]
   );
 
-  const handleRandomFill = useCallback((newCartRows, newRegRows) => {
+  const handleRandomFill = useCallback((newCartRows, newCodeRows) => {
     setCartRows((prev) => [...prev, ...newCartRows]);
-    setRegRows((prev) => [...prev, ...newRegRows]);
+    setCodeRows((prev) => [...prev, ...newCodeRows]);
   }, []);
 
   const getAllIds = useCallback(
@@ -182,53 +182,40 @@ export default function SetupPage() {
       <main className="page-wrap login-layout">
         {/* 왼쪽: 입장 + 신청가능 학점 설정 */}
         <section className="card">
-          <h1 className="login-panel__title">연습용 수강신청 입장</h1>
+          <h1 className="login-panel__title">연습용 수강신청</h1>
 
-          <div style={{ marginBottom: "12px" }}>
-            <div className="login-panel__field-label">연습용 계정</div>
-            <div className="helper-text">
-              실제 계정이 필요 없고, 아래 버튼만 누르면 수강신청 화면으로 이동합니다.
-            </div>
-          </div>
-
+          {/* 시작 버튼 - 주요 CTA */}
           <button
             className="btn btn-primary btn-block"
             style={{
-              marginBottom: "8px",
               backgroundColor: "rgb(71, 142, 240)",
               color: "white",
               borderRadius: "5px",
-              padding: "20px 0",
+              padding: "16px 0",
+              fontSize: "15px",
+              fontWeight: 700,
+              marginBottom: "14px",
             }}
             onClick={handleEnter}
           >
             수강신청 시작하기
           </button>
 
-          <button
-            className="btn btn-danger btn-block"
-            style={{ marginTop: "4px", borderRadius: "5px" }}
-            onClick={handleReset}
+          {/* 신청가능 학점 - 인라인 */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              paddingTop: "12px",
+              paddingBottom: "12px",
+              borderTop: "1px solid #e8eaef",
+              borderBottom: "1px solid #e8eaef",
+            }}
           >
-            과목 설정 초기화
-          </button>
-
-          <div className="login-panel__stored">
-            알 수 없는 오류가 발생할 경우, '과목 설정 초기화' 버튼을 누르고 다시 시도해주세요.
-          </div>
-
-          <div style={{ marginBottom: "16px" }}>
-            <div
-              style={{
-                marginTop: "10px",
-                paddingTop: "10px",
-                borderRadius: "5px",
-                borderTop: "1px dashed #e0e2e8",
-              }}
-              className="login-panel__field-label"
-            >
+            <span className="login-panel__field-label" style={{ margin: 0, whiteSpace: "nowrap" }}>
               신청가능 학점
-            </div>
+            </span>
             <input
               type="number"
               className="input-text"
@@ -238,7 +225,7 @@ export default function SetupPage() {
               style={{ width: "60px", textAlign: "right" }}
               onChange={(e) => setMaxCredit(e.target.value)}
             />
-            <span className="helper-text"> 학점 (기본값 20)</span>
+            <span className="helper-text">학점 (기본 20)</span>
           </div>
 
           {/* 실전 모드 설정 */}
@@ -251,29 +238,50 @@ export default function SetupPage() {
 
           <PresetManager getCurrentPreset={getCurrentPreset} onLoad={handleLoadPreset} />
 
-          {/* 랭킹 도전 모드 링크 */}
+          {/* 랭킹 도전 모드 */}
           <div
             style={{
-              marginTop: "10px",
-              paddingTop: "10px",
+              marginTop: "12px",
+              paddingTop: "12px",
               borderTop: "1px dashed #e0e2e8",
-              textAlign: "center",
             }}
           >
             <button
-              className="btn btn-sm btn-block"
+              className="btn btn-block"
               style={{
                 backgroundColor: "#e54b4b",
                 color: "#fff",
                 borderColor: "#e54b4b",
-                padding: "8px 0",
+                padding: "10px 0",
+                fontWeight: 600,
+                borderRadius: "3px",
               }}
               onClick={() => navigate("/challenge")}
             >
               🏆 랭킹 도전 모드
             </button>
-            <div className="helper-text" style={{ marginTop: "4px" }}>
+            <div className="helper-text" style={{ textAlign: "center", marginTop: "4px" }}>
               모든 사용자가 동일한 과목으로 경쟁합니다
+            </div>
+          </div>
+
+          {/* 초기화 */}
+          <div
+            style={{
+              marginTop: "10px",
+              paddingTop: "10px",
+              borderTop: "1px dashed #e0e2e8",
+            }}
+          >
+            <button
+              className="btn btn-danger btn-block"
+              style={{ borderRadius: "3px", padding: "6px 0", fontSize: "12px" }}
+              onClick={handleReset}
+            >
+              과목 설정 초기화
+            </button>
+            <div className="helper-text" style={{ marginTop: "4px", textAlign: "center" }}>
+              오류 발생 시 초기화 후 재시도해 주세요
             </div>
           </div>
         </section>
@@ -281,13 +289,11 @@ export default function SetupPage() {
         {/* 오른쪽: 초기 과목 설정 */}
         <section className="card">
           <div className="section-title">초기 과목 설정</div>
-          <p className="helper-text" style={{ marginBottom: "10px" }}>
-            연습에 사용할 강좌번호, 교과목명, 학점을 직접 입력해 주세요. 위는{" "}
-            <strong>수강꾸러미</strong>, 그 아래는{" "}
-            <strong>이미 신청된 과목</strong>, 마지막은{" "}
-            <strong>코드 입력으로 추가할 과목</strong>입니다. 같은 강좌번호는
-            서로 다른 섹션에 겹치지 않게 해 주세요.
-          </p>
+          <ul className="helper-text" style={{ marginBottom: "10px", paddingLeft: "18px", lineHeight: 1.9 }}>
+            <li><strong>수강꾸러미</strong> — 신청 버튼으로 신청할 과목</li>
+            <li><strong>이미 신청된 과목</strong> — 시작 시 이미 등록된 상태인 과목</li>
+            <li><strong>코드 입력 과목</strong> — 강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)</li>
+          </ul>
 
           {/* 수강꾸러미 */}
           <div
@@ -297,9 +303,14 @@ export default function SetupPage() {
               marginTop: "16px",
               borderTop: "1px dashed #e0e2e8",
               paddingTop: "10px",
+              display: "flex",
+              alignItems: "center",
             }}
           >
             수강꾸러미
+            {cartRows.length > 0 && (
+              <span className="badge">{cartRows.length}과목</span>
+            )}
           </div>
           <CourseTable
             rows={cartRows}
@@ -309,8 +320,11 @@ export default function SetupPage() {
           />
 
           {/* 이미 신청된 과목 */}
-          <div className="section-title" style={{ fontSize: "14px", marginTop: "18px" }}>
+          <div className="section-title" style={{ fontSize: "14px", marginTop: "18px", display: "flex", alignItems: "center" }}>
             이미 신청된 과목
+            {regRows.length > 0 && (
+              <span className="badge">{regRows.length}과목</span>
+            )}
           </div>
           <CourseTable
             rows={regRows}
@@ -320,13 +334,14 @@ export default function SetupPage() {
           />
 
           {/* 코드 입력으로 추가할 과목 */}
-          <div className="section-title" style={{ fontSize: "14px", marginTop: "18px" }}>
-            코드 입력으로 추가할 과목
+          <div className="section-title" style={{ fontSize: "14px", marginTop: "18px", display: "flex", alignItems: "center" }}>
+            코드 입력 과목
+            {codeRows.length > 0 && (
+              <span className="badge">{codeRows.length}과목</span>
+            )}
           </div>
           <p className="helper-text" style={{ marginBottom: "10px" }}>
-            <strong>신청 가능한 학점을 제한</strong>하기 위해 입력합니다.
-            수강신청 단계에서는{" "}
-            <strong>해당 과목을 신청하기 전까지는 보여지지 않습니다.</strong>
+            화면에 표시되지 않으며, 강좌번호를 직접 입력해야 신청됩니다. 학점 제한에 포함됩니다.
           </p>
           <CourseTable
             rows={codeRows}
@@ -396,9 +411,9 @@ export default function SetupPage() {
               </ul>
             </div>
 
-            <div className="helper-text" style={{ color: "#e54b4b" }}>
-              ※ 일반 연습 모드의 기록은 이 기기에만 저장됩니다 (개인 기록용).
-              다른 사람과 랭킹으로 경쟁하려면 <strong>랭킹 도전 모드</strong>를 이용하세요.
+            <div className="helper-text" style={{ color: "#777" }}>
+              ※ 결과는 완료 직후 한 번만 확인 가능합니다.
+              다른 사람과 경쟁하려면 <strong>랭킹 도전 모드</strong>를 이용하세요.
             </div>
           </div>
         </Modal>

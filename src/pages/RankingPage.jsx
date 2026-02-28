@@ -44,40 +44,46 @@ export default function RankingPage() {
     <>
       <TopBand />
       <main className="page-wrap" style={{ maxWidth: "800px" }}>
+        {/* 헤더 */}
         <div className="card" style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "20px", fontWeight: 700, marginBottom: "6px" }}>
-            🏆 랭킹 도전 모드 — 랭킹
+          <div style={{ fontSize: "22px", fontWeight: 700, marginBottom: "6px" }}>
+            🏆 랭킹
           </div>
           <div className="helper-text">
-            도전 세트 v1 · 총 {TOTAL_COURSES}과목 / {TOTAL_CREDITS}학점
+            도전 세트 v1 · {TOTAL_COURSES}과목 · {TOTAL_CREDITS}학점
           </div>
         </div>
 
+        {/* 랭킹 테이블 */}
         <div className="card">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "12px",
-            }}
-          >
+          <div className="section-header">
             <div className="section-title" style={{ margin: 0 }}>
-              전체 랭킹
+              전체 순위
+              {rankings.length > 0 && (
+                <span className="badge">{rankings.length}명</span>
+              )}
             </div>
             <button className="btn btn-sm" onClick={load} disabled={loading}>
               {loading ? "불러오는 중..." : "새로고침"}
             </button>
           </div>
 
-          {error && (
-            <div style={{ color: "#e54b4b", fontSize: "13px", marginBottom: "8px" }}>
+          {loading && (
+            <div className="helper-text" style={{ textAlign: "center", padding: "16px 0" }}>
+              랭킹을 불러오는 중입니다...
+            </div>
+          )}
+
+          {error && !loading && (
+            <div className="info-callout--warn" style={{ borderRadius: "3px" }}>
               {error}
             </div>
           )}
 
           {!loading && rankings.length === 0 && !error && (
-            <div className="helper-text">아직 등록된 기록이 없습니다.</div>
+            <div className="helper-text" style={{ textAlign: "center", padding: "16px 0" }}>
+              아직 등록된 기록이 없습니다.
+            </div>
           )}
 
           {rankings.length > 0 && (
@@ -85,11 +91,11 @@ export default function RankingPage() {
               <table className="data-table" style={{ width: "100%" }}>
                 <thead>
                   <tr>
-                    <th style={{ width: "40px" }}>순위</th>
+                    <th style={{ width: "48px" }}>순위</th>
                     <th>닉네임</th>
                     <th>신청 성공</th>
                     <th>소요 시간</th>
-                    <th style={{ width: "100px" }}>달성률</th>
+                    <th style={{ width: "90px" }}>달성률</th>
                     <th>일시</th>
                   </tr>
                 </thead>
@@ -97,7 +103,7 @@ export default function RankingPage() {
                   {rankings.map((row, idx) => {
                     const elapsedMs =
                       row.endedAt?.toMillis?.() - row.startedAt?.toMillis?.();
-                    const elapsedSec = elapsedMs > 0 ? (elapsedMs / 1000).toFixed(1) : "-";
+                    const elapsedSec = elapsedMs > 0 ? (elapsedMs / 1000).toFixed(2) : "-";
                     const count = row.result?.registeredCount ?? 0;
                     const credits = row.result?.registeredCredits ?? 0;
                     const rate =
@@ -113,19 +119,13 @@ export default function RankingPage() {
                         })
                       : "-";
 
-                    const isTop3 = idx < 3;
+                    const rowBg =
+                      idx === 0 ? "#fffbe6" : idx === 1 ? "#f9f9f9" : idx === 2 ? "#f5f5f5" : undefined;
 
                     return (
-                      <tr
-                        key={row.id}
-                        style={
-                          isTop3
-                            ? { background: idx === 0 ? "#fffbe6" : "#f5f5f7" }
-                            : {}
-                        }
-                      >
+                      <tr key={row.id} style={rowBg ? { background: rowBg } : {}}>
                         <td>
-                          <strong>
+                          <strong style={{ fontSize: idx < 3 ? "16px" : "13px" }}>
                             {idx === 0 ? "🥇" : idx === 1 ? "🥈" : idx === 2 ? "🥉" : idx + 1}
                           </strong>
                         </td>
@@ -133,42 +133,39 @@ export default function RankingPage() {
                           <strong>{row.nickname}</strong>
                         </td>
                         <td>
-                          {count}/{TOTAL_COURSES}개 ({credits}학점)
+                          <strong style={{ color: count === TOTAL_COURSES ? "#478ef0" : "#333" }}>
+                            {count}
+                          </strong>
+                          <span className="helper-text">/{TOTAL_COURSES}개 ({credits}학점)</span>
                         </td>
                         <td>
                           <strong style={{ color: "#478ef0" }}>{elapsedSec}초</strong>
                         </td>
                         <td>
-                          <div
-                            style={{
-                              background: "#e8eef7",
-                              borderRadius: "2px",
-                              height: "12px",
-                              position: "relative",
-                            }}
-                          >
+                          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                             <div
                               style={{
-                                background: "#478ef0",
-                                width: `${rate}%`,
-                                height: "100%",
+                                flex: 1,
+                                background: "#e8eef7",
                                 borderRadius: "2px",
-                              }}
-                            />
-                            <span
-                              style={{
-                                position: "absolute",
-                                right: "4px",
-                                top: "-1px",
-                                fontSize: "10px",
-                                color: "#555",
+                                height: "8px",
                               }}
                             >
+                              <div
+                                style={{
+                                  background: rate === 100 ? "#478ef0" : "#a8c5f0",
+                                  width: `${rate}%`,
+                                  height: "100%",
+                                  borderRadius: "2px",
+                                }}
+                              />
+                            </div>
+                            <span style={{ fontSize: "10px", color: "#666", minWidth: "28px" }}>
                               {rate}%
                             </span>
                           </div>
                         </td>
-                        <td style={{ fontSize: "11px", color: "#777" }}>{dateStr}</td>
+                        <td style={{ fontSize: "11px", color: "#888" }}>{dateStr}</td>
                       </tr>
                     );
                   })}
@@ -178,28 +175,27 @@ export default function RankingPage() {
           )}
         </div>
 
-        <div
-          className="card"
-          style={{ display: "flex", gap: "8px", justifyContent: "center" }}
-        >
+        {/* 하단 버튼 */}
+        <div className="card" style={{ display: "flex", gap: "8px" }}>
           <button
-            className="btn btn-sm"
+            className="btn btn-block"
             style={{
-              padding: "8px 24px",
+              padding: "10px 0",
               backgroundColor: "#e54b4b",
               color: "#fff",
               borderColor: "#e54b4b",
+              fontWeight: 600,
             }}
             onClick={() => navigate("/challenge")}
           >
-            도전하기
+            🏁 도전하기
           </button>
           <button
-            className="btn btn-sm"
-            style={{ padding: "8px 24px" }}
+            className="btn btn-block"
+            style={{ padding: "10px 0" }}
             onClick={() => navigate("/")}
           >
-            설정 화면
+            설정 화면으로
           </button>
         </div>
       </main>
