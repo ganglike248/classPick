@@ -10,7 +10,9 @@ export default function MainNav() {
         <button
           type="button"
           className="nav-logout-btn"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            if (confirm("정말 로그아웃 하시겠습니까?")) navigate("/");
+          }}
         >
           로그아웃
         </button>

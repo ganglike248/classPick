@@ -223,20 +223,27 @@ export default function ChallengePage() {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ background: "#fff3f3", padding: "10px", borderRadius: "4px" }}>
-              <strong style={{ color: "#e54b4b" }}>코드 입력 과목 번호를 외우셨나요?</strong>
+              <strong style={{ color: "#e54b4b" }}>⚠️ 코드 입력 과목 번호를 외우셨나요?</strong>
               <div style={{ marginTop: "6px" }}>
                 {CHALLENGE_CODE_COURSES.map((c) => (
-                  <div key={c.id} style={{ fontFamily: "monospace", fontSize: "14px" }}>
-                    {c.id} ({c.name})
+                  <div key={c.id} style={{ fontFamily: "monospace", fontSize: "14px", marginBottom: "2px" }}>
+                    <strong>{c.id}</strong> — {c.name} ({c.credit}학점)
                   </div>
                 ))}
               </div>
+              <div style={{ marginTop: "6px", fontSize: "12px", color: "#e54b4b" }}>
+                시작 후에는 이 정보를 다시 볼 수 없습니다!
+              </div>
             </div>
             <ul style={{ margin: "0", paddingLeft: "18px", lineHeight: 1.9 }}>
-              <li>시작하면 이 화면으로 돌아올 수 없습니다.</li>
-              <li>로그인 대기 페이지에서 오전 10시에 입장합니다.</li>
-              <li>시간 기록은 Firebase 서버로 측정됩니다.</li>
-              <li>닉네임 <strong>{nickname.trim()}</strong>으로 랭킹에 등록됩니다.</li>
+              <li>시작하면 이 화면으로 <strong>돌아올 수 없습니다</strong>.</li>
+              <li>로그인 대기 페이지에서 <strong>오전 10시</strong>가 되면 입장할 수 있습니다.</li>
+              <li>
+                입장 직후 <strong>흰 화면이 잠시 보입니다</strong> — 실제 수강신청 환경을
+                고증한 것으로, <strong>당황하지 말고 잠시 대기</strong>하면 됩니다.
+              </li>
+              <li>시간 기록은 <strong>Firebase 서버 기준</strong>으로 측정되며, 조작이 불가능합니다.</li>
+              <li>닉네임 <strong>"{nickname.trim()}"</strong>으로 랭킹에 등록됩니다.</li>
             </ul>
           </div>
         </Modal>

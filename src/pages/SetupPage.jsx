@@ -176,6 +176,7 @@ export default function SetupPage() {
 
   const diffLabel = DIFFICULTY_CONFIGS[practiceDifficulty]?.label ?? "";
   const diffRange = DIFFICULTY_CONFIGS[practiceDifficulty];
+  const cartTotalCredits = cartRows.reduce((sum, r) => sum + (r.credit ?? 3), 0);
 
   return (
     <>
@@ -355,22 +356,46 @@ export default function SetupPage() {
         >
           <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ background: "#f5f5f7", padding: "10px", borderRadius: "4px" }}>
-              <strong>현재 설정</strong>
-              <div className="helper-text" style={{ marginTop: "4px" }}>
-                수강꾸러미 {cartRows.length}개 · 신청가능 {maxCredit}학점 · 난이도{" "}
-                {diffLabel} ({diffRange?.min}~{diffRange?.max}초 마감) ·{" "}
-                닉네임 {practiceNickname.trim() || "익명"}
-              </div>
+              <strong>현재 설정 요약</strong>
+              <table style={{ marginTop: "8px", width: "100%", fontSize: "13px", borderCollapse: "collapse" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ color: "#666", paddingBottom: "3px", width: "40%" }}>수강꾸러미</td>
+                    <td style={{ fontWeight: 600 }}>{cartRows.length}개 ({cartTotalCredits}학점)</td>
+                  </tr>
+                  {codeRows.length > 0 && (
+                    <tr>
+                      <td style={{ color: "#666", paddingBottom: "3px" }}>코드 입력 과목</td>
+                      <td style={{ fontWeight: 600 }}>{codeRows.length}개</td>
+                    </tr>
+                  )}
+                  <tr>
+                    <td style={{ color: "#666", paddingBottom: "3px" }}>신청가능 학점</td>
+                    <td style={{ fontWeight: 600 }}>{maxCredit}학점</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: "#666", paddingBottom: "3px" }}>난이도</td>
+                    <td style={{ fontWeight: 600 }}>{diffLabel} (과목당 {diffRange?.min}~{diffRange?.max}초 내 마감)</td>
+                  </tr>
+                  <tr>
+                    <td style={{ color: "#666" }}>닉네임</td>
+                    <td style={{ fontWeight: 600 }}>{practiceNickname.trim() || "익명"}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             <div>
               <strong>진행 방식</strong>
-              <ul style={{ margin: "6px 0 0", paddingLeft: "18px", lineHeight: 1.8 }}>
-                <li>로그인 대기 페이지에서 오전 10시가 되면 입장할 수 있습니다.</li>
-                <li>입장 후 잠시 흰 화면이 보입니다 (실제 환경 고증).</li>
+              <ul style={{ margin: "6px 0 0", paddingLeft: "18px", lineHeight: 1.9 }}>
+                <li>로그인 대기 페이지에서 <strong>오전 10시</strong>가 되면 입장할 수 있습니다.</li>
                 <li>
-                  각 과목은 <strong>무작위 시간에 마감</strong>됩니다. 마감 여부는
-                  직접 신청해봐야 알 수 있습니다.
+                  입장 직후 <strong>흰 화면이 잠시 보입니다</strong> — 실제 수강신청 환경을
+                  고증한 것으로, <strong>당황하지 말고 잠시 대기</strong>하면 됩니다.
+                </li>
+                <li>
+                  각 과목은 <strong>설정한 난이도에 따른 무작위 시간에 마감</strong>됩니다.
+                  마감 여부는 직접 신청해봐야 알 수 있습니다.
                 </li>
                 <li>
                   수강꾸러미의 모든 과목이 신청 완료되거나 마감되면{" "}
@@ -380,8 +405,8 @@ export default function SetupPage() {
             </div>
 
             <div className="helper-text" style={{ color: "#e54b4b" }}>
-              ※ 일반 연습 모드의 기록은 이 기기에만 저장됩니다 (개인 기록).
-              다른 사람과 경쟁하려면 랭킹 도전 모드를 이용하세요.
+              ※ 일반 연습 모드의 기록은 이 기기에만 저장됩니다 (개인 기록용).
+              다른 사람과 랭킹으로 경쟁하려면 <strong>랭킹 도전 모드</strong>를 이용하세요.
             </div>
           </div>
         </Modal>
