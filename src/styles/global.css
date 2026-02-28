@@ -1,0 +1,273 @@
+/* 기본 리셋 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
+  color: #222;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* 공통 레이아웃 */
+.page-wrap {
+  width: 1000px;
+  margin: 0 auto 40px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.section-desc {
+  font-size: 12px;
+  color: #c0392b;
+}
+
+/* 상단 배너 */
+.top-band {
+  background: #d4d6db;
+  padding: 30px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.semester-badge {
+  width: 320px;
+  height: 80px;
+  background: #e54b4b;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.semester-badge__label {
+  font-size: 20px;
+}
+
+/* 상단 내비 */
+.main-nav {
+  background: #555f6a;
+  color: #fff;
+}
+
+.main-nav__inner {
+  width: 1000px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.main-nav__item {
+  padding: 14px 22px;
+  font-size: 14px;
+}
+
+.main-nav__item--active {
+  background: #e54b4b;
+}
+
+/* 카드 / 박스 공통 */
+.card {
+  background: #fff;
+  border: 1px solid #d0d2d8;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+/* 테이블 공통 */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.data-table th,
+.data-table td {
+  border: 1px solid #d4d6db;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+.data-table th {
+  background: #f5f5f7;
+  font-weight: 600;
+}
+
+.data-table td.text-left {
+  text-align: left;
+}
+
+/* 버튼 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 2px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid #c0c4cc;
+  background: #ffffff;
+}
+
+.btn-primary {
+  font-weight: 600;
+}
+
+.btn-danger {
+  background: #e54b4b;
+  border-color: #e54b4b;
+  color: #fff;
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+/* 입력 폼 */
+.input-text {
+  border: 1px solid #c0c4cc;
+  padding: 4px 6px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.input-small {
+  width: 60px;
+  text-align: center;
+}
+
+/* 캐릭터 설명 텍스트 */
+.helper-text {
+  font-size: 11px;
+  color: #777;
+}
+
+/* ===== 로그인 페이지 ===== */
+.login-layout {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+}
+
+.login-panel__title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  margin-top: 0px;
+}
+
+.login-panel__field-label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.login-panel__stored {
+  padding-top: 10px;
+  font-size: 11px;
+}
+
+/* 과목 프리셋 테이블 */
+.preset-table th:nth-child(1),
+.preset-table td:nth-child(1),
+.preset-table th:nth-child(2),
+.preset-table td:nth-child(2) {
+  width: 80px;
+}
+
+/* ===== 메인 수강신청 페이지 ===== */
+.info-table td,
+.info-table th {
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+/* 캡차 영역 */
+.captcha-box {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #8c8c8c;
+  background: #c0c0c0;
+  padding: 4px 6px;
+}
+
+.captcha-value {
+  display: inline-block;
+  min-width: 40px;
+  text-align: center;
+  font-weight: 700;
+  color: #e13a3e;
+  margin-right: 6px;
+}
+
+.captcha-input {
+  width: 40px;
+}
+
+/* 푸터 */
+.footer {
+  border-top: 1px solid #d4d6db;
+  padding: 16px 0;
+  margin-top: 36px;
+  font-size: 11px;
+  text-align: center;
+  color: #777;
+}
+
+.action-btn {
+  min-width: 60px;
+  height: 26px;
+  padding: 0;
+  border-radius: 0;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #b0b0b0;
+  background: #f4f4f4;
+  color: #333;
+}
+
+.action-btn:hover {
+  background: #e8e8e8;
+}
+
+.nav-logout-btn {
+  margin-left: auto;
+  align-self: center;
+  padding: 4px 14px;
+  font-size: 12px;
+  border-radius: 2px;
+  border: 1px solid #e54b4b;
+  background: #e54b4b;
+  color: #fff;
+  cursor: pointer;
+}
+
+.nav-logout-btn:hover {
+  background: #c93b3b;
+  border-color: #c93b3b;
+}
