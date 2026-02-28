@@ -8,6 +8,7 @@ body {
   font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
   color: #1e2532;
   background: #f2f4f9;
+  min-width: 1000px;
 }
 
 a {
