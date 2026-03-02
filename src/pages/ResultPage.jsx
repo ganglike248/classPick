@@ -113,7 +113,7 @@ export default function ResultPage() {
             <div style={{ flex: 1, padding: "0 12px" }}>
               <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "4px" }}>모드 · 난이도</div>
               <div style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>
-                {modeLabel} · {diffLabel}
+                {modeLabel}{diffLabel ? ` · ${diffLabel}` : ""}
                 {type === "challenge" && <div style={{ fontSize: "11px", color: "#8c96ae", fontWeight: 400 }}>{nickname}</div>}
               </div>
             </div>

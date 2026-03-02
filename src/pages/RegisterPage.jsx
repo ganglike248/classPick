@@ -72,9 +72,13 @@ export default function RegisterPage() {
       const { type, difficulty } = s.practiceMode;
 
       // 마감 타이머 생성 대상: cartCourseIds + codeInputCourseIds (모드 공통)
+      // 체험 모드는 마감 없음
       const deadlineTargets = [...s.cartCourseIds, ...s.codeInputCourseIds];
 
-      const courseDeadlines = generateCourseDeadlines(deadlineTargets, difficulty, startedAt);
+      const courseDeadlines =
+        type === "trial"
+          ? {}
+          : generateCourseDeadlines(deadlineTargets, difficulty, startedAt);
 
       // 챌린지 모드: Firebase 세션 시작 (serverTimestamp)
       let challengeDocId = null;
@@ -406,7 +410,7 @@ export default function RegisterPage() {
   }
 
   const pm = state.practiceMode;
-  const isPracticeActive = !!(pm?.type && pm?.startedAt);
+  const isPracticeActive = !!(pm?.type && pm?.type !== "trial" && pm?.startedAt);
 
   return (
     <>

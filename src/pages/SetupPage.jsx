@@ -45,10 +45,16 @@ function stateToRows(state) {
 export default function SetupPage() {
   const navigate = useNavigate();
 
-  // 체험 모드 종료 후 돌아왔을 때 기존 상태 복원
+  // 체험 모드 도중 이탈 시 기존 상태 복원
+  // TRIAL_BACKUP_KEY가 존재하면 체험 중이었다는 의미
   const trialBackup = localStorage.getItem(TRIAL_BACKUP_KEY);
-  if (trialBackup) {
-    try { localStorage.setItem(STORAGE_KEY, trialBackup); } catch (e) { /* ignore */ }
+  if (trialBackup !== null) {
+    if (trialBackup) {
+      try { localStorage.setItem(STORAGE_KEY, trialBackup); } catch (e) { /* ignore */ }
+    } else {
+      // 체험 전 아무 설정도 없었으면 체험 상태 제거
+      localStorage.removeItem(STORAGE_KEY);
+    }
     localStorage.removeItem(TRIAL_BACKUP_KEY);
   }
 
@@ -102,13 +108,9 @@ export default function SetupPage() {
   );
 
   const handleQuickTrial = () => {
-    // 기존 상태 백업
+    // 기존 상태 백업 (없으면 빈 문자열로 마커 저장)
     const currentRaw = localStorage.getItem(STORAGE_KEY);
-    if (currentRaw) {
-      localStorage.setItem(TRIAL_BACKUP_KEY, currentRaw);
-    } else {
-      localStorage.removeItem(TRIAL_BACKUP_KEY);
-    }
+    localStorage.setItem(TRIAL_BACKUP_KEY, currentRaw || "");
     // 임의 과목 6개 생성 (수강꾸러미)
     const taken = new Set();
     const shuffled = [...SAMPLE_NAMES].sort(() => Math.random() - 0.5);
@@ -119,7 +121,7 @@ export default function SetupPage() {
     }
     const trialState = buildInitialState(trialCartRows, [], [], 20, {
       type: "trial",
-      difficulty: "medium",
+      difficulty: null,
       startedAt: null,
       courseDeadlines: null,
       courseTimings: {},

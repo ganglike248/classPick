@@ -87,7 +87,10 @@ export default function PracticeLoginPage() {
               <div style={{ fontSize: "13px", color: "#374151", lineHeight: 1.7 }}>
                 수강꾸러미에 <strong>6개의 과목</strong>이 준비되어 있어요!<br />
                 오전 10시가 되면 로그인하고, 수강신청 화면에서 <strong>과목을 모두 신청</strong>해보세요.<br />
-                완료되면 소요 시간이 기록돼요. (랭킹에는 저장되지 않아요)
+                완료되면 소요 시간이 기록돼요. (랭킹에는 저장되지 않아요)<br />
+                <span style={{ color: "#8c96ae", fontSize: "12px" }}>
+                  ※ 실제 환경과 유사하게 로그인 후 흰 화면이 약 1~7초 동안 표시됩니다.
+                </span>
               </div>
             </div>
           )}
