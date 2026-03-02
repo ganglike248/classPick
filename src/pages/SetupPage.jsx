@@ -5,7 +5,6 @@ import Footer from "../components/layout/Footer";
 import PresetManager from "../components/setup/PresetManager";
 import CourseTable from "../components/setup/CourseTable";
 import CourseAddForm from "../components/setup/CourseAddForm";
-import RandomFill from "../components/setup/RandomFill";
 import PracticeModeSetup from "../components/setup/PracticeModeSetup";
 import Modal from "../components/common/Modal";
 import {
@@ -13,8 +12,9 @@ import {
   buildInitialState,
   saveState,
   STORAGE_KEY,
+  TRIAL_BACKUP_KEY,
 } from "../utils/storage";
-import { checkDuplicates, hasCourseId, getAllExistingIds } from "../utils/courseUtils";
+import { checkDuplicates, hasCourseId, generateRandomId, SAMPLE_NAMES } from "../utils/courseUtils";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
 
 function stateToRows(state) {
@@ -44,6 +44,14 @@ function stateToRows(state) {
 
 export default function SetupPage() {
   const navigate = useNavigate();
+
+  // 체험 모드 종료 후 돌아왔을 때 기존 상태 복원
+  const trialBackup = localStorage.getItem(TRIAL_BACKUP_KEY);
+  if (trialBackup) {
+    try { localStorage.setItem(STORAGE_KEY, trialBackup); } catch (e) { /* ignore */ }
+    localStorage.removeItem(TRIAL_BACKUP_KEY);
+  }
+
   const stored = loadStoredState();
   const initialRows = stateToRows(stored);
 
@@ -93,15 +101,33 @@ export default function SetupPage() {
     [cartRows, regRows, codeRows]
   );
 
-  const handleRandomFill = useCallback((newCartRows, newCodeRows) => {
-    setCartRows((prev) => [...prev, ...newCartRows]);
-    setCodeRows((prev) => [...prev, ...newCodeRows]);
-  }, []);
-
-  const getAllIds = useCallback(
-    () => getAllExistingIds([...cartRows, ...regRows, ...codeRows]),
-    [cartRows, regRows, codeRows]
-  );
+  const handleQuickTrial = () => {
+    // 기존 상태 백업
+    const currentRaw = localStorage.getItem(STORAGE_KEY);
+    if (currentRaw) {
+      localStorage.setItem(TRIAL_BACKUP_KEY, currentRaw);
+    } else {
+      localStorage.removeItem(TRIAL_BACKUP_KEY);
+    }
+    // 임의 과목 6개 생성 (수강꾸러미)
+    const taken = new Set();
+    const shuffled = [...SAMPLE_NAMES].sort(() => Math.random() - 0.5);
+    const trialCartRows = [];
+    for (let i = 0; i < 6; i++) {
+      const id = generateRandomId(taken);
+      trialCartRows.push({ id, name: shuffled[i], credit: 3 });
+    }
+    const trialState = buildInitialState(trialCartRows, [], [], 20, {
+      type: "trial",
+      difficulty: "medium",
+      startedAt: null,
+      courseDeadlines: null,
+      courseTimings: {},
+      challengeDocId: null,
+    });
+    saveState(trialState);
+    navigate("/practice-login");
+  };
 
   const getCurrentPreset = useCallback(
     () => ({ cartRows, regRows, codeRows, maxCredit }),
@@ -214,11 +240,29 @@ export default function SetupPage() {
               padding: "14px 0",
               fontSize: "15px",
               fontWeight: 700,
-              marginBottom: "14px",
+              marginBottom: "8px",
             }}
             onClick={handleEnter}
           >
             수강신청 시작하기
+          </button>
+
+          {/* 체험 모드 버튼 */}
+          <button
+            className="btn btn-block"
+            style={{
+              backgroundColor: "#22c55e",
+              color: "#fff",
+              borderColor: "#22c55e",
+              borderRadius: "6px",
+              padding: "10px 0",
+              fontSize: "13px",
+              fontWeight: 700,
+              marginBottom: "14px",
+            }}
+            onClick={handleQuickTrial}
+          >
+            ⚡ 지금 바로 체험하기
           </button>
 
           {/* 신청가능 학점 - 인라인 */}
@@ -379,7 +423,6 @@ export default function SetupPage() {
           />
 
           <CourseAddForm onAdd={handleAdd} existsCheck={existsCheck} />
-          <RandomFill onFill={handleRandomFill} getAllIds={getAllIds} />
         </section>
       </main>
       <Footer variant="setup" />
@@ -494,7 +537,7 @@ export default function SetupPage() {
                 편의 기능
               </div>
               <ul style={{ margin: 0, paddingLeft: "18px" }}>
-                <li style={{ marginBottom: "4px" }}><strong>랜덤 채우기</strong> — 과목 이름과 학점을 자동으로 생성해 채워줘요. 빠르게 연습 환경을 구성할 때 유용해요.</li>
+                <li style={{ marginBottom: "4px" }}><strong>지금 바로 체험하기</strong> — 과목 설정 없이 임의 과목 6개가 자동으로 세팅되어 바로 체험할 수 있어요. 처음 방문한 분께 추천해요!</li>
                 <li style={{ marginBottom: "4px" }}><strong>프리셋 저장/불러오기</strong> — 자주 쓰는 과목 세트를 이름 붙여 저장해 두고 언제든 불러올 수 있어요.</li>
                 <li><strong>과목 이동</strong> — 테이블의 [이동] 버튼으로 과목을 수강꾸러미 ↔ 이미 신청된 과목 ↔ 코드 입력 과목 사이에서 자유롭게 옮길 수 있어요.</li>
               </ul>

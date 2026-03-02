@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { PRACTICE_RESULT_KEY } from "../utils/storage";
+import { PRACTICE_RESULT_KEY, STORAGE_KEY, TRIAL_BACKUP_KEY } from "../utils/storage";
 import { DIFFICULTY_CONFIGS, formatElapsedMs, formatElapsedLong } from "../utils/practiceUtils";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
@@ -47,7 +47,7 @@ export default function ResultPage() {
 
   const totalElapsedMs = endedAt - startedAt;
   const diffLabel = DIFFICULTY_CONFIGS[difficulty]?.label ?? "";
-  const modeLabel = type === "challenge" ? "랭킹 도전 모드" : "일반 연습 모드";
+  const modeLabel = type === "challenge" ? "랭킹 도전 모드" : type === "trial" ? "체험 모드" : "일반 연습 모드";
   const totalTarget = (totalCartCount ?? 0) + (type === "challenge" ? (totalCodeCount ?? 0) : 0);
 
   // 신청 성공 과목 목록 (courseTimings 기준 정렬)
@@ -66,6 +66,15 @@ export default function ResultPage() {
 
   const handleRetry = () => {
     localStorage.removeItem(PRACTICE_RESULT_KEY);
+    if (type === "trial") {
+      const backup = localStorage.getItem(TRIAL_BACKUP_KEY);
+      if (backup) {
+        try { localStorage.setItem(STORAGE_KEY, backup); } catch (e) { /* ignore */ }
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+      localStorage.removeItem(TRIAL_BACKUP_KEY);
+    }
     navigate("/");
   };
 
@@ -175,6 +184,14 @@ export default function ResultPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* 체험 모드 안내 */}
+        {type === "trial" && (
+          <div className="card" style={{ background: "#f0f7ff", border: "1px solid #c3daf9", borderLeft: "4px solid #478ef0", fontSize: "13px", color: "#374151", lineHeight: 1.7 }}>
+            이 기록은 저장되지 않는 <strong>일회용 체험</strong>이에요.<br />
+            기존에 설정해둔 과목은 그대로 유지되니 걱정하지 않아도 돼요. 😊
           </div>
         )}
 

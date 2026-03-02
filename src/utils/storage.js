@@ -1,5 +1,6 @@
 export const STORAGE_KEY = "courseRegistrationPracticeState";
 export const PRACTICE_RESULT_KEY = "classPick_practiceResult";
+export const TRIAL_BACKUP_KEY = "classPick_trialBackup";
 export const PRESET_KEYS = ["preset1", "preset2", "preset3"];
 
 export function validateState(raw) {

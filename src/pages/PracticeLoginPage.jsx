@@ -21,6 +21,9 @@ export default function PracticeLoginPage() {
   const [userPw, setUserPw] = useState("");
   const intervalRef = useRef(null);
 
+  const storedState = loadStoredState();
+  const isTrialMode = storedState?.practiceMode?.type === "trial";
+
   useEffect(() => {
     intervalRef.current = setInterval(() => {
       setSimSeconds((prev) => prev + 1);
@@ -58,7 +61,7 @@ export default function PracticeLoginPage() {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 16px" }}>
         <div style={{ width: "100%", maxWidth: "380px" }}>
           {/* 타이틀 */}
-          <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
             <div style={{ fontSize: "20px", fontWeight: 700, color: "#1e2532", marginBottom: "6px", letterSpacing: "-0.4px" }}>
               수강신청 시스템 로그인
             </div>
@@ -66,6 +69,28 @@ export default function PracticeLoginPage() {
               오전 10시 이후 로그인이 가능합니다
             </div>
           </div>
+
+          {/* 체험 모드 안내 배너 */}
+          {isTrialMode && (
+            <div style={{
+              background: "#f0f7ff",
+              border: "1px solid #c3daf9",
+              borderLeft: "4px solid #478ef0",
+              borderRadius: "8px",
+              padding: "14px 16px",
+              marginBottom: "16px",
+              textAlign: "left",
+            }}>
+              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px" }}>
+                🎯 체험 모드 안내
+              </div>
+              <div style={{ fontSize: "13px", color: "#374151", lineHeight: 1.7 }}>
+                수강꾸러미에 <strong>6개의 과목</strong>이 준비되어 있어요!<br />
+                오전 10시가 되면 로그인하고, 수강신청 화면에서 <strong>과목을 모두 신청</strong>해보세요.<br />
+                완료되면 소요 시간이 기록돼요. (랭킹에는 저장되지 않아요)
+              </div>
+            </div>
+          )}
 
           {/* 시계 카드 */}
           <div style={{ background: "#fff", border: "1px solid #e6eaf3", borderRadius: "10px", padding: "22px 28px", textAlign: "center", marginBottom: "14px", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
