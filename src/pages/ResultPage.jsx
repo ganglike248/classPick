@@ -4,6 +4,7 @@ import { PRACTICE_RESULT_KEY, STORAGE_KEY, TRIAL_BACKUP_KEY } from "../utils/sto
 import { DIFFICULTY_CONFIGS, formatElapsedMs, formatElapsedLong } from "../utils/practiceUtils";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
+import { trackPageView, trackChallengeRanking } from "../utils/analytics";
 
 export default function ResultPage() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function ResultPage() {
   const [result, setResult] = useState(null);
 
   useEffect(() => {
+    trackPageView("ResultPage");
     // 연습 모드: navigate state로 전달된 결과 (로컬 저장 없음)
     if (location.state) {
       setResult(location.state);
@@ -28,6 +30,14 @@ export default function ResultPage() {
       navigate("/");
     }
   }, [navigate, location.state]);
+
+  // 랭킹 도전 모드 결과 추적
+  useEffect(() => {
+    if (result && result.type === "challenge") {
+      const totalTime = result.endedAt - result.startedAt;
+      trackChallengeRanking(result.nickname || "익명", result.registeredCourseIds.length, result.totalCartCount + result.totalCodeCount, totalTime);
+    }
+  }, [result]);
 
   if (!result) return null;
 

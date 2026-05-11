@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
@@ -16,6 +16,7 @@ import {
 } from "../utils/storage";
 import { checkDuplicates, hasCourseId, generateRandomId, SAMPLE_NAMES } from "../utils/courseUtils";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
+import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
 
 function stateToRows(state) {
   if (!state) return { cartRows: [], regRows: [], codeRows: [] };
@@ -44,6 +45,10 @@ function stateToRows(state) {
 
 export default function SetupPage() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    trackPageView("SetupPage");
+  }, []);
 
   // 체험 모드 도중 이탈 시 기존 상태 복원
   // TRIAL_BACKUP_KEY가 존재하면 체험 중이었다는 의미
@@ -108,6 +113,7 @@ export default function SetupPage() {
   );
 
   const handleQuickTrial = () => {
+    trackButtonClick("quick_trial_button", "지금 바로 체험하기");
     // 기존 상태 백업 (없으면 빈 문자열로 마커 저장)
     const currentRaw = localStorage.getItem(STORAGE_KEY);
     localStorage.setItem(TRIAL_BACKUP_KEY, currentRaw || "");
@@ -162,6 +168,7 @@ export default function SetupPage() {
 
   const handleEnter = () => {
     if (practiceEnabled) {
+      trackButtonClick("start_practice_button", "수강신청 시작하기 (실전 모드)");
       if (cartRows.length === 0 && codeRows.length === 0) {
         alert("실전 모드를 사용하려면 수강꾸러미 또는 코드 입력 과목을 하나 이상 추가해 주세요.");
         return;
@@ -177,6 +184,7 @@ export default function SetupPage() {
       if (!validateAndSave(practiceModeSettings)) return;
       setShowPracticeModal(true);
     } else {
+      trackButtonClick("start_normal_button", "수강신청 시작하기");
       if (!validateAndSave(null)) return;
       navigate("/register");
     }
@@ -194,6 +202,7 @@ export default function SetupPage() {
       )
     )
       return;
+    trackButtonClick("reset_button", "과목 설정 초기화");
     localStorage.removeItem(STORAGE_KEY);
     setCartRows([]);
     setRegRows([]);
@@ -223,7 +232,10 @@ export default function SetupPage() {
                   borderRadius: "5px",
                   fontWeight: 600,
                 }}
-                onClick={() => setShowHelpModal(true)}
+                onClick={() => {
+                  trackButtonClick("help_button", "설명서");
+                  setShowHelpModal(true);
+                }}
               >
                 설명서
               </button>
@@ -323,7 +335,10 @@ export default function SetupPage() {
                 borderRadius: "6px",
                 fontSize: "13px",
               }}
-              onClick={() => navigate("/challenge")}
+              onClick={() => {
+                trackButtonClick("challenge_mode_button", "랭킹 도전 모드");
+                navigate("/challenge");
+              }}
             >
               🏆 랭킹 도전 모드
             </button>

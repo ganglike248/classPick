@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
@@ -13,12 +13,17 @@ import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
 import { buildInitialState, saveState } from "../utils/storage";
 import { auth } from "../firebase";
 import { signInAnonymously } from "firebase/auth";
+import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
 
 export default function ChallengePage() {
   const navigate = useNavigate();
   const [nickname, setNickname] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    trackPageView("ChallengePage");
+  }, []);
 
   const diffConfig = DIFFICULTY_CONFIGS[CHALLENGE_DIFFICULTY];
 
@@ -27,6 +32,8 @@ export default function ChallengePage() {
       alert("닉네임을 입력해 주세요. (랭킹에 표시됩니다)");
       return;
     }
+    trackButtonClick("challenge_start_button", "도전 시작");
+    trackUIInteraction("ChallengePage", "challenge_start", { nickname });
     setShowModal(true);
   };
 

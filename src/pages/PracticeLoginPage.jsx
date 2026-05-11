@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { loadStoredState } from "../utils/storage";
+import { trackPageView, trackUIInteraction } from "../utils/analytics";
 
 const SIM_START_SECONDS = 9 * 3600 + 59 * 60 + 50;
 const LOGIN_OPEN_SECONDS = 10 * 3600;
@@ -25,6 +26,7 @@ export default function PracticeLoginPage() {
   const isTrialMode = storedState?.practiceMode?.type === "trial";
 
   useEffect(() => {
+    trackPageView("PracticeLoginPage");
     intervalRef.current = setInterval(() => {
       setSimSeconds((prev) => prev + 1);
     }, 1000);
@@ -44,6 +46,7 @@ export default function PracticeLoginPage() {
       navigate("/");
       return;
     }
+    trackUIInteraction("PracticeLoginPage", "login_confirmed", { mode: state.practiceMode?.type || "normal" });
     navigate("/register");
   };
 

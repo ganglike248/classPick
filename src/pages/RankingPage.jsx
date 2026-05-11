@@ -4,6 +4,7 @@ import { fetchRankings } from "../utils/rankingUtils";
 import { CHALLENGE_ID, CHALLENGE_CART_COURSES, CHALLENGE_CODE_COURSES } from "../data/challengeData";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
+import { trackPageView, trackUIInteraction } from "../utils/analytics";
 
 const TOTAL_COURSES =
   CHALLENGE_CART_COURSES.length + CHALLENGE_CODE_COURSES.length;
@@ -39,6 +40,7 @@ export default function RankingPage() {
   };
 
   useEffect(() => {
+    trackPageView("RankingPage");
     load();
   }, []);
 

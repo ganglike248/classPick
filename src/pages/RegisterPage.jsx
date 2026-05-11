@@ -17,6 +17,15 @@ import {
 } from "../utils/practiceUtils";
 import { startChallengeSession, finishChallengeSession } from "../utils/rankingUtils";
 import { CHALLENGE_ID } from "../data/challengeData";
+import {
+  trackPageView,
+  trackCourseRegistration,
+  trackCourseDeletion,
+  trackCaptchaValidation,
+  trackModeStart,
+  trackModeComplete,
+  trackCodeInput,
+} from "../utils/analytics";
 
 function getCourseCredit(courses, id) {
   const c = courses[id];
@@ -41,6 +50,7 @@ export default function RegisterPage() {
 
   // 초기 로드
   useEffect(() => {
+    trackPageView("RegisterPage");
     const s = loadStoredState();
     if (!s) {
       alert("로그인 페이지에서 먼저 입장해 주세요.");
@@ -92,6 +102,9 @@ export default function RegisterPage() {
           console.error("Firebase 세션 시작 실패:", e);
         }
       }
+
+      // Google Analytics: 모드 시작 추적
+      trackModeStart(type, difficulty);
 
       setState((prev) => {
         if (!prev) return prev;
@@ -237,6 +250,10 @@ export default function RegisterPage() {
       challengeDocId: pm.challengeDocId,
     };
 
+    // Google Analytics: 모드 완료 추적
+    const totalTime = endedAt - pm.startedAt;
+    trackModeComplete(pm.type, registeredCourseIds.length, missedCourseIds.length, totalTime);
+
     // 챌린지 모드: 100% 달성 시에만 Firebase에 기록
     if (pm.type === "challenge" && pm.challengeDocId && missedCourseIds.length === 0) {
       try {
@@ -274,7 +291,11 @@ export default function RegisterPage() {
   }
 
   const handleApplyFromCart = (id) => {
-    if (!check()) return;
+    if (!check()) {
+      trackCaptchaValidation(false);
+      return;
+    }
+    trackCaptchaValidation(true);
 
     // 실전 모드: 마감 여부 확인
     if (state.practiceMode?.startedAt) {
@@ -309,6 +330,9 @@ export default function RegisterPage() {
         ? Date.now() - state.practiceMode.startedAt
         : null;
 
+    // Google Analytics: 과목 신청 추적
+    trackCourseRegistration(id, course.name, state.practiceMode?.difficulty || "normal");
+
     updateState((prev) => {
       const next = { ...prev };
       next.registeredCourseIds = [...prev.registeredCourseIds, id];
@@ -330,7 +354,11 @@ export default function RegisterPage() {
   };
 
   const handleAddByCode = (code) => {
-    if (!check()) return false;
+    if (!check()) {
+      trackCaptchaValidation(false);
+      return false;
+    }
+    trackCaptchaValidation(true);
 
     // 실전 모드: 코드 입력 과목도 마감 확인
     if (state.practiceMode?.startedAt) {
@@ -369,6 +397,10 @@ export default function RegisterPage() {
         ? Date.now() - state.practiceMode.startedAt
         : null;
 
+    // Google Analytics: 코드 입력으로 과목 신청 추적
+    trackCodeInput(true, code);
+    trackCourseRegistration(code, course.name, state.practiceMode?.difficulty || "normal");
+
     updateState((prev) => {
       const next = { ...prev };
       if (!next.courses[code]) {
@@ -394,8 +426,16 @@ export default function RegisterPage() {
   };
 
   const handleDelete = (id) => {
-    if (!check()) return;
+    if (!check()) {
+      trackCaptchaValidation(false);
+      return;
+    }
+    trackCaptchaValidation(true);
     if (!confirm("해당 과목을 수강신청 목록에서 삭제하시겠습니까?")) return;
+
+    const course = state.courses[id] || { id, name: "-" };
+    // Google Analytics: 과목 삭제 추적
+    trackCourseDeletion(id, course.name);
 
     updateState((prev) => ({
       ...prev,
