@@ -3,13 +3,18 @@ import {
   collection,
   addDoc,
   updateDoc,
+  deleteDoc,
+  deleteField,
   doc,
   getDocs,
   query,
   where,
   serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
+
+const IN_PROGRESS_TTL_MS = 2 * 60 * 60 * 1000; // 2시간: 방치된 세션 자동 정리 기준
 
 export const RANKINGS_COLLECTION = "rankings";
 
@@ -32,6 +37,8 @@ export async function startChallengeSession(nickname, challengeId) {
     challengeId,
     startedAt: serverTimestamp(),
     status: "in_progress",
+    // 완료되지 못하고 방치된 세션을 Firestore TTL로 자동 정리하기 위한 만료 시각
+    expiresAt: Timestamp.fromMillis(Date.now() + IN_PROGRESS_TTL_MS),
   });
   return docRef.id;
 }
@@ -45,6 +52,8 @@ export async function finishChallengeSession(docId, result) {
     endedAt: serverTimestamp(),
     status: "completed",
     result,
+    // 완료된 기록은 TTL 정리 대상에서 제외 (expiresAt은 미완료 세션 정리용)
+    expiresAt: deleteField(),
   });
 }
 
@@ -71,12 +80,29 @@ export async function fetchRankings(challengeId) {
     return (aMs ?? 0) - (bMs ?? 0);
   });
 
-  // 닉네임별 최고 기록만 유지 (정렬 후 첫 등장 = 최고 기록)
+  // 사용자(uid)별 최고 기록만 유지 (정렬 후 첫 등장 = 최고 기록)
+  // 닉네임이 아닌 uid로 구분하므로, 서로 다른 사용자가 같은 닉네임을 쓰더라도
+  // 기록이 서로를 덮어쓰지 않는다.
   const seen = new Set();
   return docs.filter((d) => {
-    const key = d.nickname ?? "익명";
-    if (seen.has(key)) return false;
-    seen.add(key);
+    if (seen.has(d.uid)) return false;
+    seen.add(d.uid);
     return true;
   });
+}
+
+/**
+ * 본인 기록의 닉네임 수정 (완료된 기록만, 본인 uid만 가능 — firestore.rules에서 강제)
+ */
+export async function renameOwnRecord(docId, newNickname) {
+  await updateDoc(doc(db, RANKINGS_COLLECTION, docId), {
+    nickname: newNickname,
+  });
+}
+
+/**
+ * 본인 기록 삭제 (완료된 기록만, 본인 uid만 가능 — firestore.rules에서 강제)
+ */
+export async function deleteOwnRecord(docId) {
+  await deleteDoc(doc(db, RANKINGS_COLLECTION, docId));
 }

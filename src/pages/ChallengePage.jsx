@@ -10,14 +10,15 @@ import {
   CHALLENGE_MAX_CREDITS,
 } from "../data/challengeData";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
-import { buildInitialState, saveState } from "../utils/storage";
+import { buildInitialState, saveState, loadSavedNickname, saveNickname } from "../utils/storage";
 import { auth } from "../firebase";
 import { signInAnonymously } from "firebase/auth";
 import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
 
 export default function ChallengePage() {
   const navigate = useNavigate();
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState(() => loadSavedNickname());
+  const wasPrefilled = nickname.length > 0;
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -46,6 +47,9 @@ export default function ChallengePage() {
       if (!auth.currentUser) {
         await signInAnonymously(auth);
       }
+
+      // 다음 도전 때 자동으로 채워지도록 닉네임 기억
+      saveNickname(nickname.trim());
 
       // 챌린지 과목으로 초기 state 구성
       const cartRows = CHALLENGE_CART_COURSES.map((c) => ({ ...c }));
@@ -96,8 +100,10 @@ export default function ChallengePage() {
         {/* 참가 등록 - 주요 CTA */}
         <div className="card">
           <div className="section-title">참가 등록</div>
-          <div className="helper-text" style={{ marginBottom: "12px" }}>
-            랭킹에 표시될 닉네임을 입력하고 도전을 시작하세요 (최대 12자)
+          <div className="helper-text" style={{ marginBottom: "8px" }}>
+            {wasPrefilled
+              ? "이전에 사용한 닉네임이 자동으로 채워졌어요. 그대로 쓰거나 자유롭게 바꿔보세요 (최대 12자)"
+              : "랭킹에 표시될 닉네임을 입력하고 도전을 시작하세요 (최대 12자)"}
           </div>
           <input
             type="text"
@@ -106,9 +112,13 @@ export default function ChallengePage() {
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
             placeholder="닉네임 입력"
-            style={{ width: "100%", marginBottom: "12px", padding: "9px 12px", fontSize: "14px" }}
+            style={{ width: "100%", padding: "9px 12px", fontSize: "14px" }}
             onKeyDown={(e) => e.key === "Enter" && handleStartClick()}
           />
+          <div className="helper-text" style={{ marginBottom: "12px", marginTop: "6px", lineHeight: 1.6 }}>
+            이 닉네임은 이 브라우저에 저장되어 다음 도전 때 자동으로 채워져요.<br />
+            다른 사람과 닉네임이 같아도 괜찮아요 — 이 브라우저를 기준으로 내 기록이 따로 관리돼요.
+          </div>
           <button
             className="btn btn-primary btn-block"
             style={{

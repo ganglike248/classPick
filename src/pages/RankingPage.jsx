@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchRankings } from "../utils/rankingUtils";
+import { fetchRankings, renameOwnRecord, deleteOwnRecord } from "../utils/rankingUtils";
 import { CHALLENGE_ID, CHALLENGE_CART_COURSES, CHALLENGE_CODE_COURSES } from "../data/challengeData";
+import { saveNickname } from "../utils/storage";
+import { auth } from "../firebase";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
 import { trackPageView, trackUIInteraction } from "../utils/analytics";
@@ -49,6 +51,44 @@ export default function RankingPage() {
     setDisplayCount(PAGE_SIZE);
   }, [searchQuery, sortMode]);
 
+  const myUid = auth.currentUser?.uid;
+  const myRecord = myUid ? allRankings.find((r) => r.uid === myUid) : null;
+
+  const handleRename = async () => {
+    if (!myRecord) return;
+    const newName = prompt("새 닉네임을 입력하세요 (최대 12자):", myRecord.nickname || "");
+    if (newName === null) return;
+    const trimmed = newName.trim();
+    if (!trimmed) {
+      alert("닉네임을 입력해 주세요.");
+      return;
+    }
+    if (trimmed.length > 12) {
+      alert("닉네임은 최대 12자까지 입력 가능합니다.");
+      return;
+    }
+    try {
+      await renameOwnRecord(myRecord.id, trimmed);
+      saveNickname(trimmed);
+      await load();
+    } catch (e) {
+      console.error("닉네임 변경 실패:", e);
+      alert("닉네임 변경에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  };
+
+  const handleDeleteMine = async () => {
+    if (!myRecord) return;
+    if (!confirm("내 랭킹 기록을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) return;
+    try {
+      await deleteOwnRecord(myRecord.id);
+      await load();
+    } catch (e) {
+      console.error("기록 삭제 실패:", e);
+      alert("기록 삭제에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    }
+  };
+
   const filtered = allRankings.filter((r) =>
     r.nickname?.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -92,6 +132,29 @@ export default function RankingPage() {
             도전 세트 v1 &nbsp;·&nbsp; {TOTAL_COURSES}과목 &nbsp;·&nbsp; {TOTAL_CREDITS}학점
           </div>
         </div>
+
+        {/* 내 기록 요약 */}
+        {myRecord && (() => {
+          const myElapsedMs = myRecord.endedAt?.toMillis?.() - myRecord.startedAt?.toMillis?.();
+          const myElapsedSec = myElapsedMs > 0 ? (myElapsedMs / 1000).toFixed(2) : "-";
+          return (
+            <div className="card" style={{ borderLeft: "4px solid #478ef0" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
+                <div>
+                  <div style={{ fontSize: "12px", color: "#8c96ae", marginBottom: "2px" }}>내 기록</div>
+                  <div style={{ fontSize: "15px", fontWeight: 700 }}>
+                    <span style={{ color: "#478ef0" }}>{myElapsedSec}초</span>
+                    <span style={{ color: "#8c96ae", fontWeight: 500 }}> · 전체 {myRecord.rank + 1}위 · {myRecord.nickname}</span>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: "6px" }}>
+                  <button className="btn btn-sm" onClick={handleRename}>닉네임 변경</button>
+                  <button className="btn btn-sm btn-danger" onClick={handleDeleteMine}>기록 삭제</button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* 랭킹 테이블 */}
         <div className="card">
@@ -180,8 +243,10 @@ export default function RankingPage() {
                       : "-";
 
                     const rank = row.rank;
-                    const rowBg =
-                      rank === 0 ? "#fffaed" : rank === 1 ? "#f8f9fb" : rank === 2 ? "#f5f7fa" : undefined;
+                    const isMine = myUid && row.uid === myUid;
+                    const rowBg = isMine
+                      ? "#eef6ff"
+                      : rank === 0 ? "#fffaed" : rank === 1 ? "#f8f9fb" : rank === 2 ? "#f5f7fa" : undefined;
 
                     return (
                       <tr key={row.id} style={rowBg ? { background: rowBg } : {}}>
@@ -192,6 +257,9 @@ export default function RankingPage() {
                         </td>
                         <td>
                           <strong style={{ color: rank === 0 ? "#c47a00" : "#1e2532" }}>{row.nickname}</strong>
+                          {isMine && (
+                            <span className="badge" style={{ marginLeft: "6px", backgroundColor: "#478ef0", color: "#fff" }}>나</span>
+                          )}
                         </td>
                         <td>
                           <strong style={{ color: "#478ef0" }}>{elapsedSec}초</strong>

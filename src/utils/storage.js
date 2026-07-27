@@ -1,7 +1,26 @@
 export const STORAGE_KEY = "courseRegistrationPracticeState";
 export const PRACTICE_RESULT_KEY = "classPick_practiceResult";
 export const TRIAL_BACKUP_KEY = "classPick_trialBackup";
+export const NICKNAME_KEY = "classPick_nickname";
 export const PRESET_KEYS = ["preset1", "preset2", "preset3"];
+
+/** 마지막으로 사용한 닉네임을 불러옴 (없으면 빈 문자열) */
+export function loadSavedNickname() {
+  try {
+    return localStorage.getItem(NICKNAME_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+/** 닉네임을 저장해 다음 도전 시 자동으로 채워지도록 함 */
+export function saveNickname(nickname) {
+  try {
+    localStorage.setItem(NICKNAME_KEY, nickname);
+  } catch (e) {
+    console.error("닉네임 저장 실패:", e);
+  }
+}
 
 export function validateState(raw) {
   if (!raw || typeof raw !== "object") return null;

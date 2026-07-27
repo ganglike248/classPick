@@ -278,16 +278,13 @@ export default function RegisterPage() {
       }
     }
 
-    if (pm.type === "challenge") {
-      try {
-        localStorage.setItem(PRACTICE_RESULT_KEY, JSON.stringify(result));
-      } catch (e) {
-        console.error("결과 저장 실패:", e);
-      }
-      navigate("/result");
-    } else {
-      navigate("/result", { state: result });
+    // 모든 모드 공통: 결과 화면 새로고침 시에도 유실되지 않도록 로컬에 저장
+    try {
+      localStorage.setItem(PRACTICE_RESULT_KEY, JSON.stringify(result));
+    } catch (e) {
+      console.error("결과 저장 실패:", e);
     }
+    navigate("/result", { state: result });
   }
 
   const handleApplyFromCart = (id) => {

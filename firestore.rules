@@ -20,14 +20,22 @@ service cloud.firestore {
                     && !('result' in request.resource.data);
 
       // 세션 완료: 본인만, 한 번만, in_progress → completed
+      // + 완료된 본인 기록의 닉네임만 수정 가능 (그 외 필드는 변경 불가 → 기록 조작 방지)
       allow update: if request.auth != null
                     && request.auth.uid == resource.data.uid
-                    && resource.data.status == 'in_progress'
-                    && request.resource.data.status == 'completed'
-                    && !('endedAt' in resource.data);
+                    && (
+                      (resource.data.status == 'in_progress'
+                        && request.resource.data.status == 'completed'
+                        && !('endedAt' in resource.data))
+                      ||
+                      (resource.data.status == 'completed'
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nickname']))
+                    );
 
-      // 삭제 불가 (기록 조작 방지)
-      allow delete: if false;
+      // 삭제: 본인의 완료된 기록만 삭제 가능 (타인 기록은 계속 삭제 불가 → 기록 조작 방지)
+      allow delete: if request.auth != null
+                    && request.auth.uid == resource.data.uid
+                    && resource.data.status == 'completed';
     }
   }
 }
