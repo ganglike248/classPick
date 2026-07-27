@@ -3,10 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { fetchRankings, renameOwnRecord, deleteOwnRecord, backfillOwnSemesterIds } from "../utils/rankingUtils";
 import { CHALLENGE_ID, CHALLENGE_CART_COURSES, CHALLENGE_CODE_COURSES } from "../data/challengeData";
 import { saveNickname } from "../utils/storage";
-import { getSemesterId, getSemesterLabel, getSemesterRangeLabel, getRecentSemesterIds } from "../utils/semesterUtils";
+import {
+  getSemesterId,
+  getSemesterLabel,
+  getSemesterRangeLabel,
+  getRecentSemesterIds,
+  MIN_SEMESTER_ID,
+} from "../utils/semesterUtils";
 import { auth } from "../firebase";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
+import HallOfFame from "../components/common/HallOfFame";
 import { trackPageView, trackUIInteraction } from "../utils/analytics";
 
 const TOTAL_COURSES =
@@ -133,52 +140,62 @@ export default function RankingPage() {
     <>
       <TopBand />
       <main className="page-wrap" style={{ maxWidth: "800px" }}>
-        {/* 헤더 */}
-        <div className="card" style={{ textAlign: "center", padding: "28px 24px", borderTop: "3px solid #e54b4b" }}>
-          <div style={{ fontSize: "24px", fontWeight: 700, marginBottom: "6px", letterSpacing: "-0.5px" }}>
-            🏆 랭킹
+        {/* 헤더 — 타이틀+학기 선택을 한 줄에, 액션 버튼도 스크롤 없이 바로 보이도록 같은 카드에 배치 */}
+        <div className="card" style={{ padding: "24px", borderTop: "3px solid #e54b4b" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
+            <div style={{ fontSize: "22px", fontWeight: 700, letterSpacing: "-0.5px" }}>
+              🏆 랭킹
+            </div>
+            <select
+              className="input-text"
+              value={semesterId}
+              onChange={(e) => setSemesterId(e.target.value)}
+              style={{ padding: "6px 10px", fontSize: "13px", width: "auto", cursor: "pointer" }}
+            >
+              {semesterOptions.map((id) => (
+                <option key={id} value={id}>{getSemesterLabel(id)}</option>
+              ))}
+            </select>
           </div>
-          <div style={{ fontSize: "13px", color: "#8c96ae", marginBottom: "12px" }}>
-            도전 세트 v1 &nbsp;·&nbsp; {TOTAL_COURSES}과목 &nbsp;·&nbsp; {TOTAL_CREDITS}학점
+          <div style={{ fontSize: "12px", color: "#8c96ae", marginTop: "6px" }}>
+            {getSemesterRangeLabel(semesterId)} · {TOTAL_COURSES}과목 · {TOTAL_CREDITS}학점
           </div>
-          <select
-            className="input-text"
-            value={semesterId}
-            onChange={(e) => setSemesterId(e.target.value)}
-            style={{ padding: "6px 10px", fontSize: "13px", width: "auto", cursor: "pointer" }}
-          >
-            {semesterOptions.map((id) => (
-              <option key={id} value={id}>{getSemesterLabel(id)}</option>
-            ))}
-          </select>
-          <div style={{ fontSize: "11px", color: "#b0b8cc", marginTop: "6px" }}>
-            {getSemesterRangeLabel(semesterId)}
+
+          <div style={{ display: "flex", gap: "8px", marginTop: "18px" }}>
+            <button
+              className="btn btn-block"
+              style={{
+                padding: "11px 0",
+                backgroundColor: "#e54b4b",
+                color: "#fff",
+                borderColor: "#e54b4b",
+                fontWeight: 700,
+                borderRadius: "6px",
+              }}
+              onClick={() => navigate("/challenge")}
+            >
+              🏁 도전하기
+            </button>
+            <button
+              className="btn btn-block"
+              style={{ padding: "11px 0", borderRadius: "6px" }}
+              onClick={() => navigate("/")}
+            >
+              홈 화면으로
+            </button>
           </div>
         </div>
 
-        {/* 상단 이동 버튼 — 스크롤 없이 바로 접근 가능하도록 헤더 바로 아래 배치 */}
-        <div className="card" style={{ display: "flex", gap: "8px" }}>
-          <button
-            className="btn btn-block"
-            style={{
-              padding: "11px 0",
-              backgroundColor: "#e54b4b",
-              color: "#fff",
-              borderColor: "#e54b4b",
-              fontWeight: 700,
-              borderRadius: "6px",
-            }}
-            onClick={() => navigate("/challenge")}
-          >
-            🏁 도전하기
-          </button>
-          <button
-            className="btn btn-block"
-            style={{ padding: "11px 0", borderRadius: "6px" }}
-            onClick={() => navigate("/")}
-          >
-            홈 화면으로
-          </button>
+        {/* 학기 구분 도입 이전 데이터 안내 (최초 학기에만 표시) */}
+        {semesterId === MIN_SEMESTER_ID && (
+          <div className="info-callout" style={{ borderRadius: "8px" }}>
+            예전 기록은 한 사람당 하나로 합쳐졌어요. 그래서 예전에 보던 목록과 다르게 보일 수 있어요.
+          </div>
+        )}
+
+        {/* 명예의 전당 — 선택한 학기에 맞춰 갱신됨 */}
+        <div className="card">
+          <HallOfFame semesterId={semesterId} variant="podium" />
         </div>
 
         {/* 내 기록 요약 */}

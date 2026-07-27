@@ -14,15 +14,15 @@ function formatSec(r) {
 }
 
 /**
- * 이번 학기 랭킹 도전 모드 상위 3위를 보여주는 공용 컴포넌트
+ * 랭킹 도전 모드 상위 3위를 보여주는 공용 컴포넌트
+ * semesterId       조회할 학기 (생략 시 현재 학기)
  * variant="list"   좁은 영역용 순위 목록 (홈 화면 사이드 패널)
- * variant="podium" 넓은 영역용 시상대 형태 (랭킹 도전 모드 페이지)
+ * variant="podium" 넓은 영역용 시상대 형태 (랭킹 도전 모드 페이지, 랭킹 페이지)
  * bordered         list variant에서 자체 테두리를 그릴지 여부
  *                  (바깥에 이미 카드/테두리가 있는 곳에 넣을 땐 false로 이중 테두리 방지)
  */
-export default function HallOfFame({ variant = "list", bordered = true }) {
+export default function HallOfFame({ semesterId = getSemesterId(), variant = "list", bordered = true }) {
   const [topThree, setTopThree] = useState([]);
-  const semesterId = getSemesterId();
 
   useEffect(() => {
     let cancelled = false;
