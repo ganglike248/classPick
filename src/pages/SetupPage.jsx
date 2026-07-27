@@ -91,6 +91,7 @@ export default function SetupPage() {
   const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
   const [showPracticeModal, setShowPracticeModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [tipsOpen, setTipsOpen] = useState(false);
 
   const settersMap = { cart: setCartRows, reg: setRegRows, code: setCodeRows };
 
@@ -436,111 +437,126 @@ export default function SetupPage() {
           {/* 실전 꿀팁 */}
           <div className="card" style={{ marginTop: 0, padding: "18px 20px" }}>
             <div
+              onClick={() => setTipsOpen((v) => !v)}
               style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
                 fontSize: "15px",
                 fontWeight: 700,
                 color: "#1e2532",
-                marginBottom: "14px",
+                marginBottom: tipsOpen ? "14px" : 0,
               }}
             >
-              🎯 졸업생의 실전 꿀팁!!
+              <span>🎯 졸업생의 실전 꿀팁!!</span>
+              <span style={{ fontSize: "12px", color: "#8c96ae" }}>
+                {tipsOpen ? "▲ 숨기기" : "▼ 혼자 몰래 보기"}
+              </span>
             </div>
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "14px" }}
-            >
-              <div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "#1e2532",
-                    marginBottom: "3px",
-                  }}
-                >
-                  1. 크롬 창은 꼭 하나만!
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    color: "#374151",
-                    lineHeight: 1.7,
-                  }}
-                >
-                  창을 여러 개 켜면 오류가 발생할 수 있어요. 오류가 나면{" "}
-                  <strong>모든 창을 닫고</strong> 다시 접속해야 해요.
-                </div>
-              </div>
-              <div
-                style={{ paddingTop: "14px", borderTop: "1px solid #eef1f7" }}
-              >
-                <div
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "#1e2532",
-                    marginBottom: "3px",
-                  }}
-                >
-                  2. 흰 화면이 떠도 당황하지 마세요
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    color: "#374151",
-                    lineHeight: 1.7,
-                  }}
-                >
-                  접속 직후 흰 화면은 실제 서버 부하를 재현한 거예요. 다만{" "}
-                  <strong>1분이 넘어가면 새로고침</strong>이 나을 수도 있어요
-                  (보장은 못 해요 ㅎ).
-                </div>
-              </div>
-              <div
-                style={{ paddingTop: "14px", borderTop: "1px solid #eef1f7" }}
-              >
-                <div
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 700,
-                    color: "#1e2532",
-                    marginBottom: "3px",
-                  }}
-                >
-                  3. 추천 자세
-                </div>
-                <div
-                  style={{
-                    fontSize: "13px",
-                    color: "#374151",
-                    lineHeight: 1.7,
-                  }}
-                >
-                  대기 중엔 캡차 입력창을 클릭해 두고, <strong>오른손</strong>은
-                  마우스 포인터를 '신청' 버튼 위에, <strong>눈</strong>은
-                  보안문자(캡차)를, <strong>왼손</strong>은 키패드와 엔터 키에
-                  올려두세요. 보안문자가 뜨는 순간 바로 신청을 클릭하고, "신청
-                  완료" 알림이 뜰 때까지 <strong>엔터를 연타</strong>하세요!
-                </div>
-              </div>
+            {tipsOpen && (
               <div
                 style={{
-                  paddingTop: "14px",
-                  borderTop: "1px solid #eef1f7",
-                  textAlign: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "14px",
                 }}
               >
+                <div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: "#1e2532",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    1. 크롬 창은 꼭 하나만!
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#374151",
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    창을 여러 개 켜면 오류가 발생할 수 있어요. 오류가 나면{" "}
+                    <strong>모든 창을 닫고</strong> 다시 접속해야 해요.
+                  </div>
+                </div>
+                <div
+                  style={{ paddingTop: "14px", borderTop: "1px solid #eef1f7" }}
+                >
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: "#1e2532",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    2. 흰 화면이 떠도 당황하지 마세요
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#374151",
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    접속 후 흰 화면이 뜨더라도 아마 조금만 기다리면 넘어갈
+                    거예요. 다만 <strong>1분이 넘어가면 새로고침</strong>이 나을
+                    수도 있어요 (보장은 못 해요 ㅎ).
+                  </div>
+                </div>
+                <div
+                  style={{ paddingTop: "14px", borderTop: "1px solid #eef1f7" }}
+                >
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 700,
+                      color: "#1e2532",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    3. 추천 자세
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#374151",
+                      lineHeight: 1.7,
+                    }}
+                  >
+                    대기 중엔 보안문자(캡차) <strong>입력창을 클릭</strong>해
+                    두고, <strong>오른손</strong>은 마우스 포인터를 '신청' 버튼
+                    위에, <strong>눈</strong>은 보안문자(캡차)를,{" "}
+                    <strong>왼손</strong>은 키패드와 엔터 키에 올려두세요.
+                    보안문자가 뜨는 순간 바로 신청을 클릭하고, "신청 완료"
+                    알림이 뜰 때까지 <strong>엔터를 연타</strong>하세요!
+                  </div>
+                </div>
                 <div
                   style={{
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    fontStyle: "italic",
-                    color: "#478ef0",
+                    paddingTop: "14px",
+                    borderTop: "1px solid #eef1f7",
+                    textAlign: "center",
                   }}
                 >
-                  "후배님들의 수강신청 올클을 응원합니다." 🙌
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      fontStyle: "italic",
+                      color: "#478ef0",
+                    }}
+                  >
+                    "후배님들의 올클을 응원합니다." 🙌
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           <section className="card" style={{ marginTop: 0 }}>
