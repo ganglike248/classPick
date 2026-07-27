@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
-import {
-  fetchRankings,
-  backfillOwnSemesterIds,
-} from "../../utils/rankingUtils";
+import { fetchRankings } from "../../utils/rankingUtils";
 import { CHALLENGE_ID } from "../../data/challengeData";
-import {
-  getSemesterId,
-  getSemesterLabel,
-  getSemesterRangeLabel,
-} from "../../utils/semesterUtils";
+import { getVersionNote } from "../../utils/versionUtils";
 
 const RANK_BAR_COLOR = { 0: "#ffd35c", 1: "#c7ccd6", 2: "#d9a06b" };
 const RANK_ROW_BG = { 0: "#fff1cc", 1: "#f2f3f6", 2: "#f8ede0" };
@@ -22,29 +15,26 @@ function formatSec(r) {
 
 /**
  * 랭킹 도전 모드 상위 3위를 보여주는 공용 컴포넌트
- * semesterId       조회할 학기 (생략 시 현재 학기)
+ * versionId        조회할 챌린지 버전 (생략 시 현재 버전)
  * variant="list"   좁은 영역용 순위 목록 (홈 화면 사이드 패널)
  * variant="podium" 넓은 영역용 시상대 형태 (랭킹 도전 모드 페이지, 랭킹 페이지)
  * bordered         list variant에서 자체 테두리를 그릴지 여부
  *                  (바깥에 이미 카드/테두리가 있는 곳에 넣을 땐 false로 이중 테두리 방지)
  */
 export default function HallOfFame({
-  semesterId = getSemesterId(),
+  versionId = CHALLENGE_ID,
   variant = "list",
   bordered = true,
 }) {
   const [topThree, setTopThree] = useState([]);
   // 다른 사람들도 도전하고 있다는 걸 느낄 수 있도록, 실시간 접속자 수 대신
-  // "이번 학기 누적 참여자 수"를 보여준다 (도전 자체가 수십 초면 끝나서
+  // "이 버전 누적 참여자 수"를 보여준다 (도전 자체가 수십 초면 끝나서
   // 실시간 인원수는 대부분 0명으로 보여 오히려 역효과가 남)
   const [totalCount, setTotalCount] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
-    // 학기 구분 도입 이전 내 기록이 있다면 조용히 채워 넣은 뒤 명예의 전당을 불러옴
-    backfillOwnSemesterIds()
-      .catch((e) => console.error("semesterId 백필 실패:", e))
-      .then(() => fetchRankings(CHALLENGE_ID, semesterId))
+    fetchRankings(versionId)
       .then((data) => {
         if (cancelled) return;
         setTopThree(data.slice(0, 3));
@@ -54,7 +44,9 @@ export default function HallOfFame({
     return () => {
       cancelled = true;
     };
-  }, [semesterId]);
+  }, [versionId]);
+
+  const versionNote = getVersionNote(versionId);
 
   const header = (
     <>
@@ -70,19 +62,26 @@ export default function HallOfFame({
           marginBottom: "4px",
         }}
       >
-        <span>🏅 명예의 전당</span>
+        <span>
+          🏅 명예의 전당
+          <span style={{ marginLeft: "6px", fontSize: "11px", fontWeight: 500, color: "#8c96ae" }}>
+            {versionId}
+          </span>
+        </span>
         {!!totalCount && (
           <span
             className="badge"
             style={{ backgroundColor: "#fff1cc", color: "#a6740a" }}
           >
-            🔥 이번 학기 {totalCount}명 도전 중!
+            🔥 {totalCount}명 도전 중!
           </span>
         )}
       </div>
-      <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "10px" }}>
-        {getSemesterLabel(semesterId)} ({getSemesterRangeLabel(semesterId)})
-      </div>
+      {versionNote && (
+        <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "10px" }}>
+          {versionNote}
+        </div>
+      )}
     </>
   );
 
@@ -100,7 +99,7 @@ export default function HallOfFame({
       <div style={wrapperStyle}>
         {header}
         <div className="helper-text">
-          아직 이번 학기 기록이 없어요. 첫 도전자가 되어보세요!
+          아직 기록이 없어요. 첫 도전자가 되어보세요!
         </div>
       </div>
     );

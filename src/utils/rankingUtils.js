@@ -13,7 +13,6 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
-import { getSemesterId, clampSemesterId } from "./semesterUtils";
 
 const IN_PROGRESS_TTL_MS = 2 * 60 * 60 * 1000; // 2시간: 방치된 세션 자동 정리 기준
 const RANKINGS_CACHE_TTL_MS = 60 * 1000; // 1분: 같은 브라우저 탭 안에서의 반복 조회만 줄여줌
@@ -21,12 +20,8 @@ const RANKINGS_CACHE_TTL_MS = 60 * 1000; // 1분: 같은 브라우저 탭 안에
 
 export const RANKINGS_COLLECTION = "rankings";
 
-// key: `${challengeId}::${semesterId}` → { data, expiresAt }
+// key: challengeId → { data, expiresAt }
 const rankingsCache = new Map();
-
-function rankingsCacheKey(challengeId, semesterId) {
-  return `${challengeId}::${semesterId}`;
-}
 
 /** 도전 완료/닉네임 변경/삭제 등으로 랭킹 데이터가 바뀌었을 때 캐시를 전부 비움 */
 function invalidateRankingsCache() {
@@ -52,7 +47,6 @@ export async function startChallengeSession(nickname, challengeId) {
     uid: user.uid,
     nickname: nickname || "익명",
     challengeId,
-    semesterId: getSemesterId(),
     startedAt: serverTimestamp(),
     status: "in_progress",
     // 완료되지 못하고 방치된 세션을 Firestore TTL로 자동 정리하기 위한 만료 시각
@@ -77,8 +71,7 @@ export async function finishChallengeSession(docId, result) {
 }
 
 /**
- * 특정 challengeId + semesterId의 완료된 랭킹 목록 조회 (학기별로 구분)
- * semesterId를 생략하면 현재 학기를 기준으로 조회
+ * 특정 challengeId(버전)의 완료된 랭킹 목록 조회 (버전별로 구분)
  * 클라이언트에서 정렬: 신청 성공 과목 수 내림차순 → 소요 시간 오름차순
  *
  * 같은 브라우저 탭에서 짧은 시간 안에 반복 조회하는 걸 줄이기 위해
@@ -86,8 +79,8 @@ export async function finishChallengeSession(docId, result) {
  * 정렬 기준(소요 시간)이 Firestore에 저장된 필드가 아니라 클라이언트 계산값이라
  * limit()으로 미리 잘라올 수 없어, 매 조회마다 전체를 읽어와야 하는 건 그대로다.
  */
-export async function fetchRankings(challengeId, semesterId = getSemesterId(), { forceRefresh = false } = {}) {
-  const cacheKey = rankingsCacheKey(challengeId, semesterId);
+export async function fetchRankings(challengeId, { forceRefresh = false } = {}) {
+  const cacheKey = challengeId;
 
   if (!forceRefresh) {
     const cached = rankingsCache.get(cacheKey);
@@ -99,8 +92,7 @@ export async function fetchRankings(challengeId, semesterId = getSemesterId(), {
   const q = query(
     collection(db, RANKINGS_COLLECTION),
     where("status", "==", "completed"),
-    where("challengeId", "==", challengeId),
-    where("semesterId", "==", semesterId)
+    where("challengeId", "==", challengeId)
   );
   const snapshot = await getDocs(q);
   const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -145,35 +137,4 @@ export async function renameOwnRecord(docId, newNickname) {
 export async function deleteOwnRecord(docId) {
   await deleteDoc(doc(db, RANKINGS_COLLECTION, docId));
   invalidateRankingsCache();
-}
-
-/**
- * 학기 구분 도입 이전에 만들어진 본인 완료 기록에 semesterId를 채워넣음
- * startedAt 기준으로 학기를 계산해 채우며, 이미 semesterId가 있는 기록은 건드리지 않음
- * (firestore.rules에서도 semesterId가 없는 기록에 한해 1회만 채우는 것을 강제)
- * 다른 사용자의 기록은 채울 수 없으므로, 각자 자신의 브라우저로 접속했을 때 자동 적용됨
- */
-export async function backfillOwnSemesterIds() {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const q = query(
-    collection(db, RANKINGS_COLLECTION),
-    where("uid", "==", user.uid),
-    where("status", "==", "completed")
-  );
-  const snapshot = await getDocs(q);
-  const targets = snapshot.docs.filter((d) => !("semesterId" in d.data()));
-
-  await Promise.all(
-    targets.map((d) => {
-      const startedAt = d.data().startedAt;
-      const semesterId = clampSemesterId(getSemesterId(startedAt?.toDate?.() ?? new Date()));
-      return updateDoc(doc(db, RANKINGS_COLLECTION, d.id), { semesterId });
-    })
-  );
-
-  if (targets.length > 0) {
-    invalidateRankingsCache();
-  }
 }

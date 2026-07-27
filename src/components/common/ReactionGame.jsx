@@ -9,7 +9,7 @@ const RESULT = "result";
 
 const BOX_STYLE = {
   [IDLE]: { background: "#478ef0", text: "클릭해서 시작" },
-  [WAITING]: { background: "#e54b4b", text: "빨간불이에요, 기다리세요..." },
+  [WAITING]: { background: "#e54b4b", text: "준비..." },
   [READY]: { background: "#22c55e", text: "지금 클릭!" },
   [TOO_SOON]: { background: "#e54b4b", text: "너무 빨랐어요! 클릭해서 재도전" },
 };
