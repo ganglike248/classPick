@@ -16,6 +16,9 @@ import {
 } from "../utils/storage";
 import { checkDuplicates, hasCourseId, generateRandomId, SAMPLE_NAMES } from "../utils/courseUtils";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
+import { fetchRankings, backfillOwnSemesterIds } from "../utils/rankingUtils";
+import { CHALLENGE_ID } from "../data/challengeData";
+import { getSemesterId, getSemesterLabel, getSemesterRangeLabel } from "../utils/semesterUtils";
 import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
 
 function stateToRows(state) {
@@ -76,6 +79,25 @@ export default function SetupPage() {
   const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
   const [showPracticeModal, setShowPracticeModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+
+  // 명예의 전당: 이번 학기 랭킹 상위 3위
+  const [hallOfFame, setHallOfFame] = useState([]);
+  const currentSemesterId = getSemesterId();
+
+  useEffect(() => {
+    let cancelled = false;
+    // 학기 구분 도입 이전 내 기록이 있다면 조용히 채워 넣은 뒤 명예의 전당을 불러옴
+    backfillOwnSemesterIds()
+      .catch((e) => console.error("semesterId 백필 실패:", e))
+      .then(() => fetchRankings(CHALLENGE_ID, currentSemesterId))
+      .then((data) => {
+        if (!cancelled) setHallOfFame(data.slice(0, 3));
+      })
+      .catch((e) => console.error("명예의 전당 로드 실패:", e));
+    return () => {
+      cancelled = true;
+    };
+  }, [currentSemesterId]);
 
   const settersMap = { cart: setCartRows, reg: setRegRows, code: setCodeRows };
 
@@ -324,6 +346,39 @@ export default function SetupPage() {
               borderTop: "1px solid #e6eaf3",
             }}
           >
+            {/* 명예의 전당 */}
+            <div style={{ marginBottom: "10px" }}>
+              <div style={{ fontSize: "13px", fontWeight: 700, color: "#1e2532", marginBottom: "2px" }}>
+                🏅 명예의 전당
+                <span style={{ fontWeight: 500, color: "#8c96ae", fontSize: "11px", marginLeft: "6px" }}>
+                  · {getSemesterLabel(currentSemesterId)}
+                </span>
+              </div>
+              <div style={{ fontSize: "10px", color: "#b0b8cc", marginBottom: "6px" }}>
+                {getSemesterRangeLabel(currentSemesterId)}
+              </div>
+              {hallOfFame.length === 0 ? (
+                <div className="helper-text">아직 이번 학기 기록이 없어요. 첫 도전자가 되어보세요!</div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                  {hallOfFame.map((r, i) => {
+                    const ms = r.endedAt?.toMillis?.() - r.startedAt?.toMillis?.();
+                    const sec = ms > 0 ? (ms / 1000).toFixed(2) : "-";
+                    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉";
+                    return (
+                      <div
+                        key={r.id}
+                        style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", padding: "2px 0" }}
+                      >
+                        <span>{medal} {r.nickname}</span>
+                        <span style={{ color: "#478ef0", fontWeight: 600 }}>{sec}초</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
             <button
               className="btn btn-block"
               style={{

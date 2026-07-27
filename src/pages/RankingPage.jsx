@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchRankings, renameOwnRecord, deleteOwnRecord } from "../utils/rankingUtils";
+import { fetchRankings, renameOwnRecord, deleteOwnRecord, backfillOwnSemesterIds } from "../utils/rankingUtils";
 import { CHALLENGE_ID, CHALLENGE_CART_COURSES, CHALLENGE_CODE_COURSES } from "../data/challengeData";
 import { saveNickname } from "../utils/storage";
+import { getSemesterId, getSemesterLabel, getSemesterRangeLabel, getRecentSemesterIds } from "../utils/semesterUtils";
 import { auth } from "../firebase";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
@@ -24,14 +25,17 @@ export default function RankingPage() {
   const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortMode, setSortMode] = useState("time"); // "time" | "recent"
+  const [semesterId, setSemesterId] = useState(() => getSemesterId());
   const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
   const sentinelRef = useRef(null);
+
+  const semesterOptions = getRecentSemesterIds(4);
 
   const load = async () => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchRankings(CHALLENGE_ID);
+      const data = await fetchRankings(CHALLENGE_ID, semesterId);
       setAllRankings(data.map((r, i) => ({ ...r, rank: i })));
     } catch (e) {
       console.error(e);
@@ -43,13 +47,19 @@ export default function RankingPage() {
 
   useEffect(() => {
     trackPageView("RankingPage");
-    load();
+    // 학기 구분 도입 이전에 만들어진 내 기록이 있다면 조용히 채워 넣음 (실패해도 무시)
+    backfillOwnSemesterIds().catch((e) => console.error("semesterId 백필 실패:", e));
   }, []);
 
-  // 검색/정렬 변경 시 표시 개수 초기화
+  // 학기가 바뀔 때마다 해당 학기 랭킹을 다시 불러옴
+  useEffect(() => {
+    load();
+  }, [semesterId]);
+
+  // 검색/정렬/학기 변경 시 표시 개수 초기화
   useEffect(() => {
     setDisplayCount(PAGE_SIZE);
-  }, [searchQuery, sortMode]);
+  }, [searchQuery, sortMode, semesterId]);
 
   const myUid = auth.currentUser?.uid;
   const myRecord = myUid ? allRankings.find((r) => r.uid === myUid) : null;
@@ -128,9 +138,47 @@ export default function RankingPage() {
           <div style={{ fontSize: "24px", fontWeight: 700, marginBottom: "6px", letterSpacing: "-0.5px" }}>
             🏆 랭킹
           </div>
-          <div style={{ fontSize: "13px", color: "#8c96ae" }}>
+          <div style={{ fontSize: "13px", color: "#8c96ae", marginBottom: "12px" }}>
             도전 세트 v1 &nbsp;·&nbsp; {TOTAL_COURSES}과목 &nbsp;·&nbsp; {TOTAL_CREDITS}학점
           </div>
+          <select
+            className="input-text"
+            value={semesterId}
+            onChange={(e) => setSemesterId(e.target.value)}
+            style={{ padding: "6px 10px", fontSize: "13px", width: "auto", cursor: "pointer" }}
+          >
+            {semesterOptions.map((id) => (
+              <option key={id} value={id}>{getSemesterLabel(id)}</option>
+            ))}
+          </select>
+          <div style={{ fontSize: "11px", color: "#b0b8cc", marginTop: "6px" }}>
+            {getSemesterRangeLabel(semesterId)}
+          </div>
+        </div>
+
+        {/* 상단 이동 버튼 — 스크롤 없이 바로 접근 가능하도록 헤더 바로 아래 배치 */}
+        <div className="card" style={{ display: "flex", gap: "8px" }}>
+          <button
+            className="btn btn-block"
+            style={{
+              padding: "11px 0",
+              backgroundColor: "#e54b4b",
+              color: "#fff",
+              borderColor: "#e54b4b",
+              fontWeight: 700,
+              borderRadius: "6px",
+            }}
+            onClick={() => navigate("/challenge")}
+          >
+            🏁 도전하기
+          </button>
+          <button
+            className="btn btn-block"
+            style={{ padding: "11px 0", borderRadius: "6px" }}
+            onClick={() => navigate("/")}
+          >
+            설정 화면으로
+          </button>
         </div>
 
         {/* 내 기록 요약 */}
@@ -207,7 +255,7 @@ export default function RankingPage() {
 
           {!loading && allRankings.length === 0 && !error && (
             <div className="helper-text" style={{ textAlign: "center", padding: "16px 0" }}>
-              아직 등록된 기록이 없습니다.
+              {getSemesterLabel(semesterId)}에는 아직 등록된 기록이 없습니다.
             </div>
           )}
 
@@ -282,30 +330,6 @@ export default function RankingPage() {
           )}
         </div>
 
-        {/* 하단 버튼 */}
-        <div className="card" style={{ display: "flex", gap: "8px" }}>
-          <button
-            className="btn btn-block"
-            style={{
-              padding: "11px 0",
-              backgroundColor: "#e54b4b",
-              color: "#fff",
-              borderColor: "#e54b4b",
-              fontWeight: 700,
-              borderRadius: "6px",
-            }}
-            onClick={() => navigate("/challenge")}
-          >
-            🏁 도전하기
-          </button>
-          <button
-            className="btn btn-block"
-            style={{ padding: "11px 0", borderRadius: "6px" }}
-            onClick={() => navigate("/")}
-          >
-            설정 화면으로
-          </button>
-        </div>
       </main>
       <Footer />
     </>

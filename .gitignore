@@ -21,6 +21,10 @@ dist-ssr
 .env.staging
 .env.test
 
+# Firebase 서비스 계정 키 (관리 스크립트용, 매우 민감한 파일 — 절대 커밋 금지)
+serviceAccountKey.json
+*firebase-adminsdk*.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -31,3 +35,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+serviceAccountKey.json

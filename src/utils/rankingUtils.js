@@ -13,6 +13,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
+import { getSemesterId, clampSemesterId } from "./semesterUtils";
 
 const IN_PROGRESS_TTL_MS = 2 * 60 * 60 * 1000; // 2시간: 방치된 세션 자동 정리 기준
 
@@ -35,6 +36,7 @@ export async function startChallengeSession(nickname, challengeId) {
     uid: user.uid,
     nickname: nickname || "익명",
     challengeId,
+    semesterId: getSemesterId(),
     startedAt: serverTimestamp(),
     status: "in_progress",
     // 완료되지 못하고 방치된 세션을 Firestore TTL로 자동 정리하기 위한 만료 시각
@@ -58,14 +60,16 @@ export async function finishChallengeSession(docId, result) {
 }
 
 /**
- * 특정 challengeId의 완료된 랭킹 목록 조회
+ * 특정 challengeId + semesterId의 완료된 랭킹 목록 조회 (학기별로 구분)
+ * semesterId를 생략하면 현재 학기를 기준으로 조회
  * 클라이언트에서 정렬: 신청 성공 과목 수 내림차순 → 소요 시간 오름차순
  */
-export async function fetchRankings(challengeId) {
+export async function fetchRankings(challengeId, semesterId = getSemesterId()) {
   const q = query(
     collection(db, RANKINGS_COLLECTION),
     where("status", "==", "completed"),
-    where("challengeId", "==", challengeId)
+    where("challengeId", "==", challengeId),
+    where("semesterId", "==", semesterId)
   );
   const snapshot = await getDocs(q);
   const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -105,4 +109,31 @@ export async function renameOwnRecord(docId, newNickname) {
  */
 export async function deleteOwnRecord(docId) {
   await deleteDoc(doc(db, RANKINGS_COLLECTION, docId));
+}
+
+/**
+ * 학기 구분 도입 이전에 만들어진 본인 완료 기록에 semesterId를 채워넣음
+ * startedAt 기준으로 학기를 계산해 채우며, 이미 semesterId가 있는 기록은 건드리지 않음
+ * (firestore.rules에서도 semesterId가 없는 기록에 한해 1회만 채우는 것을 강제)
+ * 다른 사용자의 기록은 채울 수 없으므로, 각자 자신의 브라우저로 접속했을 때 자동 적용됨
+ */
+export async function backfillOwnSemesterIds() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const q = query(
+    collection(db, RANKINGS_COLLECTION),
+    where("uid", "==", user.uid),
+    where("status", "==", "completed")
+  );
+  const snapshot = await getDocs(q);
+  const targets = snapshot.docs.filter((d) => !("semesterId" in d.data()));
+
+  await Promise.all(
+    targets.map((d) => {
+      const startedAt = d.data().startedAt;
+      const semesterId = clampSemesterId(getSemesterId(startedAt?.toDate?.() ?? new Date()));
+      return updateDoc(doc(db, RANKINGS_COLLECTION, d.id), { semesterId });
+    })
+  );
 }

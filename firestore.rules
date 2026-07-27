@@ -21,6 +21,8 @@ service cloud.firestore {
 
       // 세션 완료: 본인만, 한 번만, in_progress → completed
       // + 완료된 본인 기록의 닉네임만 수정 가능 (그 외 필드는 변경 불가 → 기록 조작 방지)
+      // + 학기 구분 도입 이전 기록은 semesterId가 없을 때 본인이 최초 1회만 채워넣기 가능
+      //   (이미 값이 있으면 다시 바꿀 수 없음 → 학기를 옮겨다니는 조작 방지)
       allow update: if request.auth != null
                     && request.auth.uid == resource.data.uid
                     && (
@@ -30,6 +32,10 @@ service cloud.firestore {
                       ||
                       (resource.data.status == 'completed'
                         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['nickname']))
+                      ||
+                      (resource.data.status == 'completed'
+                        && !('semesterId' in resource.data)
+                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['semesterId']))
                     );
 
       // 삭제: 본인의 완료된 기록만 삭제 가능 (타인 기록은 계속 삭제 불가 → 기록 조작 방지)
