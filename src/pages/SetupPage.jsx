@@ -8,6 +8,7 @@ import CourseAddForm from "../components/setup/CourseAddForm";
 import PracticeModeSetup from "../components/setup/PracticeModeSetup";
 import Modal from "../components/common/Modal";
 import HallOfFame from "../components/common/HallOfFame";
+import ReactionGame from "../components/common/ReactionGame";
 import {
   loadStoredState,
   buildInitialState,
@@ -429,6 +430,19 @@ export default function SetupPage() {
             >
               나도 도전하기!
             </button>
+          </div>
+
+          {/* 카드 4: 손풀기 미니게임 */}
+          <div className="card" style={{ marginTop: 0, borderTop: "3px solid #8b5cf6", padding: "20px" }}>
+            <div style={{ textAlign: "center" }}>
+              <div style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532" }}>
+                🎮 손풀기
+              </div>
+              <div className="helper-text" style={{ marginTop: "2px", marginBottom: "14px" }}>
+                시작 전에 반응속도로 가볍게 손 풀어보세요
+              </div>
+            </div>
+            <ReactionGame bordered={false} />
           </div>
         </div>
 
