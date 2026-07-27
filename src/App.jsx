@@ -7,6 +7,7 @@ import ChallengePage from "./pages/ChallengePage";
 import RankingPage from "./pages/RankingPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
+import FeedbackAdminPage from "./pages/FeedbackAdminPage";
 import "./styles/global.css";
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Route path="/ranking" element={<RankingPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
         <Route path="/terms" element={<TermsPage />} />
+        <Route path="/feedback" element={<FeedbackAdminPage />} />
       </Routes>
     </BrowserRouter>
   );

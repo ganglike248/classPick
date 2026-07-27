@@ -35,7 +35,9 @@ function invalidateRankingsCache() {
 
 /** 이미 로그인돼 있으면 그대로, 아니면 익명 로그인 */
 async function ensureSignedIn() {
-  if (auth.currentUser) return auth.currentUser;
+  // 익명 세션이면 그대로 재사용. 익명이 아니면(예: /feedback 관리자 계정으로 로그인된 상태)
+  // 도전 기록이 실명 계정에 붙지 않도록 새 익명 세션으로 전환한다.
+  if (auth.currentUser?.isAnonymous) return auth.currentUser;
   const cred = await signInAnonymously(auth);
   return cred.user;
 }

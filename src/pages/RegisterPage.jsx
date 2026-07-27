@@ -472,6 +472,8 @@ export default function RegisterPage() {
           value={captchaValue}
           inputValue={captchaInput}
           onChange={setCaptchaInput}
+          // 랭킹 도전 모드는 기록을 서로 비교하므로, 캡차 지연이 사람마다 달라지지 않도록 2초로 고정
+          delayMs={pm?.type === "challenge" ? 2000 : undefined}
         />
         <CodeInput onAdd={handleAddByCode} />
         <RegisteredCourses

@@ -43,5 +43,22 @@ service cloud.firestore {
                     && request.auth.uid == resource.data.uid
                     && resource.data.status == 'completed';
     }
+
+    match /feedback/{docId} {
+      // 누구나 작성 가능(로그인 불필요), 형식만 검증. message/createdAt 외 필드는 저장 불가
+      allow create: if request.resource.data.message is string
+                    && request.resource.data.message.size() > 0
+                    && request.resource.data.message.size() <= 1000
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.keys().hasOnly(['message', 'createdAt']);
+
+      // 조회/삭제는 관리자 계정(이메일 로그인)만 가능
+      // 이 이메일은 src/constants/site.js의 FEEDBACK_ADMIN_EMAIL과 반드시 일치해야 함
+      allow read, delete: if request.auth != null
+                           && request.auth.token.email == 'business9498@gmail.com';
+
+      // 수정 불가 (작성 후 내용 변경 방지)
+      allow update: if false;
+    }
   }
 }

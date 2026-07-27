@@ -51,8 +51,8 @@ export default function ChallengePage() {
     setIsLoading(true);
 
     try {
-      // 익명 Firebase 로그인 (없으면 새로 생성)
-      if (!auth.currentUser) {
+      // 익명 Firebase 로그인 (없거나, 관리자 계정 등 익명이 아닌 세션이면 새로 생성)
+      if (!auth.currentUser?.isAnonymous) {
         await signInAnonymously(auth);
       }
 

@@ -188,8 +188,13 @@ export default function RankingPage() {
 
         {/* 학기 구분 도입 이전 데이터 안내 (최초 학기에만 표시) */}
         {semesterId === MIN_SEMESTER_ID && (
-          <div className="info-callout" style={{ borderRadius: "8px" }}>
-            예전 기록은 한 사람당 하나로 합쳐졌어요. 그래서 예전에 보던 목록과 다르게 보일 수 있어요.
+          <div className="info-callout" style={{ borderRadius: "8px", lineHeight: 1.7 }}>
+            <div>예전 기록은 한 사람당 하나로 합쳐졌어요. 그래서 예전에 보던 목록과 다르게 보일 수 있어요.</div>
+            <div style={{ marginTop: "6px" }}>
+              이 학기 기록에는 캡차(보안문자) 표시 지연이 포함되지 않았어요. 다음 학기부터는 캡차가
+              뜨는 데 최대 12초가 더해지니, 이 학기 기록이 다음 학기 기록보다 최대 12초 정도 더
+              빠르게 보일 수 있어요.
+            </div>
           </div>
         )}
 
