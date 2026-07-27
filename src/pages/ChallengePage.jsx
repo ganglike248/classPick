@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
 import Modal from "../components/common/Modal";
+import HallOfFame from "../components/common/HallOfFame";
 import {
   CHALLENGE_CART_COURSES,
   CHALLENGE_CODE_COURSES,
@@ -10,7 +11,14 @@ import {
   CHALLENGE_MAX_CREDITS,
 } from "../data/challengeData";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
-import { buildInitialState, saveState, loadSavedNickname, saveNickname } from "../utils/storage";
+import {
+  buildInitialState,
+  saveState,
+  loadSavedNickname,
+  saveNickname,
+  STORAGE_KEY,
+  TRIAL_BACKUP_KEY,
+} from "../utils/storage";
 import { auth } from "../firebase";
 import { signInAnonymously } from "firebase/auth";
 import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
@@ -50,6 +58,15 @@ export default function ChallengePage() {
 
       // 다음 도전 때 자동으로 채워지도록 닉네임 기억
       saveNickname(nickname.trim());
+
+      // 랭킹 도전 모드는 사용자의 실제 설정과 무관한 임시 과목을 쓰므로,
+      // 기존 설정을 백업해뒀다가 도전이 끝나면 복원한다 (체험 모드와 동일한 방식).
+      // 이미 백업이 있다면(예: 결과 화면 → 랭킹 → 재도전처럼 홈을 거치지 않고 다시 도전한 경우)
+      // 그 사이의 챌린지 상태로 덮어쓰지 않도록 건드리지 않는다.
+      if (localStorage.getItem(TRIAL_BACKUP_KEY) === null) {
+        const currentRaw = localStorage.getItem(STORAGE_KEY);
+        localStorage.setItem(TRIAL_BACKUP_KEY, currentRaw || "");
+      }
 
       // 챌린지 과목으로 초기 state 구성
       const cartRows = CHALLENGE_CART_COURSES.map((c) => ({ ...c }));
@@ -97,59 +114,24 @@ export default function ChallengePage() {
           </div>
         </div>
 
-        {/* 참가 등록 - 주요 CTA */}
+        {/* 명예의 전당 */}
         <div className="card">
-          <div className="section-title">참가 등록</div>
-          <div className="helper-text" style={{ marginBottom: "8px" }}>
-            {wasPrefilled
-              ? "이전에 사용한 닉네임이 자동으로 채워졌어요. 그대로 쓰거나 자유롭게 바꿔보세요 (최대 12자)"
-              : "랭킹에 표시될 닉네임을 입력하고 도전을 시작하세요 (최대 12자)"}
-          </div>
-          <input
-            type="text"
-            className="input-text"
-            maxLength={12}
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            placeholder="닉네임 입력"
-            style={{ width: "100%", padding: "9px 12px", fontSize: "14px" }}
-            onKeyDown={(e) => e.key === "Enter" && handleStartClick()}
-          />
-          <div className="helper-text" style={{ marginBottom: "12px", marginTop: "6px", lineHeight: 1.6 }}>
-            이 닉네임은 이 브라우저에 저장되어 다음 도전 때 자동으로 채워져요.<br />
-            다른 사람과 닉네임이 같아도 괜찮아요 — 이 브라우저를 기준으로 내 기록이 따로 관리돼요.
-          </div>
-          <button
-            className="btn btn-primary btn-block"
-            style={{
-              padding: "13px 0",
-              backgroundColor: "#e54b4b",
-              color: "#fff",
-              borderColor: "#e54b4b",
-              fontSize: "15px",
-              fontWeight: 700,
-              borderRadius: "6px",
-              marginBottom: "8px",
-            }}
-            onClick={handleStartClick}
-            disabled={isLoading}
-          >
-            {isLoading ? "준비 중..." : "🏁 도전 시작"}
-          </button>
-          <div style={{ display: "flex", gap: "8px" }}>
+          <HallOfFame variant="podium" />
+          <div style={{ textAlign: "center", marginTop: "14px" }}>
             <button
-              className="btn btn-sm btn-block"
-              style={{ padding: "8px 0", borderRadius: "6px" }}
+              className="btn btn-block"
+              style={{
+                padding: "9px 0",
+                backgroundColor: "#dcebff",
+                color: "#478ef0",
+                borderColor: "#a9cdf7",
+                fontWeight: 600,
+                fontSize: "13px",
+                borderRadius: "6px",
+              }}
               onClick={() => navigate("/ranking")}
             >
-              🏆 랭킹 보기
-            </button>
-            <button
-              className="btn btn-sm btn-block"
-              style={{ padding: "8px 0", color: "#8c96ae", borderRadius: "6px" }}
-              onClick={() => navigate("/")}
-            >
-              설정 화면으로
+              🏆 전체 랭킹 보기
             </button>
           </div>
         </div>
@@ -241,6 +223,70 @@ export default function ChallengePage() {
               </tr>
             </tbody>
           </table>
+        </div>
+
+        {/* 참가 등록 - 설명을 다 읽은 뒤 도전하도록 가장 아래 배치 */}
+        <div className="card">
+          <div className="section-title">참가 등록</div>
+          <div className="helper-text" style={{ marginBottom: "8px" }}>
+            {wasPrefilled
+              ? "이전에 사용한 닉네임이 자동으로 채워졌어요. 그대로 쓰거나 자유롭게 바꿔보세요 (최대 12자)"
+              : "랭킹에 표시될 닉네임을 입력하고 도전을 시작하세요 (최대 12자)"}
+          </div>
+          <input
+            type="text"
+            className="input-text"
+            maxLength={12}
+            value={nickname}
+            onChange={(e) => setNickname(e.target.value)}
+            placeholder="닉네임 입력"
+            style={{ width: "100%", padding: "9px 12px", fontSize: "14px" }}
+            onKeyDown={(e) => e.key === "Enter" && handleStartClick()}
+          />
+          <div
+            style={{
+              background: "#fff8f8",
+              border: "1px solid #fac5c5",
+              borderLeft: "4px solid #e54b4b",
+              borderRadius: "4px",
+              padding: "10px 12px",
+              marginBottom: "14px",
+              marginTop: "6px",
+            }}
+          >
+            <div style={{ fontWeight: 700, color: "#c0392b", fontSize: "13px", marginBottom: "4px" }}>
+              ⚠️ 시작 전 꼭 확인하세요
+            </div>
+            <ul style={{ margin: 0, paddingLeft: "16px", fontSize: "12px", color: "#374151", lineHeight: 1.7 }}>
+              <li>시작하면 도중에 멈추거나 취소할 수 없어요.</li>
+              <li>전 과목을 모두 신청해야만 랭킹에 기록돼요.</li>
+              <li>코드 입력 과목 번호는 시작 후 다시 볼 수 없으니 미리 기억해두세요.</li>
+            </ul>
+          </div>
+          <button
+            className="btn btn-primary btn-block"
+            style={{
+              padding: "13px 0",
+              backgroundColor: "#e54b4b",
+              color: "#fff",
+              borderColor: "#e54b4b",
+              fontSize: "15px",
+              fontWeight: 700,
+              borderRadius: "6px",
+              marginBottom: "8px",
+            }}
+            onClick={handleStartClick}
+            disabled={isLoading}
+          >
+            {isLoading ? "준비 중..." : "🏁 도전 시작"}
+          </button>
+          <button
+            className="btn btn-sm btn-block"
+            style={{ padding: "8px 0", color: "#8c96ae", borderRadius: "6px" }}
+            onClick={() => navigate("/")}
+          >
+            홈 화면으로
+          </button>
         </div>
       </main>
       <Footer />

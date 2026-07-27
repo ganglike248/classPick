@@ -78,15 +78,8 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
   };
 
   return (
-    <div
-      style={{
-        marginBottom: "16px",
-        borderTop: "1px solid #e0e2e8",
-        paddingTop: "10px",
-        marginTop: "10px",
-      }}
-    >
-      <div className="login-panel__field-label">프리셋 저장/불러오기</div>
+    <div className="sidebar-section">
+      <div className="sidebar-section__label">💾 프리셋 저장/불러오기</div>
       <select
         className="input-text"
         style={{ width: "100%", marginBottom: "8px" }}

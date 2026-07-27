@@ -7,6 +7,7 @@ import CourseTable from "../components/setup/CourseTable";
 import CourseAddForm from "../components/setup/CourseAddForm";
 import PracticeModeSetup from "../components/setup/PracticeModeSetup";
 import Modal from "../components/common/Modal";
+import HallOfFame from "../components/common/HallOfFame";
 import {
   loadStoredState,
   buildInitialState,
@@ -16,9 +17,6 @@ import {
 } from "../utils/storage";
 import { checkDuplicates, hasCourseId, generateRandomId, SAMPLE_NAMES } from "../utils/courseUtils";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
-import { fetchRankings, backfillOwnSemesterIds } from "../utils/rankingUtils";
-import { CHALLENGE_ID } from "../data/challengeData";
-import { getSemesterId, getSemesterLabel, getSemesterRangeLabel } from "../utils/semesterUtils";
 import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
 
 function stateToRows(state) {
@@ -79,25 +77,6 @@ export default function SetupPage() {
   const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
   const [showPracticeModal, setShowPracticeModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
-
-  // 명예의 전당: 이번 학기 랭킹 상위 3위
-  const [hallOfFame, setHallOfFame] = useState([]);
-  const currentSemesterId = getSemesterId();
-
-  useEffect(() => {
-    let cancelled = false;
-    // 학기 구분 도입 이전 내 기록이 있다면 조용히 채워 넣은 뒤 명예의 전당을 불러옴
-    backfillOwnSemesterIds()
-      .catch((e) => console.error("semesterId 백필 실패:", e))
-      .then(() => fetchRankings(CHALLENGE_ID, currentSemesterId))
-      .then((data) => {
-        if (!cancelled) setHallOfFame(data.slice(0, 3));
-      })
-      .catch((e) => console.error("명예의 전당 로드 실패:", e));
-    return () => {
-      cancelled = true;
-    };
-  }, [currentSemesterId]);
 
   const settersMap = { cart: setCartRows, reg: setRegRows, code: setCodeRows };
 
@@ -301,31 +280,21 @@ export default function SetupPage() {
             ⚡ 지금 바로 체험하기
           </button>
 
-          {/* 신청가능 학점 - 인라인 */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              paddingTop: "12px",
-              paddingBottom: "12px",
-              borderTop: "1px solid #e6eaf3",
-              borderBottom: "1px solid #e6eaf3",
-            }}
-          >
-            <span className="login-panel__field-label" style={{ margin: 0, whiteSpace: "nowrap" }}>
-              신청가능 학점
-            </span>
-            <input
-              type="number"
-              className="input-text"
-              value={maxCredit}
-              min={1}
-              max={30}
-              style={{ width: "60px", textAlign: "right" }}
-              onChange={(e) => setMaxCredit(e.target.value)}
-            />
-            <span className="helper-text">학점 (기본 20)</span>
+          {/* 신청가능 학점 */}
+          <div className="sidebar-section">
+            <div className="sidebar-section__label">🎓 신청가능 학점</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <input
+                type="number"
+                className="input-text"
+                value={maxCredit}
+                min={1}
+                max={30}
+                style={{ width: "70px", textAlign: "right" }}
+                onChange={(e) => setMaxCredit(e.target.value)}
+              />
+              <span className="helper-text">학점 (기본 20)</span>
+            </div>
           </div>
 
           {/* 실전 모드 설정 */}
@@ -339,49 +308,18 @@ export default function SetupPage() {
           <PresetManager getCurrentPreset={getCurrentPreset} onLoad={handleLoadPreset} />
 
           {/* 랭킹 도전 모드 */}
-          <div
-            style={{
-              marginTop: "14px",
-              paddingTop: "14px",
-              borderTop: "1px solid #e6eaf3",
-            }}
-          >
-            {/* 명예의 전당 */}
-            <div style={{ marginBottom: "10px" }}>
-              <div style={{ fontSize: "13px", fontWeight: 700, color: "#1e2532", marginBottom: "2px" }}>
-                🏅 명예의 전당
-                <span style={{ fontWeight: 500, color: "#8c96ae", fontSize: "11px", marginLeft: "6px" }}>
-                  · {getSemesterLabel(currentSemesterId)}
-                </span>
-              </div>
-              <div style={{ fontSize: "10px", color: "#b0b8cc", marginBottom: "6px" }}>
-                {getSemesterRangeLabel(currentSemesterId)}
-              </div>
-              {hallOfFame.length === 0 ? (
-                <div className="helper-text">아직 이번 학기 기록이 없어요. 첫 도전자가 되어보세요!</div>
-              ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                  {hallOfFame.map((r, i) => {
-                    const ms = r.endedAt?.toMillis?.() - r.startedAt?.toMillis?.();
-                    const sec = ms > 0 ? (ms / 1000).toFixed(2) : "-";
-                    const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉";
-                    return (
-                      <div
-                        key={r.id}
-                        style={{ display: "flex", justifyContent: "space-between", fontSize: "12px", padding: "2px 0" }}
-                      >
-                        <span>{medal} {r.nickname}</span>
-                        <span style={{ color: "#478ef0", fontWeight: 600 }}>{sec}초</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+          <div className="sidebar-section">
+            <div className="sidebar-section__label">🏆 랭킹 도전 모드</div>
+            <div className="helper-text" style={{ marginBottom: "10px" }}>
+              모든 사용자가 동일한 과목으로 실력을 겨뤄보세요
             </div>
+
+            <HallOfFame bordered={false} />
 
             <button
               className="btn btn-block"
               style={{
+                marginTop: "12px",
                 backgroundColor: "#e54b4b",
                 color: "#fff",
                 borderColor: "#e54b4b",
@@ -395,21 +333,12 @@ export default function SetupPage() {
                 navigate("/challenge");
               }}
             >
-              🏆 랭킹 도전 모드
+              나도 도전하기!
             </button>
-            <div className="helper-text" style={{ textAlign: "center", marginTop: "5px" }}>
-              모든 사용자가 동일한 과목으로 경쟁합니다
-            </div>
           </div>
 
           {/* 초기화 */}
-          <div
-            style={{
-              marginTop: "12px",
-              paddingTop: "12px",
-              borderTop: "1px solid #e6eaf3",
-            }}
-          >
+          <div className="sidebar-section">
             <button
               className="btn btn-danger btn-block"
               style={{ borderRadius: "6px", padding: "7px 0", fontSize: "12px" }}

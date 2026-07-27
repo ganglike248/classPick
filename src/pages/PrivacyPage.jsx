@@ -69,7 +69,7 @@ export default function PrivacyPage() {
             style={{ fontSize: "13px" }}
             onClick={() => navigate("/")}
           >
-            돌아가기
+            홈 화면으로
           </button>
         </div>
       </main>

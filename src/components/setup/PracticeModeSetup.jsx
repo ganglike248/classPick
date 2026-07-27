@@ -9,22 +9,9 @@ export default function PracticeModeSetup({
   onDifficultyChange,
 }) {
   return (
-    <div
-      style={{
-        paddingTop: "10px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          marginBottom: "10px"
-        }}
-      >
-        <div className="login-panel__field-label" style={{ margin: 0 }}>
-          실전 모드
-        </div>
+    <div className="sidebar-section">
+      <div className="sidebar-section__label" style={{ justifyContent: "space-between" }}>
+        <span>⏱ 실전 모드</span>
         <button
           type="button"
           className="btn btn-sm"

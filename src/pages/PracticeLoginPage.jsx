@@ -54,7 +54,10 @@ export default function PracticeLoginPage() {
     <div style={{ minHeight: "100vh", background: "#f2f4f9", display: "flex", flexDirection: "column" }}>
       {/* 헤더 */}
       <header style={{ background: "#1a2235", borderBottom: "1px solid #111827" }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto", height: "58px", display: "flex", alignItems: "center", padding: "0 16px" }}>
+        <div
+          style={{ maxWidth: "1000px", margin: "0 auto", height: "58px", display: "flex", alignItems: "center", padding: "0 16px", cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
           <span style={{ fontSize: "16px", fontWeight: 700, color: "#fff", letterSpacing: "-0.3px" }}>수강신청 연습</span>
           <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.38)", marginLeft: "10px" }}>모의 연습 시스템</span>
         </div>
@@ -178,7 +181,7 @@ export default function PracticeLoginPage() {
               style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color: "#8c96ae", padding: "4px 8px" }}
               onClick={() => navigate("/")}
             >
-              설정 화면으로 돌아가기
+              홈 화면으로
             </button>
           </div>
         </div>

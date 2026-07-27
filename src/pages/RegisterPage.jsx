@@ -468,6 +468,7 @@ export default function RegisterPage() {
           onApply={handleApplyFromCart}
         />
         <Captcha
+          key={captchaValue}
           value={captchaValue}
           inputValue={captchaInput}
           onChange={setCaptchaInput}

@@ -177,7 +177,7 @@ export default function RankingPage() {
             style={{ padding: "11px 0", borderRadius: "6px" }}
             onClick={() => navigate("/")}
           >
-            설정 화면으로
+            홈 화면으로
           </button>
         </div>
 
@@ -189,7 +189,7 @@ export default function RankingPage() {
             <div className="card" style={{ borderLeft: "4px solid #478ef0" }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
                 <div>
-                  <div style={{ fontSize: "12px", color: "#8c96ae", marginBottom: "2px" }}>내 기록</div>
+                  <div style={{ fontSize: "12px", color: "#8c96ae", marginBottom: "2px" }}>내 최고 기록</div>
                   <div style={{ fontSize: "15px", fontWeight: 700 }}>
                     <span style={{ color: "#478ef0" }}>{myElapsedSec}초</span>
                     <span style={{ color: "#8c96ae", fontWeight: 500 }}> · 전체 {myRecord.rank + 1}위 · {myRecord.nickname}</span>
