@@ -78,8 +78,10 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
   };
 
   return (
-    <div className="sidebar-section">
-      <div className="sidebar-section__label">💾 프리셋 저장/불러오기</div>
+    <div>
+      <div style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532", marginBottom: "8px" }}>
+        프리셋 저장/불러오기
+      </div>
       <select
         className="input-text"
         style={{ width: "100%", marginBottom: "8px" }}

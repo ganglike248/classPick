@@ -15,14 +15,24 @@ import {
   STORAGE_KEY,
   TRIAL_BACKUP_KEY,
 } from "../utils/storage";
-import { checkDuplicates, hasCourseId, generateRandomId, SAMPLE_NAMES } from "../utils/courseUtils";
+import {
+  checkDuplicates,
+  hasCourseId,
+  generateRandomId,
+  SAMPLE_NAMES,
+} from "../utils/courseUtils";
 import { DIFFICULTY_CONFIGS } from "../utils/practiceUtils";
-import { trackPageView, trackButtonClick, trackUIInteraction } from "../utils/analytics";
+import {
+  trackPageView,
+  trackButtonClick,
+  trackUIInteraction,
+} from "../utils/analytics";
 
 function stateToRows(state) {
   if (!state) return { cartRows: [], regRows: [], codeRows: [] };
 
-  const safeCredit = (c) => (c && typeof c.credit === "number" && c.credit > 0 ? c.credit : 3);
+  const safeCredit = (c) =>
+    c && typeof c.credit === "number" && c.credit > 0 ? c.credit : 3;
   const registeredSet = new Set(state.registeredCourseIds || []);
 
   const cartRows = (state.cartCourseIds || [])
@@ -56,7 +66,11 @@ export default function SetupPage() {
   const trialBackup = localStorage.getItem(TRIAL_BACKUP_KEY);
   if (trialBackup !== null) {
     if (trialBackup) {
-      try { localStorage.setItem(STORAGE_KEY, trialBackup); } catch (e) { /* ignore */ }
+      try {
+        localStorage.setItem(STORAGE_KEY, trialBackup);
+      } catch (e) {
+        /* ignore */
+      }
     } else {
       // 체험 전 아무 설정도 없었으면 체험 상태 제거
       localStorage.removeItem(STORAGE_KEY);
@@ -101,7 +115,7 @@ export default function SetupPage() {
         { id: row.id, name: row.name, credit: row.credit },
       ]);
     },
-    [cartRows, regRows, codeRows]
+    [cartRows, regRows, codeRows],
   );
 
   const handleAdd = useCallback((course, target) => {
@@ -110,7 +124,7 @@ export default function SetupPage() {
 
   const existsCheck = useCallback(
     (id) => hasCourseId(cartRows, regRows, codeRows, id),
-    [cartRows, regRows, codeRows]
+    [cartRows, regRows, codeRows],
   );
 
   const handleQuickTrial = () => {
@@ -140,7 +154,7 @@ export default function SetupPage() {
 
   const getCurrentPreset = useCallback(
     () => ({ cartRows, regRows, codeRows, maxCredit }),
-    [cartRows, regRows, codeRows, maxCredit]
+    [cartRows, regRows, codeRows, maxCredit],
   );
 
   const handleLoadPreset = useCallback((presetData) => {
@@ -162,16 +176,27 @@ export default function SetupPage() {
       alert("신청가능 학점이 올바르지 않아 기본값 20학점으로 설정합니다.");
       mc = 20;
     }
-    const newState = buildInitialState(cartRows, regRows, codeRows, mc, practiceModeSettings);
+    const newState = buildInitialState(
+      cartRows,
+      regRows,
+      codeRows,
+      mc,
+      practiceModeSettings,
+    );
     saveState(newState);
     return true;
   }
 
   const handleEnter = () => {
     if (practiceEnabled) {
-      trackButtonClick("start_practice_button", "수강신청 시작하기 (실전 모드)");
+      trackButtonClick(
+        "start_practice_button",
+        "수강신청 시작하기 (실전 모드)",
+      );
       if (cartRows.length === 0 && codeRows.length === 0) {
-        alert("실전 모드를 사용하려면 수강꾸러미 또는 코드 입력 과목을 하나 이상 추가해 주세요.");
+        alert(
+          "실전 모드를 사용하려면 수강꾸러미 또는 코드 입력 과목을 하나 이상 추가해 주세요.",
+        );
         return;
       }
       const practiceModeSettings = {
@@ -199,7 +224,7 @@ export default function SetupPage() {
   const handleReset = () => {
     if (
       !confirm(
-        "모든 저장된 수강신청 연습 데이터를 삭제하시겠습니까? 프리셋은 그대로 유지됩니다."
+        "모든 저장된 수강신청 연습 데이터를 삭제하시겠습니까? 프리셋은 그대로 유지됩니다.",
       )
     )
       return;
@@ -213,77 +238,80 @@ export default function SetupPage() {
 
   const diffLabel = DIFFICULTY_CONFIGS[practiceDifficulty]?.label ?? "";
   const diffRange = DIFFICULTY_CONFIGS[practiceDifficulty];
-  const cartTotalCredits = cartRows.reduce((sum, r) => sum + (r.credit ?? 3), 0);
+  const cartTotalCredits = cartRows.reduce(
+    (sum, r) => sum + (r.credit ?? 3),
+    0,
+  );
 
   return (
     <>
       <TopBand />
       <main className="page-wrap login-layout">
-        {/* 왼쪽: 입장 + 신청가능 학점 설정 */}
-        <section className="card">
-          <div style={{ marginBottom: "20px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-              <h1 className="login-panel__title" style={{ margin: 0 }}>수강신청 연습</h1>
+        {/* 왼쪽: 모드 선택 + 설정 */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          {/* 페이지 헤더 */}
+          <div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <h1 className="login-panel__title" style={{ margin: 0 }}>
+                수강신청 연습
+              </h1>
               <button
                 className="btn btn-sm"
-                style={{
-                  backgroundColor: "#22c55e",
-                  color: "#fff",
-                  borderColor: "#22c55e",
-                  borderRadius: "5px",
-                  fontWeight: 600,
-                }}
                 onClick={() => {
                   trackButtonClick("help_button", "설명서");
                   setShowHelpModal(true);
                 }}
               >
-                설명서
+                📖 설명서
               </button>
             </div>
-            <div style={{ fontSize: "12px", color: "#8c96ae" }}>과목을 설정하고 수강신청을 연습하세요</div>
+            <div
+              style={{ fontSize: "12px", color: "#8c96ae", marginTop: "4px" }}
+            >
+              세 가지 방법 중 하나를 골라 시작해보세요
+            </div>
           </div>
 
-          {/* 시작 버튼 - 주요 CTA */}
-          <button
-            className="btn btn-primary btn-block"
+          {/* 카드 1: 자유 연습 모드 */}
+          <div
+            className="card"
             style={{
-              backgroundColor: "#478ef0",
-              color: "#fff",
-              borderColor: "#478ef0",
-              borderRadius: "6px",
-              padding: "14px 0",
-              fontSize: "15px",
-              fontWeight: 700,
-              marginBottom: "8px",
+              marginTop: 0,
+              borderTop: "3px solid #478ef0",
+              padding: "20px",
             }}
-            onClick={handleEnter}
           >
-            수강신청 시작하기
-          </button>
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532" }}
+              >
+                📝 자유 연습 모드
+              </div>
+              <div className="helper-text" style={{ marginTop: "2px" }}>
+                과목을 직접 설정하고 원하는 만큼 연습해요
+              </div>
+            </div>
 
-          {/* 체험 모드 버튼 */}
-          <button
-            className="btn btn-block"
-            style={{
-              backgroundColor: "#22c55e",
-              color: "#fff",
-              borderColor: "#22c55e",
-              borderRadius: "6px",
-              padding: "10px 0",
-              fontSize: "13px",
-              fontWeight: 700,
-              marginBottom: "14px",
-            }}
-            onClick={handleQuickTrial}
-          >
-            ⚡ 지금 바로 체험하기
-          </button>
-
-          {/* 신청가능 학점 */}
-          <div className="sidebar-section">
-            <div className="sidebar-section__label">🎓 신청가능 학점</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                marginTop: "14px",
+              }}
+            >
+              <span
+                className="login-panel__field-label"
+                style={{ margin: 0, whiteSpace: "nowrap" }}
+              >
+                신청가능 학점
+              </span>
               <input
                 type="number"
                 className="input-text"
@@ -295,23 +323,88 @@ export default function SetupPage() {
               />
               <span className="helper-text">학점 (기본 20)</span>
             </div>
+
+            <PracticeModeSetup
+              enabled={practiceEnabled}
+              onToggle={() => setPracticeEnabled((v) => !v)}
+              difficulty={practiceDifficulty}
+              onDifficultyChange={setPracticeDifficulty}
+            />
+
+            <button
+              className="btn btn-block"
+              style={{
+                marginTop: "16px",
+                backgroundColor: "#478ef0",
+                color: "#fff",
+                borderColor: "#478ef0",
+                borderRadius: "8px",
+                padding: "13px 0",
+                fontSize: "14px",
+                fontWeight: 700,
+              }}
+              onClick={handleEnter}
+            >
+              수강신청 시작하기
+            </button>
           </div>
 
-          {/* 실전 모드 설정 */}
-          <PracticeModeSetup
-            enabled={practiceEnabled}
-            onToggle={() => setPracticeEnabled((v) => !v)}
-            difficulty={practiceDifficulty}
-            onDifficultyChange={setPracticeDifficulty}
-          />
+          {/* 카드 2: 체험 모드 */}
+          <div
+            className="card"
+            style={{
+              marginTop: 0,
+              borderTop: "3px solid #22c55e",
+              padding: "20px",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532" }}
+            >
+              ⚡ 체험 모드
+            </div>
+            <div className="helper-text" style={{ margin: "2px 0 16px" }}>
+              설정 없이 임의 과목 6개로 지금 바로 체험해요
+            </div>
+            <button
+              className="btn btn-block"
+              style={{
+                backgroundColor: "#22c55e",
+                color: "#fff",
+                borderColor: "#22c55e",
+                borderRadius: "8px",
+                padding: "13px 0",
+                fontSize: "14px",
+                fontWeight: 700,
+              }}
+              onClick={handleQuickTrial}
+            >
+              지금 바로 체험하기
+            </button>
+          </div>
 
-          <PresetManager getCurrentPreset={getCurrentPreset} onLoad={handleLoadPreset} />
-
-          {/* 랭킹 도전 모드 */}
-          <div className="sidebar-section">
-            <div className="sidebar-section__label">🏆 랭킹 도전 모드</div>
-            <div className="helper-text" style={{ marginBottom: "10px" }}>
-              모든 사용자가 동일한 과목으로 실력을 겨뤄보세요
+          {/* 카드 3: 랭킹 도전 모드 */}
+          <div
+            className="card"
+            style={{
+              marginTop: 0,
+              borderTop: "3px solid #e54b4b",
+              padding: "20px",
+            }}
+          >
+            <div style={{ textAlign: "center" }}>
+              <div
+                style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532" }}
+              >
+                🏆 랭킹 도전 모드
+              </div>
+              <div
+                className="helper-text"
+                style={{ marginTop: "2px", marginBottom: "14px" }}
+              >
+                모든 사용자가 동일한 과목으로 실력을 겨뤄보세요
+              </div>
             </div>
 
             <HallOfFame bordered={false} />
@@ -319,14 +412,14 @@ export default function SetupPage() {
             <button
               className="btn btn-block"
               style={{
-                marginTop: "12px",
+                marginTop: "16px",
                 backgroundColor: "#e54b4b",
                 color: "#fff",
                 borderColor: "#e54b4b",
-                padding: "11px 0",
+                borderRadius: "8px",
+                padding: "13px 0",
+                fontSize: "14px",
                 fontWeight: 700,
-                borderRadius: "6px",
-                fontSize: "13px",
               }}
               onClick={() => {
                 trackButtonClick("challenge_mode_button", "랭킹 도전 모드");
@@ -336,37 +429,42 @@ export default function SetupPage() {
               나도 도전하기!
             </button>
           </div>
-
-          {/* 초기화 */}
-          <div className="sidebar-section">
-            <button
-              className="btn btn-danger btn-block"
-              style={{ borderRadius: "6px", padding: "7px 0", fontSize: "12px" }}
-              onClick={handleReset}
-            >
-              과목 설정 초기화
-            </button>
-            <div className="helper-text" style={{ marginTop: "5px", textAlign: "center" }}>
-              오류 발생 시 초기화 후 재시도해 주세요
-            </div>
-          </div>
-        </section>
+        </div>
 
         {/* 오른쪽: 초기 과목 설정 */}
-        <section className="card">
+        <section className="card" style={{ marginTop: 0 }}>
           <div style={{ marginBottom: "14px" }}>
             <div className="section-title">초기 과목 설정</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "3px" }}
+            >
               <div className="helper-text">
-                <strong style={{ color: "#374151" }}>수강꾸러미</strong> — 신청 버튼으로 신청할 과목
+                <strong style={{ color: "#374151" }}>수강꾸러미</strong> — 신청
+                버튼으로 신청할 과목
               </div>
               <div className="helper-text">
-                <strong style={{ color: "#374151" }}>이미 신청된 과목</strong> — 시작 시 이미 등록된 상태인 과목
+                <strong style={{ color: "#374151" }}>이미 신청된 과목</strong> —
+                시작 시 이미 등록된 상태인 과목
               </div>
               <div className="helper-text">
-                <strong style={{ color: "#374151" }}>코드 입력 과목</strong> — 강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)
+                <strong style={{ color: "#374151" }}>코드 입력 과목</strong> —
+                강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)
               </div>
             </div>
+          </div>
+
+          {/* 프리셋 저장/불러오기 */}
+          <div
+            style={{
+              marginTop: "16px",
+              paddingTop: "14px",
+              borderTop: "1px solid #e6eaf3",
+            }}
+          >
+            <PresetManager
+              getCurrentPreset={getCurrentPreset}
+              onLoad={handleLoadPreset}
+            />
           </div>
 
           {/* 수강꾸러미 */}
@@ -380,7 +478,11 @@ export default function SetupPage() {
               marginBottom: "8px",
             }}
           >
-            <span style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}>수강꾸러미</span>
+            <span
+              style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
+            >
+              수강꾸러미
+            </span>
             {cartRows.length > 0 && (
               <span className="badge">{cartRows.length}과목</span>
             )}
@@ -393,8 +495,21 @@ export default function SetupPage() {
           />
 
           {/* 이미 신청된 과목 */}
-          <div style={{ marginTop: "20px", paddingTop: "14px", borderTop: "1px solid #e6eaf3", display: "flex", alignItems: "center", marginBottom: "8px" }}>
-            <span style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}>이미 신청된 과목</span>
+          <div
+            style={{
+              marginTop: "20px",
+              paddingTop: "14px",
+              borderTop: "1px solid #e6eaf3",
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "8px",
+            }}
+          >
+            <span
+              style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
+            >
+              이미 신청된 과목
+            </span>
             {regRows.length > 0 && (
               <span className="badge">{regRows.length}과목</span>
             )}
@@ -407,14 +522,31 @@ export default function SetupPage() {
           />
 
           {/* 코드 입력 과목 */}
-          <div style={{ marginTop: "20px", paddingTop: "14px", borderTop: "1px solid #e6eaf3", display: "flex", alignItems: "center", marginBottom: "4px" }}>
-            <span style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}>코드 입력 과목</span>
+          <div
+            style={{
+              marginTop: "20px",
+              paddingTop: "14px",
+              borderTop: "1px solid #e6eaf3",
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "4px",
+            }}
+          >
+            <span
+              style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
+            >
+              코드 입력 과목
+            </span>
             {codeRows.length > 0 && (
               <span className="badge">{codeRows.length}과목</span>
             )}
           </div>
-          <p className="helper-text" style={{ marginBottom: "8px", marginTop: "4px" }}>
-            화면에 표시되지 않으며, 강좌번호를 직접 입력해야 신청됩니다. 학점 제한에 포함됩니다.
+          <p
+            className="helper-text"
+            style={{ marginBottom: "8px", marginTop: "4px" }}
+          >
+            화면에 표시되지 않으며, 강좌번호를 직접 입력해야 신청됩니다. 학점
+            제한에 포함됩니다.
           </p>
           <CourseTable
             rows={codeRows}
@@ -424,6 +556,29 @@ export default function SetupPage() {
           />
 
           <CourseAddForm onAdd={handleAdd} existsCheck={existsCheck} />
+
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "20px",
+              paddingTop: "14px",
+              borderTop: "1px solid #e6eaf3",
+            }}
+          >
+            <button
+              onClick={handleReset}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "12px",
+                color: "#b0b8cc",
+                textDecoration: "underline",
+              }}
+            >
+              과목 설정 초기화
+            </button>
+          </div>
         </section>
       </main>
       <Footer variant="setup" />
@@ -435,134 +590,337 @@ export default function SetupPage() {
           onConfirm={() => setShowHelpModal(false)}
           confirmText="닫기"
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", fontSize: "13px", color: "#374151", lineHeight: 1.8 }}>
-
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "20px",
+              fontSize: "13px",
+              color: "#374151",
+              lineHeight: 1.8,
+            }}
+          >
             {/* 1. 서비스 소개 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #478ef0",
+                }}
+              >
                 이 서비스는 무엇인가요?
               </div>
               <p style={{ margin: "0 0 8px" }}>
-                대학교 수강신청을 미리 연습할 수 있는 <strong>모의 수강신청 시스템</strong>이에요.
-                실제 수강신청처럼 과목을 설정하고, 캡차 인증 후 신청하는 전 과정을 체험할 수 있어요.
-                처음 수강신청을 앞둔 신입생이나, 빠른 신청 속도를 키우고 싶은 분께 유용해요!
+                대학교 수강신청을 미리 연습할 수 있는{" "}
+                <strong>모의 수강신청 시스템</strong>이에요. 실제 수강신청처럼
+                과목을 설정하고, 캡차 인증 후 신청하는 전 과정을 체험할 수
+                있어요. 처음 수강신청을 앞둔 신입생이나, 빠른 신청 속도를 키우고
+                싶은 분께 유용해요!
               </p>
               <p style={{ margin: 0 }}>
-                자유롭게 연습하는 것에 익숙해졌다면, <strong>실전 모드</strong>로 실제 수강신청 당일 상황을 똑같이 재현해보세요.
-                그리고 자신 있어졌다면 <strong>랭킹 도전 모드</strong>에 도전해서 다른 사람들과 실력을 겨뤄보세요! 🏆
+                자유롭게 연습하는 것에 익숙해졌다면, <strong>실전 모드</strong>
+                로 실제 수강신청 당일 상황을 똑같이 재현해보세요. 그리고 자신
+                있어졌다면 <strong>랭킹 도전 모드</strong>에 도전해서 다른
+                사람들과 실력을 겨뤄보세요! 🏆
               </p>
             </section>
 
             {/* 2. 기본 사용법 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #478ef0",
+                }}
+              >
                 기본 사용법 (3단계)
               </div>
               <ol style={{ margin: 0, paddingLeft: "18px" }}>
-                <li style={{ marginBottom: "4px" }}><strong>과목 설정</strong> — 오른쪽 패널에서 신청할 과목을 추가해요.</li>
-                <li style={{ marginBottom: "4px" }}><strong>수강신청 시작</strong> — 왼쪽의 파란 버튼을 눌러 수강신청 화면으로 이동해요.</li>
-                <li><strong>과목 신청</strong> — 캡차 인증 후 원하는 과목을 클릭해서 신청하면 돼요!</li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>과목 설정</strong> — 오른쪽 패널에서 신청할 과목을
+                  추가해요.
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>수강신청 시작</strong> — 왼쪽의 파란 버튼을 눌러
+                  수강신청 화면으로 이동해요.
+                </li>
+                <li>
+                  <strong>과목 신청</strong> — 캡차 인증 후 원하는 과목을
+                  클릭해서 신청하면 돼요!
+                </li>
               </ol>
             </section>
 
             {/* 3. 과목 설정 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #478ef0",
+                }}
+              >
                 과목 설정 — 세 가지 유형
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div style={{ background: "#f0f7ff", border: "1px solid #c3daf9", borderLeft: "4px solid #478ef0", borderRadius: "4px", padding: "10px 12px" }}>
-                  <strong>수강꾸러미</strong><br />
-                  수강신청 화면에 목록으로 표시되는 과목이에요. 옆의 [신청] 버튼을 클릭하면 신청돼요. 실제 수강신청 시 미리 담아두는 "수강꾸러미"와 동일한 개념이에요.
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#f0f7ff",
+                    border: "1px solid #c3daf9",
+                    borderLeft: "4px solid #478ef0",
+                    borderRadius: "4px",
+                    padding: "10px 12px",
+                  }}
+                >
+                  <strong>수강꾸러미</strong>
+                  <br />
+                  수강신청 화면에 목록으로 표시되는 과목이에요. 옆의 [신청]
+                  버튼을 클릭하면 신청돼요. 실제 수강신청 시 미리 담아두는
+                  "수강꾸러미"와 동일한 개념이에요.
                 </div>
-                <div style={{ background: "#f0f7ff", border: "1px solid #c3daf9", borderLeft: "4px solid #478ef0", borderRadius: "4px", padding: "10px 12px" }}>
-                  <strong>이미 신청된 과목</strong><br />
-                  연습 시작 시점에 이미 신청이 완료된 상태로 설정돼요. 미리 신청해 둔 과목이 있는 상황을 재현하고 싶을 때 사용해요.
+                <div
+                  style={{
+                    background: "#f0f7ff",
+                    border: "1px solid #c3daf9",
+                    borderLeft: "4px solid #478ef0",
+                    borderRadius: "4px",
+                    padding: "10px 12px",
+                  }}
+                >
+                  <strong>이미 신청된 과목</strong>
+                  <br />
+                  연습 시작 시점에 이미 신청이 완료된 상태로 설정돼요. 미리
+                  신청해 둔 과목이 있는 상황을 재현하고 싶을 때 사용해요.
                 </div>
-                <div style={{ background: "#fff8f8", border: "1px solid #fac5c5", borderLeft: "4px solid #e54b4b", borderRadius: "4px", padding: "10px 12px" }}>
-                  <strong>코드 입력 과목</strong><br />
-                  화면에 표시되지 않는 과목이에요. 수강신청 화면 하단의 [강좌번호 직접 입력] 칸에 강좌번호를 직접 입력해야만 신청돼요. 수강꾸러미에 없는 과목을 번호로 신청하는 연습에 활용해보세요!
+                <div
+                  style={{
+                    background: "#fff8f8",
+                    border: "1px solid #fac5c5",
+                    borderLeft: "4px solid #e54b4b",
+                    borderRadius: "4px",
+                    padding: "10px 12px",
+                  }}
+                >
+                  <strong>코드 입력 과목</strong>
+                  <br />
+                  화면에 표시되지 않는 과목이에요. 수강신청 화면 하단의
+                  [강좌번호 직접 입력] 칸에 강좌번호를 직접 입력해야만 신청돼요.
+                  수강꾸러미에 없는 과목을 번호로 신청하는 연습에 활용해보세요!
                 </div>
               </div>
             </section>
 
             {/* 4. 수강신청 화면 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #478ef0",
+                }}
+              >
                 수강신청 화면 사용법
               </div>
               <ul style={{ margin: 0, paddingLeft: "18px" }}>
-                <li style={{ marginBottom: "4px" }}><strong>캡차 인증</strong> — 화면에 표시된 숫자를 입력 칸에 그대로 입력하세요. 신청 또는 삭제 후마다 새로운 숫자가 나타나요.</li>
-                <li style={{ marginBottom: "4px" }}><strong>과목 신청</strong> — 캡차 인증을 완료한 상태에서 [신청] 버튼을 클릭하면 돼요.</li>
-                <li style={{ marginBottom: "4px" }}><strong>신청 취소</strong> — 하단 [신청 과목 목록]에서 삭제 버튼으로 취소할 수 있어요.</li>
-                <li><strong>학점 한도</strong> — 설정한 신청가능 학점을 초과하면 신청이 거부돼요.</li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>캡차 인증</strong> — 화면에 표시된 숫자를 입력 칸에
+                  그대로 입력하세요. 신청 또는 삭제 후마다 새로운 숫자가
+                  나타나요.
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>과목 신청</strong> — 캡차 인증을 완료한 상태에서
+                  [신청] 버튼을 클릭하면 돼요.
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>신청 취소</strong> — 하단 [신청 과목 목록]에서 삭제
+                  버튼으로 취소할 수 있어요.
+                </li>
+                <li>
+                  <strong>학점 한도</strong> — 설정한 신청가능 학점을 초과하면
+                  신청이 거부돼요.
+                </li>
               </ul>
             </section>
 
             {/* 5. 실전 모드 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #478ef0",
+                }}
+              >
                 실전 모드란?
               </div>
               <p style={{ margin: "0 0 8px" }}>
-                실제 수강신청 환경을 그대로 재현한 모드예요. 왼쪽 패널에서 <strong>[실전 모드]</strong> 토글을 켜고 시작해보세요!
+                실제 수강신청 환경을 그대로 재현한 모드예요. 왼쪽 패널에서{" "}
+                <strong>[실전 모드]</strong> 토글을 켜고 시작해보세요!
               </p>
               <ul style={{ margin: 0, paddingLeft: "18px" }}>
-                <li style={{ marginBottom: "4px" }}><strong>로그인 대기</strong> — 입장하면 오전 10시까지 기다리는 대기 화면이 나와요. 10시가 되는 순간 빠르게 클릭하세요!</li>
-                <li style={{ marginBottom: "4px" }}><strong>흰 화면</strong> — 입장 직후 잠깐 흰 화면이 보여요. 실제 수강신청 서버 부하를 재현한 거니까, 당황하지 말고 잠시 기다리면 돼요.</li>
-                <li style={{ marginBottom: "4px" }}><strong>과목 마감</strong> — 각 과목은 무작위 시간에 자동으로 마감돼요. 마감된 과목은 신청이 불가해요.</li>
-                <li style={{ marginBottom: "4px" }}><strong>난이도</strong> — 쉬움/보통/어려움으로 마감 시간이 달라져요. 어려울수록 더 빨리 마감돼요.</li>
-                <li><strong>자동 종료</strong> — 모든 과목이 신청 완료되거나 마감되면 자동으로 결과 화면으로 이동해요.</li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>로그인 대기</strong> — 입장하면 오전 10시까지 기다리는
+                  대기 화면이 나와요. 10시가 되는 순간 빠르게 클릭하세요!
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>흰 화면</strong> — 입장 직후 잠깐 흰 화면이 보여요.
+                  실제 수강신청 서버 부하를 재현한 거니까, 당황하지 말고 잠시
+                  기다리면 돼요.
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>과목 마감</strong> — 각 과목은 무작위 시간에 자동으로
+                  마감돼요. 마감된 과목은 신청이 불가해요.
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>난이도</strong> — 쉬움/보통/어려움으로 마감 시간이
+                  달라져요. 어려울수록 더 빨리 마감돼요.
+                </li>
+                <li>
+                  <strong>자동 종료</strong> — 모든 과목이 신청 완료되거나
+                  마감되면 자동으로 결과 화면으로 이동해요.
+                </li>
               </ul>
             </section>
 
             {/* 6. 랭킹 도전 모드 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #e54b4b" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #e54b4b",
+                }}
+              >
                 랭킹 도전 모드란?
               </div>
               <p style={{ margin: "0 0 8px" }}>
-                모든 사용자가 <strong>동일한 과목 세트</strong>로 도전하는 경쟁 모드예요.
-                결과가 서버에 저장되어 랭킹 페이지에서 다른 사용자와 순위를 비교할 수 있어요!
+                모든 사용자가 <strong>동일한 과목 세트</strong>로 도전하는 경쟁
+                모드예요. 결과가 서버에 저장되어 랭킹 페이지에서 다른 사용자와
+                순위를 비교할 수 있어요!
               </p>
               <ul style={{ margin: 0, paddingLeft: "18px" }}>
-                <li style={{ marginBottom: "4px" }}>별도 설정 없이 [🏆 랭킹 도전 모드] 버튼으로 바로 시작해요.</li>
-                <li style={{ marginBottom: "4px" }}>닉네임을 입력하면 랭킹에 이름이 표시돼요.</li>
-                <li><strong>모든 과목을 전부 신청 성공</strong>해야만 랭킹에 기록돼요. 하나라도 마감되어 놓치면 기록되지 않아요.</li>
+                <li style={{ marginBottom: "4px" }}>
+                  별도 설정 없이 [🏆 랭킹 도전 모드] 버튼으로 바로 시작해요.
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  닉네임을 입력하면 랭킹에 이름이 표시돼요.
+                </li>
+                <li>
+                  <strong>모든 과목을 전부 신청 성공</strong>해야만 랭킹에
+                  기록돼요. 하나라도 마감되어 놓치면 기록되지 않아요.
+                </li>
               </ul>
             </section>
 
             {/* 7. 편의 기능 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #478ef0" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #478ef0",
+                }}
+              >
                 편의 기능
               </div>
               <ul style={{ margin: 0, paddingLeft: "18px" }}>
-                <li style={{ marginBottom: "4px" }}><strong>지금 바로 체험하기</strong> — 과목 설정 없이 임의 과목 6개가 자동으로 세팅되어 바로 체험할 수 있어요. 처음 방문한 분께 추천해요!</li>
-                <li style={{ marginBottom: "4px" }}><strong>프리셋 저장/불러오기</strong> — 자주 쓰는 과목 세트를 이름 붙여 저장해 두고 언제든 불러올 수 있어요.</li>
-                <li><strong>과목 이동</strong> — 테이블의 [이동] 버튼으로 과목을 수강꾸러미 ↔ 이미 신청된 과목 ↔ 코드 입력 과목 사이에서 자유롭게 옮길 수 있어요.</li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>지금 바로 체험하기</strong> — 과목 설정 없이 임의 과목
+                  6개가 자동으로 세팅되어 바로 체험할 수 있어요. 처음 방문한
+                  분께 추천해요!
+                </li>
+                <li style={{ marginBottom: "4px" }}>
+                  <strong>프리셋 저장/불러오기</strong> — 자주 쓰는 과목 세트를
+                  이름 붙여 저장해 두고 언제든 불러올 수 있어요.
+                </li>
+                <li>
+                  <strong>과목 이동</strong> — 테이블의 [이동] 버튼으로 과목을
+                  수강꾸러미 ↔ 이미 신청된 과목 ↔ 코드 입력 과목 사이에서
+                  자유롭게 옮길 수 있어요.
+                </li>
               </ul>
             </section>
 
             {/* 8. 문의 및 피드백 */}
             <section>
-              <div style={{ fontWeight: 700, fontSize: "14px", color: "#1e2532", marginBottom: "6px", paddingBottom: "5px", borderBottom: "2px solid #22c55e" }}>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #22c55e",
+                }}
+              >
                 문의 및 피드백
               </div>
               <p style={{ margin: "0 0 6px" }}>
-                문의와 피드백은 언제나 환영해요!
-                사용하다가 불편한 점이나 개선됐으면 하는 부분이 있다면 언제든지 아래 메일로 편하게 보내주세요.
+                문의와 피드백은 언제나 환영해요! 사용하다가 불편한 점이나
+                개선됐으면 하는 부분이 있다면 언제든지 아래 메일로 편하게
+                보내주세요.
               </p>
               <div style={{ fontWeight: 700, fontSize: "13px" }}>
-                📬 <a href="mailto:business9498@gmail.com" style={{ color: "#478ef0" }}>business9498@gmail.com</a>
+                📬{" "}
+                <a
+                  href="mailto:business9498@gmail.com"
+                  style={{ color: "#478ef0" }}
+                >
+                  business9498@gmail.com
+                </a>
               </div>
-              <p style={{ margin: "6px 0 0", fontSize: "12px", color: "#8c96ae" }}>
+              <p
+                style={{
+                  margin: "6px 0 0",
+                  fontSize: "12px",
+                  color: "#8c96ae",
+                }}
+              >
                 더 좋은 서비스를 만드는 데 큰 도움이 돼요. 감사합니다!
               </p>
             </section>
 
-            <div style={{ background: "#f5f7fd", border: "1px solid #e6eaf3", borderRadius: "6px", padding: "10px 12px", fontSize: "12px", color: "#8c96ae" }}>
-              본 사이트는 교육 목적의 연습용 서비스로, 실제 대학교 시스템과 무관해요.
+            <div
+              style={{
+                background: "#f5f7fd",
+                border: "1px solid #e6eaf3",
+                borderRadius: "6px",
+                padding: "10px 12px",
+                fontSize: "12px",
+                color: "#8c96ae",
+              }}
+            >
+              본 사이트는 교육 목적의 연습용 서비스로, 실제 대학교 시스템과
+              무관해요.
             </div>
           </div>
         </Modal>
@@ -577,28 +935,62 @@ export default function SetupPage() {
           confirmText="시작하기"
           cancelText="취소"
         >
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-            <div style={{ background: "#f5f5f7", padding: "10px", borderRadius: "4px" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+          >
+            <div
+              style={{
+                background: "#f5f5f7",
+                padding: "10px",
+                borderRadius: "4px",
+              }}
+            >
               <strong>현재 설정 요약</strong>
-              <table style={{ marginTop: "8px", width: "100%", fontSize: "13px", borderCollapse: "collapse" }}>
+              <table
+                style={{
+                  marginTop: "8px",
+                  width: "100%",
+                  fontSize: "13px",
+                  borderCollapse: "collapse",
+                }}
+              >
                 <tbody>
                   <tr>
-                    <td style={{ color: "#666", paddingBottom: "3px", width: "40%" }}>수강꾸러미</td>
-                    <td style={{ fontWeight: 600 }}>{cartRows.length}개 ({cartTotalCredits}학점)</td>
+                    <td
+                      style={{
+                        color: "#666",
+                        paddingBottom: "3px",
+                        width: "40%",
+                      }}
+                    >
+                      수강꾸러미
+                    </td>
+                    <td style={{ fontWeight: 600 }}>
+                      {cartRows.length}개 ({cartTotalCredits}학점)
+                    </td>
                   </tr>
                   {codeRows.length > 0 && (
                     <tr>
-                      <td style={{ color: "#666", paddingBottom: "3px" }}>코드 입력 과목</td>
+                      <td style={{ color: "#666", paddingBottom: "3px" }}>
+                        코드 입력 과목
+                      </td>
                       <td style={{ fontWeight: 600 }}>{codeRows.length}개</td>
                     </tr>
                   )}
                   <tr>
-                    <td style={{ color: "#666", paddingBottom: "3px" }}>신청가능 학점</td>
+                    <td style={{ color: "#666", paddingBottom: "3px" }}>
+                      신청가능 학점
+                    </td>
                     <td style={{ fontWeight: 600 }}>{maxCredit}학점</td>
                   </tr>
                   <tr>
-                    <td style={{ color: "#666", paddingBottom: "3px" }}>난이도</td>
-                    <td style={{ fontWeight: 600 }}>{diffLabel} (과목당 {diffRange?.min}~{diffRange?.max}초 내 마감)</td>
+                    <td style={{ color: "#666", paddingBottom: "3px" }}>
+                      난이도
+                    </td>
+                    <td style={{ fontWeight: 600 }}>
+                      {diffLabel} (과목당 {diffRange?.min}~{diffRange?.max}초 내
+                      마감)
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -606,15 +998,26 @@ export default function SetupPage() {
 
             <div>
               <strong>진행 방식</strong>
-              <ul style={{ margin: "6px 0 0", paddingLeft: "18px", lineHeight: 1.9 }}>
-                <li>로그인 대기 페이지에서 <strong>오전 10시</strong>가 되면 입장할 수 있습니다.</li>
+              <ul
+                style={{
+                  margin: "6px 0 0",
+                  paddingLeft: "18px",
+                  lineHeight: 1.9,
+                }}
+              >
                 <li>
-                  입장 직후 <strong>흰 화면이 잠시 보입니다</strong> — 실제 수강신청 환경을
-                  고증한 것으로, <strong>당황하지 말고 잠시 대기</strong>하면 됩니다.
+                  로그인 대기 페이지에서 <strong>오전 10시</strong>가 되면
+                  입장할 수 있습니다.
                 </li>
                 <li>
-                  각 과목은 <strong>설정한 난이도에 따른 무작위 시간에 마감</strong>됩니다.
-                  마감 여부는 직접 신청해봐야 알 수 있습니다.
+                  입장 직후 <strong>흰 화면이 잠시 보입니다</strong> — 실제
+                  수강신청 환경을 고증한 것으로,{" "}
+                  <strong>당황하지 말고 잠시 대기</strong>하면 됩니다.
+                </li>
+                <li>
+                  각 과목은{" "}
+                  <strong>설정한 난이도에 따른 무작위 시간에 마감</strong>
+                  됩니다. 마감 여부는 직접 신청해봐야 알 수 있습니다.
                 </li>
                 <li>
                   수강꾸러미의 모든 과목이 신청 완료되거나 마감되면{" "}
@@ -624,8 +1027,8 @@ export default function SetupPage() {
             </div>
 
             <div className="helper-text" style={{ color: "#777" }}>
-              ※ 결과는 완료 직후 한 번만 확인 가능합니다.
-              다른 사람과 경쟁하려면 <strong>랭킹 도전 모드</strong>를 이용하세요.
+              ※ 결과는 완료 직후 한 번만 확인 가능합니다. 다른 사람과 경쟁하려면{" "}
+              <strong>랭킹 도전 모드</strong>를 이용하세요.
             </div>
           </div>
         </Modal>

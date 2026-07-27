@@ -9,9 +9,9 @@ export default function PracticeModeSetup({
   onDifficultyChange,
 }) {
   return (
-    <div className="sidebar-section">
-      <div className="sidebar-section__label" style={{ justifyContent: "space-between" }}>
-        <span>⏱ 실전 모드</span>
+    <div style={{ marginTop: "12px", paddingTop: "12px", borderTop: "1px solid #eef1f7" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "10px" }}>
+        <span style={{ fontSize: "13px", fontWeight: 600, color: "#374151" }}>⏱ 실전 모드로 시작</span>
         <button
           type="button"
           className="btn btn-sm"

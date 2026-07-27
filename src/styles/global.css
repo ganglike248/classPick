@@ -252,23 +252,6 @@ button {
   font-size: 11px;
 }
 
-/* ===== 사이드바 섹션 (SetupPage 좌측 패널 공통 리듬) ===== */
-.sidebar-section {
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid #e6eaf3;
-}
-
-.sidebar-section__label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #1e2532;
-  margin-bottom: 10px;
-}
-
 /* ===== 프리셋 테이블 ===== */
 .preset-table th:nth-child(1),
 .preset-table td:nth-child(1),
