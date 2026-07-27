@@ -38,11 +38,11 @@ export default function RankingPage() {
 
   const semesterOptions = getRecentSemesterIds(4);
 
-  const load = async () => {
+  const load = async (forceRefresh = false) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await fetchRankings(CHALLENGE_ID, semesterId);
+      const data = await fetchRankings(CHALLENGE_ID, semesterId, { forceRefresh });
       setAllRankings(data.map((r, i) => ({ ...r, rank: i })));
     } catch (e) {
       console.error(e);
@@ -230,7 +230,7 @@ export default function RankingPage() {
                 <span className="badge">{allRankings.length}명</span>
               )}
             </div>
-            <button className="btn btn-sm" onClick={load} disabled={loading}>
+            <button className="btn btn-sm" onClick={() => load(true)} disabled={loading}>
               {loading ? "불러오는 중..." : "새로고침"}
             </button>
           </div>

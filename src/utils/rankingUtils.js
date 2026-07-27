@@ -16,8 +16,22 @@ import { signInAnonymously } from "firebase/auth";
 import { getSemesterId, clampSemesterId } from "./semesterUtils";
 
 const IN_PROGRESS_TTL_MS = 2 * 60 * 60 * 1000; // 2시간: 방치된 세션 자동 정리 기준
+const RANKINGS_CACHE_TTL_MS = 60 * 1000; // 1분: 같은 브라우저 탭 안에서의 반복 조회만 줄여줌
+                                          // (사용자마다 캐시가 따로 생기므로 동시접속자 간 요청 자체를 줄이지는 못함)
 
 export const RANKINGS_COLLECTION = "rankings";
+
+// key: `${challengeId}::${semesterId}` → { data, expiresAt }
+const rankingsCache = new Map();
+
+function rankingsCacheKey(challengeId, semesterId) {
+  return `${challengeId}::${semesterId}`;
+}
+
+/** 도전 완료/닉네임 변경/삭제 등으로 랭킹 데이터가 바뀌었을 때 캐시를 전부 비움 */
+function invalidateRankingsCache() {
+  rankingsCache.clear();
+}
 
 /** 이미 로그인돼 있으면 그대로, 아니면 익명 로그인 */
 async function ensureSignedIn() {
@@ -57,14 +71,29 @@ export async function finishChallengeSession(docId, result) {
     // 완료된 기록은 TTL 정리 대상에서 제외 (expiresAt은 미완료 세션 정리용)
     expiresAt: deleteField(),
   });
+  invalidateRankingsCache();
 }
 
 /**
  * 특정 challengeId + semesterId의 완료된 랭킹 목록 조회 (학기별로 구분)
  * semesterId를 생략하면 현재 학기를 기준으로 조회
  * 클라이언트에서 정렬: 신청 성공 과목 수 내림차순 → 소요 시간 오름차순
+ *
+ * 같은 브라우저 탭에서 짧은 시간 안에 반복 조회하는 걸 줄이기 위해
+ * RANKINGS_CACHE_TTL_MS 동안 결과를 재사용한다 (forceRefresh로 우회 가능).
+ * 정렬 기준(소요 시간)이 Firestore에 저장된 필드가 아니라 클라이언트 계산값이라
+ * limit()으로 미리 잘라올 수 없어, 매 조회마다 전체를 읽어와야 하는 건 그대로다.
  */
-export async function fetchRankings(challengeId, semesterId = getSemesterId()) {
+export async function fetchRankings(challengeId, semesterId = getSemesterId(), { forceRefresh = false } = {}) {
+  const cacheKey = rankingsCacheKey(challengeId, semesterId);
+
+  if (!forceRefresh) {
+    const cached = rankingsCache.get(cacheKey);
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data;
+    }
+  }
+
   const q = query(
     collection(db, RANKINGS_COLLECTION),
     where("status", "==", "completed"),
@@ -88,11 +117,14 @@ export async function fetchRankings(challengeId, semesterId = getSemesterId()) {
   // 닉네임이 아닌 uid로 구분하므로, 서로 다른 사용자가 같은 닉네임을 쓰더라도
   // 기록이 서로를 덮어쓰지 않는다.
   const seen = new Set();
-  return docs.filter((d) => {
+  const result = docs.filter((d) => {
     if (seen.has(d.uid)) return false;
     seen.add(d.uid);
     return true;
   });
+
+  rankingsCache.set(cacheKey, { data: result, expiresAt: Date.now() + RANKINGS_CACHE_TTL_MS });
+  return result;
 }
 
 /**
@@ -102,6 +134,7 @@ export async function renameOwnRecord(docId, newNickname) {
   await updateDoc(doc(db, RANKINGS_COLLECTION, docId), {
     nickname: newNickname,
   });
+  invalidateRankingsCache();
 }
 
 /**
@@ -109,6 +142,7 @@ export async function renameOwnRecord(docId, newNickname) {
  */
 export async function deleteOwnRecord(docId) {
   await deleteDoc(doc(db, RANKINGS_COLLECTION, docId));
+  invalidateRankingsCache();
 }
 
 /**
@@ -136,4 +170,8 @@ export async function backfillOwnSemesterIds() {
       return updateDoc(doc(db, RANKINGS_COLLECTION, d.id), { semesterId });
     })
   );
+
+  if (targets.length > 0) {
+    invalidateRankingsCache();
+  }
 }
