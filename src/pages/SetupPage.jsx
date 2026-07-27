@@ -431,155 +431,267 @@ export default function SetupPage() {
           </div>
         </div>
 
-        {/* 오른쪽: 초기 과목 설정 */}
-        <section className="card" style={{ marginTop: 0 }}>
-          <div style={{ marginBottom: "14px" }}>
-            <div className="section-title">초기 과목 설정</div>
+        {/* 오른쪽: 실전 꿀팁 + 초기 과목 설정 */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
+          {/* 실전 꿀팁 */}
+          <div className="card" style={{ marginTop: 0, padding: "18px 20px" }}>
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "3px" }}
+              style={{
+                fontSize: "15px",
+                fontWeight: 700,
+                color: "#1e2532",
+                marginBottom: "14px",
+              }}
             >
-              <div className="helper-text">
-                <strong style={{ color: "#374151" }}>수강꾸러미</strong> — 신청
-                버튼으로 신청할 과목
+              🎯 졸업생의 실전 꿀팁!!
+            </div>
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "14px" }}
+            >
+              <div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#1e2532",
+                    marginBottom: "3px",
+                  }}
+                >
+                  1. 크롬 창은 꼭 하나만!
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    color: "#374151",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  창을 여러 개 켜면 오류가 발생할 수 있어요. 오류가 나면{" "}
+                  <strong>모든 창을 닫고</strong> 다시 접속해야 해요.
+                </div>
               </div>
-              <div className="helper-text">
-                <strong style={{ color: "#374151" }}>이미 신청된 과목</strong> —
-                시작 시 이미 등록된 상태인 과목
+              <div
+                style={{ paddingTop: "14px", borderTop: "1px solid #eef1f7" }}
+              >
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#1e2532",
+                    marginBottom: "3px",
+                  }}
+                >
+                  2. 흰 화면이 떠도 당황하지 마세요
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    color: "#374151",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  접속 직후 흰 화면은 실제 서버 부하를 재현한 거예요. 다만{" "}
+                  <strong>1분이 넘어가면 새로고침</strong>이 나을 수도 있어요
+                  (보장은 못 해요 ㅎ).
+                </div>
               </div>
-              <div className="helper-text">
-                <strong style={{ color: "#374151" }}>코드 입력 과목</strong> —
-                강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)
+              <div
+                style={{ paddingTop: "14px", borderTop: "1px solid #eef1f7" }}
+              >
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 700,
+                    color: "#1e2532",
+                    marginBottom: "3px",
+                  }}
+                >
+                  3. 추천 자세
+                </div>
+                <div
+                  style={{
+                    fontSize: "13px",
+                    color: "#374151",
+                    lineHeight: 1.7,
+                  }}
+                >
+                  대기 중엔 캡차 입력창을 클릭해 두고, <strong>오른손</strong>은
+                  마우스 포인터를 '신청' 버튼 위에, <strong>눈</strong>은
+                  보안문자(캡차)를, <strong>왼손</strong>은 키패드와 엔터 키에
+                  올려두세요. 보안문자가 뜨는 순간 바로 신청을 클릭하고, "신청
+                  완료" 알림이 뜰 때까지 <strong>엔터를 연타</strong>하세요!
+                </div>
+              </div>
+              <div
+                style={{
+                  paddingTop: "14px",
+                  borderTop: "1px solid #eef1f7",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    fontStyle: "italic",
+                    color: "#478ef0",
+                  }}
+                >
+                  "후배님들의 수강신청 올클을 응원합니다." 🙌
+                </div>
               </div>
             </div>
           </div>
 
-          {/* 프리셋 저장/불러오기 */}
-          <div
-            style={{
-              marginTop: "16px",
-              paddingTop: "14px",
-              borderTop: "1px solid #e6eaf3",
-            }}
-          >
-            <PresetManager
-              getCurrentPreset={getCurrentPreset}
-              onLoad={handleLoadPreset}
-            />
-          </div>
+          <section className="card" style={{ marginTop: 0 }}>
+            <div style={{ marginBottom: "14px" }}>
+              <div className="section-title">초기 과목 설정</div>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: "3px" }}
+              >
+                <div className="helper-text">
+                  <strong style={{ color: "#374151" }}>수강꾸러미</strong> —
+                  신청 버튼으로 신청할 과목
+                </div>
+                <div className="helper-text">
+                  <strong style={{ color: "#374151" }}>이미 신청된 과목</strong>{" "}
+                  — 시작 시 이미 등록된 상태인 과목
+                </div>
+                <div className="helper-text">
+                  <strong style={{ color: "#374151" }}>코드 입력 과목</strong> —
+                  강좌번호를 직접 입력해야 신청되는 과목 (화면 미노출)
+                </div>
+              </div>
+            </div>
 
-          {/* 수강꾸러미 */}
-          <div
-            style={{
-              marginTop: "16px",
-              paddingTop: "14px",
-              borderTop: "1px solid #e6eaf3",
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "8px",
-            }}
-          >
-            <span
-              style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
-            >
-              수강꾸러미
-            </span>
-            {cartRows.length > 0 && (
-              <span className="badge">{cartRows.length}과목</span>
-            )}
-          </div>
-          <CourseTable
-            rows={cartRows}
-            section="cart"
-            onMove={handleMoveRow}
-            onRemove={handleRemove}
-          />
-
-          {/* 이미 신청된 과목 */}
-          <div
-            style={{
-              marginTop: "20px",
-              paddingTop: "14px",
-              borderTop: "1px solid #e6eaf3",
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "8px",
-            }}
-          >
-            <span
-              style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
-            >
-              이미 신청된 과목
-            </span>
-            {regRows.length > 0 && (
-              <span className="badge">{regRows.length}과목</span>
-            )}
-          </div>
-          <CourseTable
-            rows={regRows}
-            section="reg"
-            onMove={handleMoveRow}
-            onRemove={handleRemove}
-          />
-
-          {/* 코드 입력 과목 */}
-          <div
-            style={{
-              marginTop: "20px",
-              paddingTop: "14px",
-              borderTop: "1px solid #e6eaf3",
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "4px",
-            }}
-          >
-            <span
-              style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
-            >
-              코드 입력 과목
-            </span>
-            {codeRows.length > 0 && (
-              <span className="badge">{codeRows.length}과목</span>
-            )}
-          </div>
-          <p
-            className="helper-text"
-            style={{ marginBottom: "8px", marginTop: "4px" }}
-          >
-            화면에 표시되지 않으며, 강좌번호를 직접 입력해야 신청됩니다. 학점
-            제한에 포함됩니다.
-          </p>
-          <CourseTable
-            rows={codeRows}
-            section="code"
-            onMove={handleMoveRow}
-            onRemove={handleRemove}
-          />
-
-          <CourseAddForm onAdd={handleAdd} existsCheck={existsCheck} />
-
-          <div
-            style={{
-              textAlign: "center",
-              marginTop: "20px",
-              paddingTop: "14px",
-              borderTop: "1px solid #e6eaf3",
-            }}
-          >
-            <button
-              onClick={handleReset}
+            {/* 프리셋 저장/불러오기 */}
+            <div
               style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontSize: "12px",
-                color: "#b0b8cc",
-                textDecoration: "underline",
+                marginTop: "16px",
+                paddingTop: "14px",
+                borderTop: "1px solid #e6eaf3",
               }}
             >
-              과목 설정 초기화
-            </button>
-          </div>
-        </section>
+              <PresetManager
+                getCurrentPreset={getCurrentPreset}
+                onLoad={handleLoadPreset}
+              />
+            </div>
+
+            {/* 수강꾸러미 */}
+            <div
+              style={{
+                marginTop: "16px",
+                paddingTop: "14px",
+                borderTop: "1px solid #e6eaf3",
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <span
+                style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
+              >
+                수강꾸러미
+              </span>
+              {cartRows.length > 0 && (
+                <span className="badge">{cartRows.length}과목</span>
+              )}
+            </div>
+            <CourseTable
+              rows={cartRows}
+              section="cart"
+              onMove={handleMoveRow}
+              onRemove={handleRemove}
+            />
+
+            {/* 이미 신청된 과목 */}
+            <div
+              style={{
+                marginTop: "20px",
+                paddingTop: "14px",
+                borderTop: "1px solid #e6eaf3",
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <span
+                style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
+              >
+                이미 신청된 과목
+              </span>
+              {regRows.length > 0 && (
+                <span className="badge">{regRows.length}과목</span>
+              )}
+            </div>
+            <CourseTable
+              rows={regRows}
+              section="reg"
+              onMove={handleMoveRow}
+              onRemove={handleRemove}
+            />
+
+            {/* 코드 입력 과목 */}
+            <div
+              style={{
+                marginTop: "20px",
+                paddingTop: "14px",
+                borderTop: "1px solid #e6eaf3",
+                display: "flex",
+                alignItems: "center",
+                marginBottom: "4px",
+              }}
+            >
+              <span
+                style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532" }}
+              >
+                코드 입력 과목
+              </span>
+              {codeRows.length > 0 && (
+                <span className="badge">{codeRows.length}과목</span>
+              )}
+            </div>
+            <p
+              className="helper-text"
+              style={{ marginBottom: "8px", marginTop: "4px" }}
+            >
+              화면에 표시되지 않으며, 강좌번호를 직접 입력해야 신청됩니다. 학점
+              제한에 포함됩니다.
+            </p>
+            <CourseTable
+              rows={codeRows}
+              section="code"
+              onMove={handleMoveRow}
+              onRemove={handleRemove}
+            />
+
+            <CourseAddForm onAdd={handleAdd} existsCheck={existsCheck} />
+
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "20px",
+                paddingTop: "14px",
+                borderTop: "1px solid #e6eaf3",
+              }}
+            >
+              <button
+                onClick={handleReset}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "12px",
+                  color: "#b0b8cc",
+                  textDecoration: "underline",
+                }}
+              >
+                과목 설정 초기화
+              </button>
+            </div>
+          </section>
+        </div>
       </main>
       <Footer variant="setup" />
 
@@ -838,7 +950,43 @@ export default function SetupPage() {
               </ul>
             </section>
 
-            {/* 7. 편의 기능 */}
+            {/* 7. 실전 꿀팁 */}
+            <section>
+              <div
+                style={{
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  color: "#1e2532",
+                  marginBottom: "6px",
+                  paddingBottom: "5px",
+                  borderBottom: "2px solid #e54b4b",
+                }}
+              >
+                🎯 실전 꿀팁
+              </div>
+              <ul style={{ margin: 0, paddingLeft: "18px" }}>
+                <li style={{ marginBottom: "8px" }}>
+                  <strong>크롬 창은 꼭 하나로!</strong> 창을 여러 개 켜면 오류가
+                  발생할 수 있어요. 오류가 나면 <strong>모든 창을 닫고</strong>{" "}
+                  다시 접속해야 해요.
+                </li>
+                <li style={{ marginBottom: "8px" }}>
+                  <strong>추천 자세</strong> — 대기 중엔 캡차 입력창을 클릭해
+                  두고, <strong>오른손</strong>은 마우스 포인터를 신청 버튼
+                  위에, <strong>눈</strong>은 보안문자(캡차)를,{" "}
+                  <strong>왼손</strong>은 키패드와 엔터 키에 올려두세요.
+                  보안문자가 뜨는 순간 바로 신청을 클릭하고, "신청 완료" 알림이
+                  뜰 때까지 <strong>엔터를 연타</strong>하면 돼요.
+                </li>
+                <li>
+                  접속 직후 <strong>흰 화면</strong>이 떠도 당황하지 말고
+                  기다리세요. 다만 1분이 넘어가면 새로고침이 나을 수도 있어요
+                  (효과는 보장 못 해요).
+                </li>
+              </ul>
+            </section>
+
+            {/* 8. 편의 기능 */}
             <section>
               <div
                 style={{
@@ -870,7 +1018,7 @@ export default function SetupPage() {
               </ul>
             </section>
 
-            {/* 8. 문의 및 피드백 */}
+            {/* 9. 문의 및 피드백 */}
             <section>
               <div
                 style={{

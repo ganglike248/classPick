@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
-import { fetchRankings, backfillOwnSemesterIds } from "../../utils/rankingUtils";
+import {
+  fetchRankings,
+  backfillOwnSemesterIds,
+} from "../../utils/rankingUtils";
 import { CHALLENGE_ID } from "../../data/challengeData";
-import { getSemesterId, getSemesterLabel, getSemesterRangeLabel } from "../../utils/semesterUtils";
+import {
+  getSemesterId,
+  getSemesterLabel,
+  getSemesterRangeLabel,
+} from "../../utils/semesterUtils";
 
 const RANK_BAR_COLOR = { 0: "#ffd35c", 1: "#c7ccd6", 2: "#d9a06b" };
 const RANK_ROW_BG = { 0: "#fff1cc", 1: "#f2f3f6", 2: "#f8ede0" };
@@ -21,8 +28,16 @@ function formatSec(r) {
  * bordered         list variant에서 자체 테두리를 그릴지 여부
  *                  (바깥에 이미 카드/테두리가 있는 곳에 넣을 땐 false로 이중 테두리 방지)
  */
-export default function HallOfFame({ semesterId = getSemesterId(), variant = "list", bordered = true }) {
+export default function HallOfFame({
+  semesterId = getSemesterId(),
+  variant = "list",
+  bordered = true,
+}) {
   const [topThree, setTopThree] = useState([]);
+  // 다른 사람들도 도전하고 있다는 걸 느낄 수 있도록, 실시간 접속자 수 대신
+  // "이번 학기 누적 참여자 수"를 보여준다 (도전 자체가 수십 초면 끝나서
+  // 실시간 인원수는 대부분 0명으로 보여 오히려 역효과가 남)
+  const [totalCount, setTotalCount] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,7 +46,9 @@ export default function HallOfFame({ semesterId = getSemesterId(), variant = "li
       .catch((e) => console.error("semesterId 백필 실패:", e))
       .then(() => fetchRankings(CHALLENGE_ID, semesterId))
       .then((data) => {
-        if (!cancelled) setTopThree(data.slice(0, 3));
+        if (cancelled) return;
+        setTopThree(data.slice(0, 3));
+        setTotalCount(data.length);
       })
       .catch((e) => console.error("명예의 전당 로드 실패:", e));
     return () => {
@@ -41,8 +58,27 @@ export default function HallOfFame({ semesterId = getSemesterId(), variant = "li
 
   const header = (
     <>
-      <div style={{ fontSize: "13px", fontWeight: 700, color: "#1e2532" }}>
-        🏅 명예의 전당
+      <div
+        style={{
+          fontSize: "13px",
+          fontWeight: 700,
+          color: "#1e2532",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "6px",
+          marginBottom: "4px",
+        }}
+      >
+        <span>🏅 명예의 전당</span>
+        {!!totalCount && (
+          <span
+            className="badge"
+            style={{ backgroundColor: "#fff1cc", color: "#a6740a" }}
+          >
+            🔥 이번 학기 {totalCount}명 도전 중!
+          </span>
+        )}
       </div>
       <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "10px" }}>
         {getSemesterLabel(semesterId)} ({getSemesterRangeLabel(semesterId)})
@@ -52,14 +88,20 @@ export default function HallOfFame({ semesterId = getSemesterId(), variant = "li
 
   const wrapperStyle =
     variant === "list" && bordered
-      ? { border: "1px solid #e6eaf3", borderRadius: "10px", padding: "12px 14px" }
+      ? {
+          border: "1px solid #e6eaf3",
+          borderRadius: "10px",
+          padding: "12px 14px",
+        }
       : undefined;
 
   if (topThree.length === 0) {
     return (
       <div style={wrapperStyle}>
         {header}
-        <div className="helper-text">아직 이번 학기 기록이 없어요. 첫 도전자가 되어보세요!</div>
+        <div className="helper-text">
+          아직 이번 학기 기록이 없어요. 첫 도전자가 되어보세요!
+        </div>
       </div>
     );
   }
@@ -69,7 +111,15 @@ export default function HallOfFame({ semesterId = getSemesterId(), variant = "li
     return (
       <div>
         {header}
-        <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: "10px", marginTop: "6px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            gap: "10px",
+            marginTop: "6px",
+          }}
+        >
           {order.map((rank) => {
             const r = topThree[rank];
             return (
@@ -84,11 +134,27 @@ export default function HallOfFame({ semesterId = getSemesterId(), variant = "li
                   opacity: r ? 1 : 0.35,
                 }}
               >
-                <div style={{ fontSize: rank === 0 ? "22px" : "18px" }}>{RANK_MEDAL[rank]}</div>
-                <div style={{ fontSize: "12px", fontWeight: 700, marginTop: "2px", textAlign: "center" }}>
+                <div style={{ fontSize: rank === 0 ? "22px" : "18px" }}>
+                  {RANK_MEDAL[rank]}
+                </div>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    marginTop: "2px",
+                    textAlign: "center",
+                  }}
+                >
                   {r ? r.nickname : "-"}
                 </div>
-                <div style={{ fontSize: "12px", color: "#478ef0", fontWeight: 700, marginBottom: "6px" }}>
+                <div
+                  style={{
+                    fontSize: "12px",
+                    color: "#478ef0",
+                    fontWeight: 700,
+                    marginBottom: "6px",
+                  }}
+                >
                   {r ? `${formatSec(r)}초` : "-"}
                 </div>
                 <div
@@ -134,10 +200,20 @@ export default function HallOfFame({ semesterId = getSemesterId(), variant = "li
             }}
           >
             <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <span style={{ fontSize: i === 0 ? "18px" : "14px" }}>{RANK_MEDAL[i]}</span>
-              <span style={{ fontSize: "12px", fontWeight: i === 0 ? 700 : 500 }}>{r.nickname}</span>
+              <span style={{ fontSize: i === 0 ? "18px" : "14px" }}>
+                {RANK_MEDAL[i]}
+              </span>
+              <span
+                style={{ fontSize: "12px", fontWeight: i === 0 ? 700 : 500 }}
+              >
+                {r.nickname}
+              </span>
             </span>
-            <span style={{ color: "#478ef0", fontWeight: 700, fontSize: "12px" }}>{formatSec(r)}초</span>
+            <span
+              style={{ color: "#478ef0", fontWeight: 700, fontSize: "12px" }}
+            >
+              {formatSec(r)}초
+            </span>
           </div>
         ))}
       </div>
