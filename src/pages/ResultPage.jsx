@@ -8,6 +8,9 @@ import { auth } from "../firebase";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
 import { trackPageView, trackChallengeRanking } from "../utils/analytics";
+import AdFitBanner from "../components/common/AdFitBanner";
+
+const ADFIT_UNIT_ID_CONTENT = import.meta.env.VITE_ADFIT_UNIT_ID_CONTENT;
 
 const RANK_CARD_STYLE = {
   incomplete: { background: "#fff8f8", border: "1px solid #fac5c5", borderLeft: "4px solid #e54b4b" },
@@ -177,6 +180,10 @@ export default function ResultPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <AdFitBanner unitId={ADFIT_UNIT_ID_CONTENT} width={728} height={90} />
         </div>
 
         {/* 신청 성공 과목 상세 */}

@@ -9,6 +9,9 @@ import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
 import HallOfFame from "../components/common/HallOfFame";
 import { trackPageView, trackUIInteraction } from "../utils/analytics";
+import AdFitBanner from "../components/common/AdFitBanner";
+
+const ADFIT_UNIT_ID_CONTENT = import.meta.env.VITE_ADFIT_UNIT_ID_CONTENT;
 
 const TOTAL_COURSES =
   CHALLENGE_CART_COURSES.length + CHALLENGE_CODE_COURSES.length;
@@ -188,6 +191,10 @@ export default function RankingPage() {
         {/* 명예의 전당 — 선택한 버전에 맞춰 갱신됨 */}
         <div className="card">
           <HallOfFame versionId={versionId} variant="podium" />
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <AdFitBanner unitId={ADFIT_UNIT_ID_CONTENT} width={728} height={90} />
         </div>
 
         {/* 내 기록 요약 */}

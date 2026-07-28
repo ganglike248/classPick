@@ -14,7 +14,7 @@ export default function PrivacyPage() {
             개인정보처리방침
           </h1>
           <div style={{ fontSize: "12px", color: "#8c96ae", marginBottom: "28px", paddingBottom: "20px", borderBottom: "1px solid #e6eaf3" }}>
-            최종 수정일: 2026년 2월 6일
+            최종 수정일: 2026년 7월 28일
           </div>
 
           <section style={{ marginBottom: "24px" }}>
@@ -37,8 +37,9 @@ export default function PrivacyPage() {
               2. 수집 목적 및 이용
             </h2>
             <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.8, margin: 0 }}>
-              수집된 익명 데이터는 서비스 품질 개선 및 오류 분석에만 활용됩니다.
-              제3자에게 판매하거나 광고 목적으로 사용하지 않습니다.
+              수집된 익명 데이터는 서비스 품질 개선, 오류 분석, 그리고 아래
+              4항에서 설명하는 광고 게재에 활용됩니다. 개인을 식별할 수 있는
+              정보를 제3자에게 판매하지 않습니다.
             </p>
           </section>
 
@@ -54,9 +55,38 @@ export default function PrivacyPage() {
             </p>
           </section>
 
+          <section style={{ marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532", marginBottom: "8px" }}>
+              4. 광고 서비스 이용
+            </h2>
+            <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.8, margin: 0 }}>
+              본 사이트는 서비스 운영비 충당을 위해 <strong>카카오 애드핏(Kakao AdFit)</strong>,{" "}
+              <strong>구글 애드센스(Google AdSense)</strong> 등 제3자 광고 서비스를
+              이용해 광고를 게재할 수 있습니다. 이 과정에서 광고 사업자가 쿠키 등을
+              이용해 기기 정보, 방문 기록 등을 자동으로 수집·이용할 수 있으며,
+              이는 각 사업자의 개인정보처리방침이 적용됩니다.
+            </p>
+            <ul style={{ fontSize: "14px", color: "#374151", lineHeight: 1.9, paddingLeft: "20px", margin: "10px 0 0" }}>
+              <li>
+                구글의 광고 쿠키 사용 및 맞춤 광고 해제는{" "}
+                <a href="https://adssettings.google.com" target="_blank" rel="noreferrer" style={{ color: "#478ef0" }}>
+                  광고 설정
+                </a>
+                에서 관리할 수 있습니다.
+              </li>
+              <li>
+                카카오 애드핏 관련 안내는{" "}
+                <a href="https://adfit.kakao.com/terms/privacy" target="_blank" rel="noreferrer" style={{ color: "#478ef0" }}>
+                  카카오 애드핏 개인정보처리방침
+                </a>
+                에서 확인할 수 있습니다.
+              </li>
+            </ul>
+          </section>
+
           <section style={{ marginBottom: "32px" }}>
             <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#1e2532", marginBottom: "8px" }}>
-              4. 데이터 보관 및 삭제
+              5. 데이터 보관 및 삭제
             </h2>
             <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.8, margin: 0 }}>
               로컬스토리지 데이터는 사용자가 직접 브라우저 설정에서 삭제할 수 있습니다.
