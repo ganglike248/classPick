@@ -16,7 +16,7 @@ import { signInAnonymously } from "firebase/auth";
 
 const IN_PROGRESS_TTL_MS = 2 * 60 * 60 * 1000; // 2시간: 방치된 세션 자동 정리 기준
 const RANKINGS_CACHE_TTL_MS = 60 * 1000; // 1분: 같은 브라우저 탭 안에서의 반복 조회만 줄여줌
-                                          // (사용자마다 캐시가 따로 생기므로 동시접속자 간 요청 자체를 줄이지는 못함)
+// (사용자마다 캐시가 따로 생기므로 동시접속자 간 요청 자체를 줄이지는 못함)
 
 export const RANKINGS_COLLECTION = "rankings";
 
@@ -79,7 +79,10 @@ export async function finishChallengeSession(docId, result) {
  * 정렬 기준(소요 시간)이 Firestore에 저장된 필드가 아니라 클라이언트 계산값이라
  * limit()으로 미리 잘라올 수 없어, 매 조회마다 전체를 읽어와야 하는 건 그대로다.
  */
-export async function fetchRankings(challengeId, { forceRefresh = false } = {}) {
+export async function fetchRankings(
+  challengeId,
+  { forceRefresh = false } = {},
+) {
   const cacheKey = challengeId;
 
   if (!forceRefresh) {
@@ -92,7 +95,7 @@ export async function fetchRankings(challengeId, { forceRefresh = false } = {}) 
   const q = query(
     collection(db, RANKINGS_COLLECTION),
     where("status", "==", "completed"),
-    where("challengeId", "==", challengeId)
+    where("challengeId", "==", challengeId),
   );
   const snapshot = await getDocs(q);
   const docs = snapshot.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -117,7 +120,10 @@ export async function fetchRankings(challengeId, { forceRefresh = false } = {}) 
     return true;
   });
 
-  rankingsCache.set(cacheKey, { data: result, expiresAt: Date.now() + RANKINGS_CACHE_TTL_MS });
+  rankingsCache.set(cacheKey, {
+    data: result,
+    expiresAt: Date.now() + RANKINGS_CACHE_TTL_MS,
+  });
   return result;
 }
 

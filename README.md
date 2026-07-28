@@ -3,7 +3,7 @@
 > 대학교 수강신청 매번 너무 어렵죠? 이제 ClassPick으로 충분히 연습하고 도전해보세요!
 
 [![Netlify Status](https://img.shields.io/badge/배포-Netlify-00C7B7?logo=netlify)](https://classpick.netlify.app)
-![Version](https://img.shields.io/badge/버전-1.0.1-blue)
+![Version](https://img.shields.io/badge/버전-1.6.28-blue)
 
 **지금 바로 사용해보세요** → <https://classpick.netlify.app>
 
@@ -79,23 +79,48 @@
 
 모든 사용자가 **동일한 과목 세트**로 경쟁하는 모드예요!
 
-- 닉네임을 입력하고 도전하면 소요 시간이 서버에 기록돼요.
+- 닉네임을 입력하고 도전하면 소요 시간이 서버(Firebase Server Timestamp)에 기록돼요.
 - **전 과목 신청 성공** 시에만 랭킹에 등록돼요. 하나라도 마감되면 기록되지 않아요.
-- 닉네임별로 최고 기록만 유지되고, 재도전 횟수 제한은 없어요. 얼마든지 도전해보세요!
+- 사용자(uid)별로 최고 기록만 유지되고, 재도전 횟수 제한은 없어요. 얼마든지 도전해보세요!
+- 도전 과목 구성이나 캡차 지연처럼 소요 시간에 영향을 주는 변경이 생기면 **챌린지 버전(challengeId)**을 올려요.
+  버전이 다른 기록끼리는 서로 비교되지 않아, 항상 공정한 순위를 볼 수 있어요.
 
-### 6. 랭킹 조회
+### 6. 명예의 전당
+
+홈 화면과 랭킹 도전 화면에서 현재 버전 상위 3명의 기록을 바로 확인할 수 있어요.
+
+- 1·2·3위를 시상대(또는 목록) 형태로 보여줘요.
+- 지금까지 이 버전에 도전한 누적 참여자 수도 함께 표시돼요.
+
+### 7. 랭킹 조회
 
 다른 사람들의 기록도 한눈에 볼 수 있어요.
 
 - 닉네임으로 검색하거나, 소요 시간순/최신순으로 정렬할 수 있어요.
 - 100명씩 무한 스크롤로 편하게 탐색할 수 있어요.
+- 챌린지 버전별로 순위표가 구분되고, 본인 기록의 닉네임 수정·삭제도 할 수 있어요.
 
-### 7. 편의 기능
+### 8. 손풀기 반응속도 미니게임
+
+수강신청을 시작하기 전, 홈 화면에서 가볍게 반응속도를 테스트해볼 수 있어요.
+
+- 초록불이 켜지는 순간 클릭! 반응 속도(ms)를 측정해요.
+- 기록은 어디에도 저장되지 않는 순수 놀이용 기능이에요.
+
+### 9. 피드백 보내기
+
+이메일을 안 열어도 화면에서 바로 의견을 남길 수 있어요.
+
+- 하단 푸터의 "메시지로 간편하게 보내기" 버튼으로 로그인 없이 익명 전송돼요.
+- 부적절한 내용은 관리자가 확인 후 삭제할 수 있어요.
+
+### 10. 편의 기능
 
 더 빠르고 편하게 연습할 수 있도록 다양한 편의 기능도 준비했어요.
 
 - **프리셋 저장/불러오기**: 자주 쓰는 과목 세트를 이름 붙여 저장해두세요.
 - **과목 이동**: 수강꾸러미 ↔ 이미 신청된 과목 ↔ 코드 입력 과목 간에 자유롭게 이동할 수 있어요.
+- **업데이트 내역 확인**: 화면 최상단 헤더에서 현재 버전을 바로 확인하고, "업데이트 내역"을 눌러 그동안 뭐가 달라졌는지 한눈에 볼 수 있어요. 어느 페이지에서나 확인 가능해요.
 
 ---
 
@@ -109,6 +134,7 @@
 | 백엔드 | **Firebase Firestore** | 별도 서버 없이 랭킹 데이터를 실시간으로 저장·조회 |
 | 인증 | **Firebase Anonymous Auth** | 회원가입 없이 익명으로 랭킹 도전 가능 |
 | 시간 측정 | **Firebase Server Timestamp** | 클라이언트 조작이 불가능한 공정한 서버 기준 시간 기록 |
+| 분석 | **Firebase Analytics** | 페이지 조회·버튼 클릭 등 주요 사용자 액션 추적 |
 | 배포 | **Netlify** | GitHub 연동 자동 배포, SPA 라우팅 지원 |
 | 상태 저장 | **localStorage** | 과목 설정·프리셋을 브라우저에 영구 보존 |
 
@@ -166,8 +192,12 @@ src/
 ├── App.jsx               # 라우팅 설정
 ├── firebase.js           # Firebase 초기화
 ├── components/
-│   ├── common/           # 공통 컴포넌트 (Modal)
-│   ├── layout/           # TopBand, Footer, MainNav
+│   ├── common/           # 공통 컴포넌트
+│   │   ├── Modal.jsx
+│   │   ├── FeedbackModal.jsx # 피드백 전송 모달 (Footer, 설명서 모달 등에서 공통 사용)
+│   │   ├── HallOfFame.jsx    # 명예의 전당 (상위 3위 + 누적 참여자 수)
+│   │   └── ReactionGame.jsx  # 손풀기 반응속도 미니게임
+│   ├── layout/           # TopBand(버전/업데이트 내역 모달 포함), Footer(피드백 모달 포함), MainNav
 │   ├── setup/            # 설정 화면 전용 컴포넌트
 │   │   ├── CourseTable.jsx
 │   │   ├── CourseAddForm.jsx
@@ -180,8 +210,11 @@ src/
 │       ├── PracticeTimer.jsx
 │       ├── RegisteredCourses.jsx
 │       └── StudentInfo.jsx
+├── constants/
+│   └── site.js           # 사이트 전역 상수 (피드백 관리자 이메일 등)
 ├── data/
-│   └── challengeData.js  # 랭킹 도전 과목 세트 설정
+│   ├── challengeData.js  # 랭킹 도전 과목 세트·챌린지 버전(challengeId) 설정
+│   └── updateLog.js      # 홈 화면 "업데이트 내역" 모달에 표시되는 사용자용 변경 이력
 ├── hooks/
 │   ├── useClock.js       # 실시간 시계 훅
 │   └── useCaptcha.js     # 보안코드 생성 및 검증 훅
@@ -193,15 +226,22 @@ src/
 │   ├── RankingPage.jsx       # 랭킹 조회 화면
 │   ├── ResultPage.jsx        # 결과 화면
 │   ├── PrivacyPage.jsx       # 개인정보처리방침
-│   └── TermsPage.jsx         # 이용약관
+│   ├── TermsPage.jsx         # 이용약관
+│   └── FeedbackAdminPage.jsx # 피드백 관리자 전용 조회/삭제 화면 (/feedback)
 ├── utils/
 │   ├── storage.js        # localStorage 상태 관리
 │   ├── courseUtils.js    # 과목 관련 유틸 함수
 │   ├── practiceUtils.js  # 실전 모드 타이밍·난이도 로직
-│   └── rankingUtils.js   # Firebase 랭킹 CRUD
+│   ├── rankingUtils.js   # Firebase 랭킹 CRUD, 버전별 캐시(1분 TTL)
+│   ├── versionUtils.js   # 챌린지 버전 메타데이터 조회
+│   ├── feedbackUtils.js  # Firebase 피드백 CRUD
+│   └── analytics.js      # Firebase Analytics 이벤트 트래킹
 └── styles/
     └── global.css        # 전체 공통 스타일
 ```
+
+> `firestore.rules`(저장소 루트)에 랭킹·피드백 컬렉션의 서버 측 권한 규칙이 정의되어
+> 있어요. Firebase Console의 Rules 탭에 그대로 붙여넣어 배포해야 실제로 적용돼요.
 
 ---
 

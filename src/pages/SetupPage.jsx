@@ -7,6 +7,7 @@ import CourseTable from "../components/setup/CourseTable";
 import CourseAddForm from "../components/setup/CourseAddForm";
 import PracticeModeSetup from "../components/setup/PracticeModeSetup";
 import Modal from "../components/common/Modal";
+import FeedbackModal from "../components/common/FeedbackModal";
 import HallOfFame from "../components/common/HallOfFame";
 import ReactionGame from "../components/common/ReactionGame";
 import {
@@ -92,6 +93,7 @@ export default function SetupPage() {
   const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
   const [showPracticeModal, setShowPracticeModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [tipsOpen, setTipsOpen] = useState(false);
 
   const settersMap = { cart: setCartRows, reg: setRegRows, code: setCodeRows };
@@ -258,19 +260,30 @@ export default function SetupPage() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                gap: "8px",
               }}
             >
               <h1 className="login-panel__title" style={{ margin: 0 }}>
-                수강신청 연습
+                수강신청 연습 시스템
               </h1>
               <button
-                className="btn btn-sm"
+                type="button"
                 onClick={() => {
                   trackButtonClick("help_button", "설명서");
                   setShowHelpModal(true);
                 }}
+                style={{
+                  padding: "6px 14px",
+                  borderRadius: "8px",
+                  border: "1px solid #478ef0",
+                  background: "#478ef0",
+                  color: "#fff",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                }}
               >
-                📖 설명서
+                설명서
               </button>
             </div>
             <div
@@ -1100,8 +1113,29 @@ export default function SetupPage() {
               본 사이트는 교육 목적의 연습용 서비스로, 실제 대학교 시스템과
               무관해요.
             </div>
+
+            <button
+              type="button"
+              className="btn btn-block"
+              style={{
+                backgroundColor: "#478ef0",
+                color: "#fff",
+                borderColor: "#478ef0",
+              }}
+              onClick={() => {
+                trackButtonClick("feedback_button", "피드백 보내기");
+                setShowHelpModal(false);
+                setShowFeedbackModal(true);
+              }}
+            >
+              피드백 보내기
+            </button>
           </div>
         </Modal>
+      )}
+
+      {showFeedbackModal && (
+        <FeedbackModal onClose={() => setShowFeedbackModal(false)} />
       )}
 
       {/* 실전 모드 안내 모달 */}
