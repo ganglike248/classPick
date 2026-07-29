@@ -16,6 +16,7 @@ import {
   DIFFICULTY_CONFIGS,
 } from "../utils/practiceUtils";
 import { startChallengeSession, finishChallengeSession } from "../utils/rankingUtils";
+import { checkAndSetThrottle } from "../utils/throttle";
 import { CHALLENGE_ID } from "../data/challengeData";
 import {
   trackPageView,
@@ -26,6 +27,11 @@ import {
   trackModeComplete,
   trackCodeInput,
 } from "../utils/analytics";
+
+// 도전 세션(Firestore 문서) 생성 스팸 완화 — 실제 도전은 최소 수십 초가 걸리므로
+// 정상 이용에는 영향 없이, 반복 클릭/스크립트성 남발만 걸러낸다
+const CHALLENGE_SESSION_THROTTLE_KEY = "classPick_lastChallengeSessionAt";
+const CHALLENGE_SESSION_THROTTLE_MS = 5 * 1000;
 
 function getCourseCredit(courses, id) {
   const c = courses[id];
@@ -93,13 +99,19 @@ export default function RegisterPage() {
       // 챌린지 모드: Firebase 세션 시작 (serverTimestamp)
       let challengeDocId = null;
       if (type === "challenge") {
-        try {
-          challengeDocId = await startChallengeSession(
-            s.practiceMode.nickname || "익명",
-            CHALLENGE_ID
-          );
-        } catch (e) {
-          console.error("Firebase 세션 시작 실패:", e);
+        if (!checkAndSetThrottle(CHALLENGE_SESSION_THROTTLE_KEY, CHALLENGE_SESSION_THROTTLE_MS)) {
+          // 너무 빠른 반복 시도 — 도전 세션 생성만 건너뛰고 연습은 그대로 진행
+          // (챌린지 문서가 없으니 완주해도 랭킹엔 기록되지 않음)
+          console.warn("도전 세션 생성이 너무 잦아 건너뜁니다.");
+        } else {
+          try {
+            challengeDocId = await startChallengeSession(
+              s.practiceMode.nickname || "익명",
+              CHALLENGE_ID
+            );
+          } catch (e) {
+            console.error("Firebase 세션 시작 실패:", e);
+          }
         }
       }
 

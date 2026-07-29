@@ -33,9 +33,13 @@ service cloud.firestore {
                     );
 
       // 삭제: 본인의 완료된 기록만 삭제 가능 (타인 기록은 계속 삭제 불가 → 기록 조작 방지)
-      allow delete: if request.auth != null
-                    && request.auth.uid == resource.data.uid
-                    && resource.data.status == 'completed';
+      // + 관리자 계정은 부적절한 닉네임 등을 신고받아 정리할 수 있도록 예외적으로 모든 기록 삭제 가능
+      // 이 이메일은 src/constants/site.js의 FEEDBACK_ADMIN_EMAIL과 반드시 일치해야 함
+      allow delete: if (request.auth != null
+                        && request.auth.uid == resource.data.uid
+                        && resource.data.status == 'completed')
+                    || (request.auth != null
+                        && request.auth.token.email == 'business9498@gmail.com');
     }
 
     match /feedback/{docId} {

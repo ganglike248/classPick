@@ -1,6 +1,10 @@
 import { useState } from "react";
 import Modal from "./Modal";
 import { submitFeedback } from "../../utils/feedbackUtils";
+import { checkAndSetThrottle } from "../../utils/throttle";
+
+const FEEDBACK_THROTTLE_KEY = "classPick_lastFeedbackAt";
+const FEEDBACK_THROTTLE_MS = 30 * 1000; // 30초에 한 번만 전송 가능 (연속 도배 완화)
 
 // Footer, 설명서 모달 등 여러 곳에서 재사용하는 피드백 전송 모달
 export default function FeedbackModal({ onClose }) {
@@ -11,6 +15,10 @@ export default function FeedbackModal({ onClose }) {
     const trimmed = feedbackMessage.trim();
     if (!trimmed) {
       alert("메시지를 입력해 주세요.");
+      return;
+    }
+    if (!checkAndSetThrottle(FEEDBACK_THROTTLE_KEY, FEEDBACK_THROTTLE_MS)) {
+      alert("너무 빠르게 연속으로 보내고 있어요. 잠시 후 다시 시도해 주세요.");
       return;
     }
     setSending(true);

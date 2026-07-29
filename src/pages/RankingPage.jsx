@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { fetchRankings, renameOwnRecord, deleteOwnRecord } from "../utils/rankingUtils";
 import { CHALLENGE_ID, CHALLENGE_CART_COURSES, CHALLENGE_CODE_COURSES } from "../data/challengeData";
 import { saveNickname } from "../utils/storage";
-import { getRecentVersionIds, getVersionNote } from "../utils/versionUtils";
+import { getRecentVersionIds } from "../utils/versionUtils";
 import { auth } from "../firebase";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
@@ -187,14 +187,7 @@ export default function RankingPage() {
           </div>
         </div>
 
-        {/* 버전별 참고사항 안내 (해당 버전에 note가 있을 때만 표시) */}
-        {getVersionNote(versionId) && (
-          <div className="info-callout" style={{ borderRadius: "8px", lineHeight: 1.7 }}>
-            <div>{getVersionNote(versionId)}</div>
-          </div>
-        )}
-
-        {/* 명예의 전당 — 선택한 버전에 맞춰 갱신됨 */}
+        {/* 명예의 전당 — 선택한 버전에 맞춰 갱신됨 (버전 참고사항은 HallOfFame 헤더에서 표시) */}
         <div className="card">
           <HallOfFame versionId={versionId} variant="podium" />
         </div>

@@ -197,7 +197,8 @@ src/
 │   │   ├── FeedbackModal.jsx # 피드백 전송 모달 (Footer, 설명서 모달 등에서 공통 사용)
 │   │   ├── HallOfFame.jsx    # 명예의 전당 (상위 3위 + 누적 참여자 수)
 │   │   ├── ReactionGame.jsx  # 손풀기 반응속도 미니게임
-│   │   └── AdFitBanner.jsx   # 카카오 애드핏 배너 (unitId 없으면 렌더링 안 함)
+│   │   ├── AdFitBanner.jsx   # 카카오 애드핏 배너 (unitId 없으면 렌더링 안 함)
+│   │   └── ErrorBoundary.jsx # 예상 못한 오류 시 안내 화면 (앱 전체를 감쌈)
 │   ├── layout/           # TopBand(버전/업데이트 내역 모달 포함), Footer(피드백 모달 포함), MainNav
 │   ├── setup/            # 설정 화면 전용 컴포넌트
 │   │   ├── CourseTable.jsx
@@ -236,7 +237,8 @@ src/
 │   ├── rankingUtils.js   # Firebase 랭킹 CRUD, 버전별 캐시(1분 TTL)
 │   ├── versionUtils.js   # 챌린지 버전 메타데이터 조회
 │   ├── feedbackUtils.js  # Firebase 피드백 CRUD
-│   └── analytics.js      # Firebase Analytics 이벤트 트래킹
+│   ├── analytics.js      # Firebase Analytics 이벤트 트래킹
+│   └── throttle.js       # 클라이언트 측 간단한 연속 요청 완화 (localStorage 기반)
 └── styles/
     └── global.css        # 전체 공통 스타일
 ```

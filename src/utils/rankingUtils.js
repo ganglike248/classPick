@@ -144,3 +144,23 @@ export async function deleteOwnRecord(docId) {
   await deleteDoc(doc(db, RANKINGS_COLLECTION, docId));
   invalidateRankingsCache();
 }
+
+/**
+ * 관리자 전용: 버전 구분 없이 완료된 랭킹 기록 전체 조회 (부적절한 닉네임 등 신고 대응용)
+ * 공개 랭킹 조회와 달리 캐시하지 않음 — 관리자 페이지에서만, 드물게 호출됨
+ */
+export async function fetchAllRankingsForAdmin() {
+  const q = query(collection(db, RANKINGS_COLLECTION), where("status", "==", "completed"));
+  const snapshot = await getDocs(q);
+  return snapshot.docs
+    .map((d) => ({ id: d.id, ...d.data() }))
+    .sort((a, b) => (b.endedAt?.toMillis?.() ?? 0) - (a.endedAt?.toMillis?.() ?? 0));
+}
+
+/**
+ * 관리자 전용: 본인 여부와 무관하게 기록 삭제 (firestore.rules의 관리자 이메일 예외로 허용됨)
+ */
+export async function adminDeleteRecord(docId) {
+  await deleteDoc(doc(db, RANKINGS_COLLECTION, docId));
+  invalidateRankingsCache();
+}
