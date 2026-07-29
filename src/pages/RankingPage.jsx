@@ -11,7 +11,13 @@ import HallOfFame from "../components/common/HallOfFame";
 import { trackPageView, trackUIInteraction } from "../utils/analytics";
 import AdFitBanner from "../components/common/AdFitBanner";
 
-const ADFIT_UNIT_ID_CONTENT = import.meta.env.VITE_ADFIT_UNIT_ID_CONTENT;
+// ResultPage와 같은 광고 단위를 공유하면, 같은 세션에서 짧은 시간 안에 같은
+// 단위 ID가 반복 요청되는 걸로 보여 뒤에 요청한 쪽이 채워지지 않을 수 있다.
+// 그래서 랭킹 페이지 전용 단위를 따로 쓴다 (아직 없으면 CONTENT 값을 그대로
+// 재사용 — 광고 단위 발급 전에는 기존과 동일하게 동작).
+const ADFIT_UNIT_ID_RANKING =
+  import.meta.env.VITE_ADFIT_UNIT_ID_RANKING ||
+  import.meta.env.VITE_ADFIT_UNIT_ID_CONTENT;
 
 const TOTAL_COURSES =
   CHALLENGE_CART_COURSES.length + CHALLENGE_CODE_COURSES.length;
@@ -194,7 +200,7 @@ export default function RankingPage() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <AdFitBanner unitId={ADFIT_UNIT_ID_CONTENT} width={728} height={90} />
+          <AdFitBanner unitId={ADFIT_UNIT_ID_RANKING} width={728} height={90} />
         </div>
 
         {/* 내 기록 요약 */}

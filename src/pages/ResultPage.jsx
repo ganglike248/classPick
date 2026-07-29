@@ -144,17 +144,25 @@ export default function ResultPage() {
     <>
       <TopBand onBrandClick={handleRetry} />
       <main className="page-wrap" style={{ maxWidth: "700px" }}>
-        {/* 헤더 - 소요 시간 히어로 */}
-        <div className="card" style={{ textAlign: "center", padding: "32px 24px", borderTop: "3px solid #478ef0" }}>
+        {/* 헤더 - 소요 시간 히어로 (마감 시간 초과로 자동 종료된 경우엔 시간 대신 안내 문구) */}
+        <div className="card" style={{ textAlign: "center", padding: "32px 24px", borderTop: `3px solid ${isIncomplete ? "#e54b4b" : "#478ef0"}` }}>
           <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "10px", fontWeight: 600, letterSpacing: "1px", textTransform: "uppercase" }}>
             수강신청 결과
           </div>
-          <div style={{ fontSize: "46px", fontWeight: 700, color: "#478ef0", letterSpacing: "-1px", lineHeight: 1 }}>
-            {formatElapsedLong(totalElapsedMs)}
-          </div>
-          <div style={{ fontSize: "13px", color: "#b0b8cc", marginTop: "6px" }}>
-            총 {(totalElapsedMs / 1000).toFixed(2)}초
-          </div>
+          {isIncomplete ? (
+            <div style={{ fontSize: "20px", fontWeight: 700, color: "#e54b4b", lineHeight: 1.5 }}>
+              마감 시간이 지나 자동으로 종료됐어요
+            </div>
+          ) : (
+            <>
+              <div style={{ fontSize: "46px", fontWeight: 700, color: "#478ef0", letterSpacing: "-1px", lineHeight: 1 }}>
+                {formatElapsedLong(totalElapsedMs)}
+              </div>
+              <div style={{ fontSize: "13px", color: "#b0b8cc", marginTop: "6px" }}>
+                총 {(totalElapsedMs / 1000).toFixed(2)}초
+              </div>
+            </>
+          )}
           <div style={{ marginTop: "18px", display: "flex", justifyContent: "center", gap: "0", borderTop: "1px solid #f0f3fa", paddingTop: "16px" }}>
             <div style={{ flex: 1, padding: "0 12px", borderRight: "1px solid #f0f3fa" }}>
               <div style={{ fontSize: "11px", color: "#8c96ae", marginBottom: "4px" }}>신청 성공</div>

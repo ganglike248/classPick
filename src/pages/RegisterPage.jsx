@@ -128,6 +128,11 @@ export default function RegisterPage() {
   }, [showWhiteScreen]);
 
   // 자동 전환 체크: 수강꾸러미 과목이 모두 신청 완료 or 마감됐을 때 결과 화면으로 이동
+  // 남은 과목이 여럿이고 마감 시각이 서로 다르면, 가장 이른 마감을 확인한 뒤에도
+  // 아직 안 끝난 과목이 남아있을 수 있다 — 그럴 땐 그 다음 마감 시각에 다시 확인하는
+  // 식으로 마지막 과목이 마감될 때까지 재귀적으로 재확인해야 한다 (한 번만 확인하고
+  // 끝내면, 이후 아무 신청도 없을 때 마지막 과목이 마감돼도 아무도 알아채지 못해
+  // 화면이 멈춰버린다).
   useEffect(() => {
     if (showWhiteScreen || !state?.practiceMode?.startedAt) return;
 
@@ -148,24 +153,37 @@ export default function RegisterPage() {
       );
     };
 
-    if (isAllDone()) {
-      handlePracticeEnd(stateRef.current);
-      return;
-    }
+    let timer;
 
-    // 다음 마감 시각에 재확인하는 타이머 설정
-    const now = Date.now();
-    const futureDeadlines = Object.values(deadlines).filter((d) => d > now);
-    if (futureDeadlines.length === 0) return;
-
-    const nextDeadline = Math.min(...futureDeadlines);
-    const delay = Math.max(200, nextDeadline - Date.now() + 200);
-
-    const timer = setTimeout(() => {
+    const scheduleNextCheck = () => {
       if (isAllDone()) {
+        const curr = stateRef.current;
+        // 전부 신청 완료가 아니라 남은 과목이 마감돼서 끝난 경우에만 안내
+        const hasMissed = checkTargets.some(
+          (id) => !curr.registeredCourseIds.includes(id)
+        );
+        if (hasMissed) {
+          alert("모든 과목의 마감 시간이 지나 자동으로 종료됩니다.");
+        }
         handlePracticeEnd(stateRef.current);
+        return;
       }
-    }, delay);
+
+      // 아직 안 끝난 과목들 중 가장 이른 마감 시각에 다시 확인
+      const now = Date.now();
+      const futureDeadlines = checkTargets
+        .filter((id) => !stateRef.current.registeredCourseIds.includes(id))
+        .map((id) => deadlines[id])
+        .filter((d) => d && d > now);
+
+      if (futureDeadlines.length === 0) return;
+
+      const nextDeadline = Math.min(...futureDeadlines);
+      const delay = Math.max(200, nextDeadline - Date.now() + 200);
+      timer = setTimeout(scheduleNextCheck, delay);
+    };
+
+    scheduleNextCheck();
 
     return () => clearTimeout(timer);
   }, [
