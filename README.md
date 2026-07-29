@@ -236,8 +236,7 @@ src/
 │   ├── rankingUtils.js   # Firebase 랭킹 CRUD, 버전별 캐시(1분 TTL)
 │   ├── versionUtils.js   # 챌린지 버전 메타데이터 조회
 │   ├── feedbackUtils.js  # Firebase 피드백 CRUD
-│   ├── analytics.js      # Firebase Analytics 이벤트 트래킹
-│   └── adsense.js        # 구글 애드센스 로더 스크립트 삽입 (클라이언트 ID 있을 때만)
+│   └── analytics.js      # Firebase Analytics 이벤트 트래킹
 └── styles/
     └── global.css        # 전체 공통 스타일
 ```
