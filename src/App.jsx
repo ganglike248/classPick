@@ -12,6 +12,9 @@ import AdFitBanner from "./components/common/AdFitBanner";
 import "./styles/global.css";
 
 const ADFIT_ANCHOR_UNIT_ID = import.meta.env.VITE_ADFIT_UNIT_ID_ANCHOR;
+// 광고 높이(90) + 위아래 여백(4px씩) + 위쪽 구분선(1px). 아래 고정 바의 실제 높이와
+// 항상 같아야 하므로 한 곳에서만 관리한다.
+const ANCHOR_BAR_HEIGHT = 99;
 
 function AppRoutes() {
   const location = useLocation();
@@ -21,17 +24,21 @@ function AppRoutes() {
 
   return (
     <>
-      <Routes>
-        <Route path="/" element={<SetupPage />} />
-        <Route path="/practice-login" element={<PracticeLoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/result" element={<ResultPage />} />
-        <Route path="/challenge" element={<ChallengePage />} />
-        <Route path="/ranking" element={<RankingPage />} />
-        <Route path="/privacy" element={<PrivacyPage />} />
-        <Route path="/terms" element={<TermsPage />} />
-        <Route path="/feedback" element={<FeedbackAdminPage />} />
-      </Routes>
+      {/* 고정 배너가 페이지 맨 아래 내용(Footer 등)을 가리지 않도록,
+          배너 높이만큼 미리 여백을 확보해둔다 */}
+      <div style={{ paddingBottom: hideAnchorAd ? 0 : ANCHOR_BAR_HEIGHT }}>
+        <Routes>
+          <Route path="/" element={<SetupPage />} />
+          <Route path="/practice-login" element={<PracticeLoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/result" element={<ResultPage />} />
+          <Route path="/challenge" element={<ChallengePage />} />
+          <Route path="/ranking" element={<RankingPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/feedback" element={<FeedbackAdminPage />} />
+        </Routes>
+      </div>
       {!hideAnchorAd && (
         <div
           style={{
