@@ -6,6 +6,7 @@ import { fetchAllRankingsForAdmin, adminDeleteRecord } from "../utils/rankingUti
 import { FEEDBACK_ADMIN_EMAIL } from "../constants/site";
 import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 export default function FeedbackAdminPage() {
   const [user, setUser] = useState(null);
@@ -122,7 +123,7 @@ export default function FeedbackAdminPage() {
     .filter((r) => rankingVersionFilter === "all" || r.challengeId === rankingVersionFilter)
     .filter((r) => r.nickname?.toLowerCase().includes(rankingSearch.toLowerCase()));
 
-  if (!authChecked) return null;
+  if (!authChecked) return <LoadingScreen message="로그인 상태를 확인하고 있어요." />;
 
   return (
     <>

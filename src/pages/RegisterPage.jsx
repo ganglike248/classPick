@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import MainNav from "../components/layout/MainNav";
 import Footer from "../components/layout/Footer";
+import LoadingScreen from "../components/common/LoadingScreen";
 import StudentInfo from "../components/register/StudentInfo";
 import CartCourses from "../components/register/CartCourses";
 import Captcha from "../components/register/Captcha";
@@ -234,7 +235,7 @@ export default function RegisterPage() {
     return () => clearTimeout(timer);
   }, [state?.practiceMode?.startedAt, showWhiteScreen]);
 
-  if (!state) return null;
+  if (!state) return <LoadingScreen message="설정 정보를 확인하고 있어요. 잠시만 기다려 주세요." />;
 
   const totalCredits = state.registeredCourseIds.reduce(
     (sum, id) => sum + getCourseCredit(state.courses, id),

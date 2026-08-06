@@ -9,6 +9,7 @@ import TopBand from "../components/layout/TopBand";
 import Footer from "../components/layout/Footer";
 import { trackPageView, trackChallengeRanking } from "../utils/analytics";
 import AdFitBanner from "../components/common/AdFitBanner";
+import LoadingScreen from "../components/common/LoadingScreen";
 
 const ADFIT_UNIT_ID_CONTENT = import.meta.env.VITE_ADFIT_UNIT_ID_CONTENT;
 
@@ -88,7 +89,7 @@ export default function ResultPage() {
     };
   }, [result]);
 
-  if (!result) return null;
+  if (!result) return <LoadingScreen message="결과 정보를 확인하고 있어요. 잠시만 기다려 주세요." />;
 
   const {
     type,
