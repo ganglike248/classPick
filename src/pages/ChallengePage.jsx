@@ -245,6 +245,18 @@ export default function ChallengePage() {
           />
           <div
             style={{
+              borderRadius: "4px",
+              fontSize: "11px",
+              fontWeight: 600,
+              color: "#c0392b",
+              lineHeight: 1.6,
+              marginTop: "6px",
+            }}
+          >
+            부적절한 닉네임 사용 시 별도의 통보없이 삭제될 수 있습니다.
+          </div>
+          <div
+            style={{
               background: "#fff8f8",
               border: "1px solid #fac5c5",
               borderLeft: "4px solid #e54b4b",
