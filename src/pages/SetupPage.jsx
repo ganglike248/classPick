@@ -8,6 +8,9 @@ import CourseAddForm from "../components/setup/CourseAddForm";
 import PracticeModeSetup from "../components/setup/PracticeModeSetup";
 import Modal from "../components/common/Modal";
 import FeedbackModal from "../components/common/FeedbackModal";
+import WelcomeGuideModal, {
+  WELCOME_GUIDE_SESSION_KEY,
+} from "../components/common/WelcomeGuideModal";
 import HallOfFame from "../components/common/HallOfFame";
 import ReactionGame from "../components/common/ReactionGame";
 import {
@@ -92,7 +95,17 @@ export default function SetupPage() {
   const [practiceEnabled, setPracticeEnabled] = useState(false);
   const [practiceDifficulty, setPracticeDifficulty] = useState("medium");
   const [showPracticeModal, setShowPracticeModal] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
+  // "설명서" 버튼으로 언제든 열 수 있고, 세션 최초 진입 시엔 자동으로 한 번 열림
+  // (같은 세션에서 이미 봤으면 자동으로는 다시 뜨지 않음 — WelcomeGuideModal 참고)
+  const [showWelcomeGuide, setShowWelcomeGuide] = useState(() => {
+    try {
+      return sessionStorage.getItem(WELCOME_GUIDE_SESSION_KEY) !== "1";
+    } catch {
+      return true;
+    }
+  });
+  // WelcomeGuideModal 안의 "사용법 더 자세히 보기"로 열리는 기존 상세 도움말 모달
+  const [showServiceInfoModal, setShowServiceInfoModal] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [tipsOpen, setTipsOpen] = useState(false);
 
@@ -270,7 +283,7 @@ export default function SetupPage() {
                 type="button"
                 onClick={() => {
                   trackButtonClick("help_button", "설명서");
-                  setShowHelpModal(true);
+                  setShowWelcomeGuide(true);
                 }}
                 style={{
                   padding: "6px 14px",
@@ -739,10 +752,10 @@ export default function SetupPage() {
       <Footer variant="setup" />
 
       {/* 도움말 모달 */}
-      {showHelpModal && (
+      {showServiceInfoModal && (
         <Modal
           title="서비스 도움말"
-          onConfirm={() => setShowHelpModal(false)}
+          onConfirm={() => setShowServiceInfoModal(false)}
           confirmText="닫기"
         >
           <div
@@ -1124,7 +1137,7 @@ export default function SetupPage() {
               }}
               onClick={() => {
                 trackButtonClick("feedback_button", "피드백 보내기");
-                setShowHelpModal(false);
+                setShowServiceInfoModal(false);
                 setShowFeedbackModal(true);
               }}
             >
@@ -1245,6 +1258,12 @@ export default function SetupPage() {
           </div>
         </Modal>
       )}
+
+      <WelcomeGuideModal
+        open={showWelcomeGuide}
+        onClose={() => setShowWelcomeGuide(false)}
+        onOpenHelp={() => setShowServiceInfoModal(true)}
+      />
     </>
   );
 }
