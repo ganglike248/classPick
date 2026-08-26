@@ -1,8 +1,9 @@
+// CodeInput(과목 코드 입력 박스)과 한 섹션으로 묶여 보이도록, 카드/제목 없이
+// 표만 그린다. 감싸는 카드와 제목은 RegisterPage에서 함께 잡아준다.
 export default function RegisteredCourses({ registeredIds, courses, onDelete }) {
   return (
-    <section className="card">
-      <div className="section-title">수강신청 과목</div>
-      <div className="table-wrap">
+    <>
+      <div className="table-wrap" style={{ marginTop: "14px" }}>
         <table className="data-table">
           <colgroup>
             <col style={{ width: "6%" }} />
@@ -31,7 +32,7 @@ export default function RegisteredCourses({ registeredIds, courses, onDelete }) 
           <tbody>
             {registeredIds.length === 0 ? (
               <tr>
-                <td colSpan={9} className="helper-text">
+                <td colSpan={9} className="helper-text" style={{ textAlign: "center", padding: "10px 0" }}>
                   아직 신청한 과목이 없습니다.
                 </td>
               </tr>
@@ -67,6 +68,6 @@ export default function RegisteredCourses({ registeredIds, courses, onDelete }) 
           </tbody>
         </table>
       </div>
-    </section>
+    </>
   );
 }

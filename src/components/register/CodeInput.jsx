@@ -28,58 +28,39 @@ export default function CodeInput({ onAdd }) {
     }
   };
 
+  // 카드/제목은 RegisteredCourses(신청 결과 표)와 한 섹션으로 묶여 보이도록
+  // RegisterPage에서 함께 감싸며, 이 컴포넌트는 입력 박스만 그린다.
   return (
-    <section className="card">
-      <div className="section-title">수강신청 과목 코드 입력</div>
-      <div className="table-wrap">
-        <table className="data-table">
-          <tbody>
-            <tr>
-              <td style={{ textAlign: "left" }}>
-                <input
-                  ref={frontRef}
-                  type="text"
-                  maxLength={5}
-                  className="input-text"
-                  style={{ width: "80px", textAlign: "center" }}
-                  value={front}
-                  onChange={(e) => setFront(e.target.value)}
-                  onKeyUp={(e) =>
-                    e.key === "Enter" && backRef.current?.focus()
-                  }
-                />
-                {" - "}
-                <input
-                  ref={backRef}
-                  type="text"
-                  maxLength={2}
-                  className="input-text"
-                  style={{ width: "50px", textAlign: "center" }}
-                  value={back}
-                  onChange={(e) => setBack(e.target.value)}
-                  onKeyUp={(e) => e.key === "Enter" && handleAdd()}
-                />
-                <span className="helper-text" style={{ marginLeft: "12px" }}>
-                  아무 강좌번호나 입력해서 신청할 수 있습니다. (예: 12345-01,
-                  미리 정의되지 않은 경우 교과목명 '-' / 3학점으로 처리)
-                </span>
-              </td>
-              <td style={{ width: "90px" }}>
-                <button
-                  className="btn btn-primary btn-block"
-                  style={{
-                    backgroundColor: "rgb(67, 67, 184)",
-                    color: "white",
-                  }}
-                  onClick={handleAdd}
-                >
-                  추가
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <div className="code-input-box">
+      <div className="code-input-box__fields">
+        <input
+          ref={frontRef}
+          type="text"
+          maxLength={5}
+          className="input-text"
+          style={{ width: "80px", textAlign: "center" }}
+          value={front}
+          onChange={(e) => setFront(e.target.value)}
+          onKeyUp={(e) => e.key === "Enter" && backRef.current?.focus()}
+        />
+        <span>-</span>
+        <input
+          ref={backRef}
+          type="text"
+          maxLength={2}
+          className="input-text"
+          style={{ width: "50px", textAlign: "center" }}
+          value={back}
+          onChange={(e) => setBack(e.target.value)}
+          onKeyUp={(e) => e.key === "Enter" && handleAdd()}
+        />
+        <span className="code-input-box__desc">
+          신청할 과목코드(5자리-2자리)를 입력한 후 '추가'버튼을 누르십시오.
+        </span>
       </div>
-    </section>
+      <button type="button" className="code-input-box__add-btn" onClick={handleAdd}>
+        <span aria-hidden="true">+</span> 추가
+      </button>
+    </div>
   );
 }

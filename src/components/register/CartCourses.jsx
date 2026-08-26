@@ -6,7 +6,7 @@ export default function CartCourses({ cartCourseIds, registeredIds, courses, onA
     <section className="card">
       <div className="section-title">수강꾸러미 신청과목</div>
       <p className="section-desc">
-        수강꾸러미에 담긴 과목 중 현재 수강신청이 완료되지 않은 과목만 보입니다.
+        수강 꾸러미 신청과목 중 수강신청이 완료된 과목은 보이지 않습니다.
       </p>
       <div className="table-wrap" style={{ marginTop: "8px" }}>
         <table className="data-table">
@@ -37,7 +37,7 @@ export default function CartCourses({ cartCourseIds, registeredIds, courses, onA
           <tbody>
             {visibleIds.length === 0 ? (
               <tr>
-                <td colSpan={9} className="helper-text">
+                <td colSpan={9} className="helper-text" style={{ textAlign: "center", padding: "10px 0" }}>
                   표시할 수강꾸러미 과목이 없습니다.
                 </td>
               </tr>

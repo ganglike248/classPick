@@ -80,7 +80,7 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
   return (
     <div>
       <div style={{ fontSize: "14px", fontWeight: 700, color: "#1e2532", marginBottom: "8px" }}>
-        프리셋 저장/불러오기
+        프리셋 저장 / 불러오기
       </div>
       <select
         className="input-text"
@@ -107,6 +107,7 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
             backgroundColor: "rgb(71,142,240)",
             color: "white",
             borderRadius: "4px",
+            padding: "8px",
           }}
           onClick={handleLoad}
         >
@@ -119,6 +120,7 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
             backgroundColor: "#4CAF50",
             color: "white",
             borderRadius: "4px",
+            padding: "8px",
           }}
           onClick={handleSave}
         >
@@ -126,7 +128,7 @@ export default function PresetManager({ getCurrentPreset, onLoad }) {
         </button>
         <button
           className="btn btn-sm btn-danger"
-          style={{ flex: 1, borderRadius: "4px" }}
+          style={{ flex: 1, borderRadius: "4px", padding: "8px" }}
           onClick={handleDelete}
         >
           삭제

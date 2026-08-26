@@ -481,7 +481,7 @@ export default function RegisterPage() {
   const isPracticeActive = !!(pm?.type && pm?.type !== "trial" && pm?.startedAt);
 
   return (
-    <>
+    <div className="register-shell">
       <MainNav />
       {isPracticeActive && (
         <PracticeTimer
@@ -506,14 +506,17 @@ export default function RegisterPage() {
           // 랭킹 도전 모드는 기록을 서로 비교하므로, 캡차 지연이 사람마다 달라지지 않도록 2초로 고정
           delayMs={pm?.type === "challenge" ? 2000 : undefined}
         />
-        <CodeInput onAdd={handleAddByCode} />
-        <RegisteredCourses
-          registeredIds={state.registeredCourseIds}
-          courses={state.courses}
-          onDelete={handleDelete}
-        />
+        <section className="card">
+          <div className="section-title">수강신청 과목</div>
+          <CodeInput onAdd={handleAddByCode} />
+          <RegisteredCourses
+            registeredIds={state.registeredCourseIds}
+            courses={state.courses}
+            onDelete={handleDelete}
+          />
+        </section>
       </main>
       <Footer variant="register" />
-    </>
+    </div>
   );
 }

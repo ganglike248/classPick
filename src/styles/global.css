@@ -81,26 +81,85 @@ button {
   letter-spacing: 0.5px;
 }
 
-/* ===== 메인 수강신청 내비 (RegisterPage 전용) ===== */
+/* ===== 메인 수강신청 내비 (RegisterPage 전용) =====
+   실제 사이트 캡처본을 픽셀 단위로 측정해 맞춤 (배경 전체 폭, 로고/탭 고정
+   너비, 탭 하단 정렬 등). 창 폭에 비례하지 않고 실제 사이트처럼 항상 같은
+   크기를 유지하도록 고정값을 쓴다. */
 .main-nav {
-  background: #2d3748;
-  color: #fff;
+  background: #9ca4a7;
+  border-bottom: 4px solid #c44945;
 }
 
 .main-nav__inner {
-  width: 1000px;
-  margin: 0 auto;
   display: flex;
+  align-items: stretch;
+}
+
+.main-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 14px;
+  white-space: nowrap;
+  justify-content: center;
+}
+
+.main-nav__logo {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.main-nav__brand-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #332f81;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+}
+
+.main-nav__tabs {
+  display: flex;
+  flex: 1;
+  align-items: flex-end;
 }
 
 .main-nav__item {
-  padding: 13px 22px;
-  font-size: 14px;
-  font-weight: 500;
+  flex: 0 0 163px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding: 9px 8px;
+  font-size: 16px;
+  color: #fff;
+  line-height: 1.35;
+  height: 59px;
 }
 
 .main-nav__item--active {
-  background: #e54b4b;
+  background: #c44945;
+}
+
+.main-nav__item--dummy {
+  color: rgba(255, 255, 255, 0.9);
+  cursor: default;
+}
+
+.main-nav__notice-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 8px 10px;
+  background: #f2f2f2;
+}
+
+.main-nav__notice {
+  font-size: 12px;
+  color: #4a5568;
+}
+
+.main-nav__notice-link {
+  color: #3061ab;
+  font-weight: 600;
 }
 
 /* ===== 카드 ===== */
@@ -190,7 +249,7 @@ button {
 
 .btn-sm {
   padding: 5px 10px;
-  font-size: 12px;
+  font-size: 11px;
   border-radius: 5px;
 }
 
@@ -277,16 +336,10 @@ button {
 }
 
 .captcha-value {
-  display: inline-block;
   min-width: 40px;
   text-align: center;
   font-weight: 700;
-  color: #e13a3e;
   margin-right: 6px;
-}
-
-.captcha-input {
-  width: 40px;
 }
 
 /* ===== 모달 ===== */
@@ -362,21 +415,21 @@ button {
 
 /* ===== 로그아웃 버튼 ===== */
 .nav-logout-btn {
-  margin-left: auto;
-  align-self: center;
-  padding: 5px 14px;
-  font-size: 12px;
-  border-radius: 5px;
-  border: 1px solid #e54b4b;
-  background: #e54b4b;
+  flex-shrink: 0;
+  padding: 2px 9px;
+  font-size: 11px;
+  line-height: 1.35;
+  border-radius: 2px;
+  border: 1px solid #3553a2;
+  background: #3553a2;
   color: #fff;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .nav-logout-btn:hover {
-  background: #cc3e3e;
-  border-color: #cc3e3e;
+  background: #2a4285;
+  border-color: #2a4285;
 }
 
 /* ===== 배지 ===== */
@@ -420,7 +473,9 @@ button {
 /* ===== 수강신청 페이지 — 이전 스타일 유지 (둥근 테두리 제거) ===== */
 .register-page .card {
   border-radius: 0;
+  border: none;
   box-shadow: none;
+  padding: 0;
 }
 
 .register-page .btn {
@@ -433,6 +488,7 @@ button {
 
 .register-page .input-text {
   border-radius: 0;
+  padding: 3px 8px
 }
 
 .register-page .input-text:focus {
@@ -445,4 +501,118 @@ button {
 
 .register-page .info-callout {
   border-radius: 2px;
+}
+
+/* 섹션 제목 앞 빨간 막대 강조 */
+.register-page .section-title {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  border-left: 4px solid #c0272c;
+}
+
+.register-page .data-table th,
+.register-page .data-table td {
+  border-color: #d5d5d5;
+}
+
+.register-page .data-table th {
+  background: #fff;
+  border-top: 2px solid #2a4192;
+  color: #333;
+  padding: 9px 10px;
+}
+
+.register-page .data-table td {
+  padding: 5px 10px;
+  text-align: start;
+}
+
+.register-page .info-table th {
+  background: #f4f4f4;
+  border-top: 1px solid #d5d5d5;
+}
+
+/* 과목 표는 실제 사이트처럼 값 칸을 왼쪽 정렬했지만(위 .data-table td),
+   학생정보 표(년도학기/학번/성명 등)는 실제 사이트에서 값이 가운데 정렬이라
+   여기서만 되돌린다. */
+.register-page .info-table td {
+  text-align: center;
+}
+
+.register-page .text-danger-strong {
+  color: #d5312f;
+}
+
+.register-page .action-btn {
+  background: #f6f6f6;
+  border-color: #ccc;
+  color: #333;
+  border-radius: 2px;
+  min-width: 62px;
+  height: 32px;
+  background: linear-gradient(to bottom, #ffffff 0%, #f6f6f6 50%, #cacaca 100%);
+}
+
+.register-page .action-btn:hover {
+  background: #e2e2e2;
+}
+
+/* ===== 과목 코드 입력 박스 ===== */
+.code-input-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #eef4fd;
+  border: 1px solid #a9c6ef;
+  padding: 8px 16px;
+}
+
+.code-input-box__fields {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.code-input-box__desc {
+  color: rgb(225, 65, 65);
+  font-size: 12px;
+}
+
+.code-input-box__add-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  padding: 4px 14px;
+  font-size: 13px;
+  color: #fff;
+  background: #3655a3;
+  border: 1px solid #3655a3;
+  cursor: pointer;
+}
+
+.code-input-box__add-btn:hover {
+  background: #2a4285;
+}
+
+/* ===== 수강신청 페이지 배경 (실제 사이트는 옅은 회색이 아니라 흰 배경) ===== */
+.register-shell {
+  background: #fff;
+  min-height: 100vh;
+}
+
+/* ===== 캡차 (왜곡된 보안 숫자 흉내) ===== */
+.register-page .captcha-box {
+  border: 1px solid #8c8c8c;
+  background: #c0c0c0;
+  padding: 6px 10px;
+}
+
+.captcha-digit {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 700;
 }

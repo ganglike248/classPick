@@ -25,8 +25,8 @@ export default function StudentInfo({ student, totalCredits }) {
             <tr>
               <th>주야구분</th>
               <td>주간</td>
-              <th>신청가능학점</th>
-              <td colSpan={3} style={{ color: "#e13a3e" }}>
+              <th className="text-danger-strong">신청가능학점</th>
+              <td colSpan={3} className="text-danger-strong">
                 {student.maxCredits}학점
               </td>
             </tr>
