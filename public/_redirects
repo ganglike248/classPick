@@ -1,1 +1,10 @@
-/* /index.html 200
+# 정적 콘텐츠(소개·가이드) 페이지: 확장자 없는 깔끔한 URL을 실제 .html 파일로 연결.
+# Netlify는 실제 정적 파일을 리다이렉트 규칙보다 먼저 서빙하므로,
+# /guide/preparation.html, /content.css 등은 이 규칙과 무관하게 그대로 서빙된다.
+/about        /about.html          200
+/guide        /guide/index.html    200
+/guide/       /guide/index.html    200
+/guide/*      /guide/:splat.html   200
+
+# 그 외 모든 경로는 SPA(React Router)로 위임
+/*            /index.html          200

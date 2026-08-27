@@ -23,11 +23,48 @@ function adsenseHtmlPlugin(clientId) {
   }
 }
 
+// public/_redirects 의 정적 콘텐츠 페이지 규칙(/about, /guide, /guide/*)은
+// Netlify에서만 동작한다. 로컬 dev 서버와 vite preview 는 그 규칙을 모르므로
+// 확장자 없는 URL(/about)이 SPA fallback(index.html)으로 빠져 빈 화면이 된다.
+// 아래 미들웨어로 로컬에서도 같은 매핑을 재현해 준다.
+function staticPagesRewritePlugin() {
+  const rewrite = (url) => {
+    const qIndex = url.indexOf('?')
+    const path = qIndex === -1 ? url : url.slice(0, qIndex)
+    const suffix = qIndex === -1 ? '' : url.slice(qIndex)
+    if (path === '/about') return `/about.html${suffix}`
+    if (path === '/guide' || path === '/guide/') return `/guide/index.html${suffix}`
+    const m = path.match(/^\/guide\/([a-z0-9-]+)$/i)
+    if (m) return `/guide/${m[1]}.html${suffix}`
+    return null
+  }
+  const middleware = (req, _res, next) => {
+    if (req.url) {
+      const rewritten = rewrite(req.url)
+      if (rewritten) req.url = rewritten
+    }
+    next()
+  }
+  return {
+    name: 'static-pages-rewrite',
+    configureServer(server) {
+      server.middlewares.use(middleware)
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware)
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   return {
-    plugins: [react(), adsenseHtmlPlugin(env.VITE_ADSENSE_CLIENT_ID)],
+    plugins: [
+      react(),
+      adsenseHtmlPlugin(env.VITE_ADSENSE_CLIENT_ID),
+      staticPagesRewritePlugin(),
+    ],
     define: {
       __APP_VERSION__: JSON.stringify(pkg.version),
     },

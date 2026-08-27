@@ -44,12 +44,22 @@ export default function Footer() {
         <div
           style={{
             display: "flex",
-            gap: "16px",
+            gap: "12px",
             justifyContent: "center",
             alignItems: "center",
+            flexWrap: "wrap",
             marginBottom: "8px",
           }}
         >
+          {/* /guide, /about 은 React Router 밖의 정적 HTML 페이지라 <a href>로 이동한다 */}
+          <a href="/guide" style={{ color: "#6b9fe8", fontSize: "11px" }}>
+            수강신청 가이드
+          </a>
+          <span style={{ color: "#d1d5db" }}>·</span>
+          <a href="/about" style={{ color: "#6b9fe8", fontSize: "11px" }}>
+            소개
+          </a>
+          <span style={{ color: "#d1d5db" }}>·</span>
           <Link to="/privacy" style={{ color: "#6b9fe8", fontSize: "11px" }}>
             개인정보처리방침
           </Link>

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import MainNav from "../components/layout/MainNav";
 import Footer from "../components/layout/Footer";
 import LoadingScreen from "../components/common/LoadingScreen";
+import FlowEntryNotice from "../components/common/FlowEntryNotice";
 import StudentInfo from "../components/register/StudentInfo";
 import CartCourses from "../components/register/CartCourses";
 import Captcha from "../components/register/Captcha";
@@ -43,6 +44,8 @@ function getCourseCredit(courses, id) {
 export default function RegisterPage() {
   const navigate = useNavigate();
   const [state, setState] = useState(null);
+  // 로그인 대기 화면을 거치지 않고 /register 로 직접 들어와, 이어받을 설정이 없는 상태
+  const [noEntry, setNoEntry] = useState(false);
   const { captchaValue, captchaInput, setCaptchaInput, generate, check } = useCaptcha();
 
   // 실전 모드: 흰 화면 여부 (practiceMode가 활성화이고 아직 시작 안 됐으면 true)
@@ -60,8 +63,7 @@ export default function RegisterPage() {
     trackPageView("RegisterPage");
     const s = loadStoredState();
     if (!s) {
-      alert("로그인 페이지에서 먼저 입장해 주세요.");
-      navigate("/");
+      setNoEntry(true);
       return;
     }
     setState(s);
@@ -234,6 +236,23 @@ export default function RegisterPage() {
 
     return () => clearTimeout(timer);
   }, [state?.practiceMode?.startedAt, showWhiteScreen]);
+
+  if (noEntry) {
+    return (
+      <FlowEntryNotice
+        title="수강신청 화면입니다"
+        lead={
+          "이 화면은 로그인 대기 화면에서 입장해야 열리는 수강신청 페이지입니다. " +
+          "이어받을 설정 정보가 없어 지금은 신청 화면을 표시할 수 없습니다."
+        }
+        steps={[
+          "홈에서 신청할 과목을 수강꾸러미에 담고 난이도를 설정합니다.",
+          "'수강신청 시작'을 누르면 로그인 대기 화면으로 이동합니다.",
+          "정해진 시각에 입장하면 이 수강신청 화면이 열립니다.",
+        ]}
+      />
+    );
+  }
 
   if (!state) return <LoadingScreen message="설정 정보를 확인하고 있어요. 잠시만 기다려 주세요." />;
 

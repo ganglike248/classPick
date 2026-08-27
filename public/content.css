@@ -1,0 +1,295 @@
+/* ClassPick 콘텐츠(소개·가이드) 페이지 공용 스타일.
+   React 앱의 global.css와 분리돼 있고, min-width 고정 없이 모바일까지 대응한다. */
+
+:root {
+  --ink: #1e2532;
+  --ink-soft: #4b5563;
+  --ink-faint: #8c96ae;
+  --accent: #478ef0;
+  --accent-dark: #2f6fd0;
+  --line: #e6eaf3;
+  --bg: #f2f4f9;
+  --card: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Noto Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.75;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ===== 헤더 ===== */
+.site-header {
+  background: #1a2235;
+  color: #fff;
+}
+
+.site-header__inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+
+.site-header__brand {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.3px;
+  margin-right: auto;
+}
+
+.site-header__brand:hover {
+  text-decoration: none;
+}
+
+.site-header__nav a {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  margin-left: 16px;
+}
+
+.site-header__nav a:first-child {
+  margin-left: 0;
+}
+
+.site-header__nav a:hover {
+  color: #fff;
+}
+
+/* ===== 본문 ===== */
+.content-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 20px 56px;
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: var(--ink-faint);
+  margin-bottom: 18px;
+}
+
+.breadcrumb a {
+  color: var(--ink-faint);
+}
+
+article,
+.doc {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 36px 40px;
+}
+
+h1 {
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin: 0 0 10px;
+  line-height: 1.4;
+}
+
+.lead {
+  font-size: 15px;
+  color: var(--ink-soft);
+  margin: 0 0 28px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--line);
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin: 34px 0 12px;
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 22px 0 8px;
+}
+
+p {
+  margin: 12px 0;
+  color: var(--ink);
+}
+
+ul,
+ol {
+  padding-left: 22px;
+  margin: 12px 0;
+}
+
+li {
+  margin: 7px 0;
+}
+
+strong {
+  font-weight: 700;
+}
+
+blockquote {
+  margin: 18px 0;
+  padding: 12px 18px;
+  background: #f0f7ff;
+  border-left: 4px solid var(--accent);
+  border-radius: 6px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 32px 0;
+}
+
+/* ===== 가이드 목록 카드 ===== */
+.guide-list {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0 0;
+}
+
+.guide-list li {
+  margin: 0 0 14px;
+}
+
+.guide-list a {
+  display: block;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+
+.guide-list a:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.guide-list__title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.guide-list__desc {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 5px;
+}
+
+/* ===== CTA ===== */
+.cta {
+  margin: 32px 0 8px;
+  padding: 22px 24px;
+  background: #f0f7ff;
+  border: 1px solid #c3daf9;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.cta p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.btn {
+  display: inline-block;
+  padding: 11px 26px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 8px;
+}
+
+.btn:hover {
+  background: var(--accent-dark);
+  text-decoration: none;
+}
+
+/* ===== 관련 글 ===== */
+.related {
+  margin-top: 34px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.related h2 {
+  margin-top: 0;
+  font-size: 15px;
+}
+
+.related ul {
+  padding-left: 20px;
+}
+
+/* ===== 푸터 ===== */
+.site-footer {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 40px;
+  font-size: 12px;
+  color: var(--ink-faint);
+  line-height: 1.8;
+}
+
+.site-footer a {
+  color: var(--ink-faint);
+}
+
+.site-footer__links {
+  margin: 6px 0;
+}
+
+.site-footer__links a {
+  margin-right: 12px;
+}
+
+/* ===== 모바일 ===== */
+@media (max-width: 640px) {
+  article,
+  .doc {
+    padding: 24px 20px;
+    border-radius: 10px;
+  }
+
+  h1 {
+    font-size: 21px;
+  }
+
+  h2 {
+    font-size: 16px;
+  }
+
+  .content-wrap {
+    padding: 22px 14px 44px;
+  }
+}

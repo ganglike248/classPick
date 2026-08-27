@@ -10,6 +10,7 @@ import Footer from "../components/layout/Footer";
 import { trackPageView, trackChallengeRanking } from "../utils/analytics";
 import AdFitBanner from "../components/common/AdFitBanner";
 import LoadingScreen from "../components/common/LoadingScreen";
+import FlowEntryNotice from "../components/common/FlowEntryNotice";
 
 const ADFIT_UNIT_ID_CONTENT = import.meta.env.VITE_ADFIT_UNIT_ID_CONTENT;
 
@@ -24,6 +25,8 @@ export default function ResultPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [result, setResult] = useState(null);
+  // 앱 흐름 없이 /result 로 직접 들어와 보여줄 결과 자체가 없는 상태
+  const [noEntry, setNoEntry] = useState(false);
   // 랭킹 도전 모드: 이번 기록이 랭킹판에 실제로 반영됐는지 여부
   // { status: "incomplete" | "new_best" | "not_best" | "unknown", rank, bestElapsedMs }
   const [rankInfo, setRankInfo] = useState(null);
@@ -39,14 +42,14 @@ export default function ResultPage() {
     try {
       const raw = localStorage.getItem(PRACTICE_RESULT_KEY);
       if (!raw) {
-        navigate("/");
+        setNoEntry(true);
         return;
       }
       setResult(JSON.parse(raw));
     } catch {
-      navigate("/");
+      setNoEntry(true);
     }
-  }, [navigate, location.state]);
+  }, [location.state]);
 
   // 랭킹 도전 모드 결과 추적
   useEffect(() => {
@@ -88,6 +91,23 @@ export default function ResultPage() {
       cancelled = true;
     };
   }, [result]);
+
+  if (noEntry) {
+    return (
+      <FlowEntryNotice
+        title="결과 화면입니다"
+        lead={
+          "이 화면은 수강신청 연습을 한 판 마쳐야 볼 수 있는 결과 페이지입니다. " +
+          "완료된 연습 기록이 없어 표시할 내용이 없습니다."
+        }
+        steps={[
+          "홈에서 신청할 과목과 난이도를 설정합니다.",
+          "로그인 대기 화면에서 정해진 시각에 입장합니다.",
+          "과목을 모두 신청하거나 마감되면 이 결과 화면으로 넘어옵니다.",
+        ]}
+      />
+    );
+  }
 
   if (!result) return <LoadingScreen message="결과 정보를 확인하고 있어요. 잠시만 기다려 주세요." />;
 

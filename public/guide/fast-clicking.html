@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>수강신청 광클, 어떻게 연습해야 효과 있을까</title>
+  <meta name="description" content="수강신청에서 클릭 속도보다 중요한 것은 서버가 열리는 시각을 정확히 맞추는 타이밍입니다. 광클이 실패하는 원인과, 실전에서 손이 먼저 움직이도록 연습하는 방법을 정리했습니다." />
+  <link rel="canonical" href="https://classpick.netlify.app/guide/fast-clicking" />
+  <link rel="stylesheet" href="/content.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4120579869884035" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-header__brand" href="/">🎓 ClassPick</a>
+      <nav class="site-header__nav">
+        <a href="/guide">수강신청 가이드</a>
+        <a href="/about">소개</a>
+        <a href="/">연습 시작</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="content-wrap">
+    <div class="breadcrumb"><a href="/">홈</a> &rsaquo; <a href="/guide">가이드</a> &rsaquo; 광클 연습법</div>
+
+    <article>
+      <h1>수강신청 광클, 어떻게 연습해야 효과 있을까</h1>
+      <p class="lead">
+        "광클"이라고 하면 마우스를 빠르게 연타하는 이미지를 떠올리지만, 실제로
+        당락을 가르는 건 손 속도가 아니라 <strong>서버가 열리는 시각에 정확히
+        요청을 보내는 타이밍</strong>과 <strong>흔들리지 않는 동선</strong>입니다.
+      </p>
+
+      <h2>클릭 속도는 생각보다 덜 중요하다</h2>
+      <p>
+        인기 과목이 마감되는 건 보통 시작 후 수십 초 안입니다. 이 구간에서 승부를
+        보는 사람들은 이미 서버가 열리는 첫 1~2초 안에 첫 신청을 완료합니다.
+        1초에 클릭을 8번 하든 12번 하든 그 뒤로는 큰 차이가 없습니다. 그보다는
+        <strong>서버 오픈 순간을 놓치지 않는 것</strong>, 그리고 <strong>첫 과목을
+        신청하고 다음 과목으로 넘어가는 전환을 매끄럽게 하는 것</strong>이 결과를
+        좌우합니다.
+      </p>
+
+      <h2>타이밍: 표준시에 내 시계를 맞춘다</h2>
+      <p>
+        학교 서버는 정해진 시각에 열립니다. 문제는 내 컴퓨터 시계가 표준시와 몇 초씩
+        어긋나 있다는 점입니다. 표준시·서버시간을 보여 주는 사이트를 띄워 두고,
+        서버가 열리기 직전 수십 초 동안 새로고침(또는 로그인 버튼 클릭)을 반복하며
+        대기합니다. 너무 일찍 시도하면 "아직 기간이 아닙니다"로 튕기고, 늦으면 이미
+        경쟁에서 밀립니다. <strong>오픈 2~3초 전부터 짧게 끊어 새로고침</strong>하는
+        감각을 몸에 익히세요.
+      </p>
+
+      <h2>키보드가 마우스보다 빠른 구간이 있다</h2>
+      <p>
+        과목 코드를 입력하고 신청하는 화면이라면, 코드 입력칸에서 값을 넣은 뒤
+        <strong>Tab으로 신청 버튼에 포커스를 옮기고 Enter</strong>를 치는 편이
+        마우스로 버튼을 조준해 클릭하는 것보다 빠르고 정확합니다. 신청 후 뜨는
+        확인창도 Enter로 닫을 수 있는 경우가 많습니다. 내 학교 화면에서 어떤 키가
+        먹히는지 미리 확인해 두세요.
+      </p>
+
+      <h2>광클이 실패하는 진짜 이유</h2>
+      <ul>
+        <li><strong>서버 지연·흰 화면.</strong> 트래픽이 몰리면 로그인 후 화면이 몇 초간 비어 있습니다. 여기서 새로고침을 연타하면 세션이 꼬여 오히려 느려집니다. "원래 이런다"는 걸 알고 기다려야 합니다.</li>
+        <li><strong>세션 만료.</strong> 미리 로그인해 두고 오래 방치하면 시작 전에 로그아웃됩니다. 자동 로그아웃 시간을 확인하고, 시작 직전에 한 번 더 갱신합니다.</li>
+        <li><strong>캡차에서 시간 소모.</strong> 손이 떨려 캡차를 자꾸 틀립니다. 천천히 한 번에 맞히는 게 결국 빠릅니다.</li>
+        <li><strong>동선이 안 익어서 멈칫함.</strong> 1순위가 마감됐을 때 다음에 뭘 넣을지 정해두지 않으면 거기서 몇 초를 날립니다.</li>
+        <li><strong>여러 탭·여러 기기 동시 시도.</strong> 같은 계정으로 동시에 여러 요청을 보내면 서버가 충돌 처리하며 둘 다 실패하기도 합니다.</li>
+      </ul>
+
+      <h2>효과 있는 연습 방법</h2>
+      <ol>
+        <li><strong>같은 동선을 반복한다.</strong> 로그인 → 대기 → 캡차 → 코드 입력 → 신청 → 다음 과목. 순서를 손이 기억할 때까지 반복합니다.</li>
+        <li><strong>대안 분기를 포함해 연습한다.</strong> "1순위 마감 → 즉시 2순위 입력"까지 하나의 동작으로 이어지게 합니다.</li>
+        <li><strong>압박 상황을 재현한다.</strong> 실제처럼 로그인 대기, 흰 화면, 무작위 마감이 있는 환경에서 연습해야 당일 당황이 줄어듭니다. <a href="/">ClassPick</a>의 실전 연습 모드나 랭킹 도전 모드가 이 목적에 맞게 만들어졌습니다.</li>
+        <li><strong>기록을 남겨 비교한다.</strong> 전 과목 신청까지 걸린 시간을 재고, 어느 구간에서 지체됐는지 확인해 그 부분만 다시 연습합니다.</li>
+      </ol>
+
+      <blockquote>
+        매크로로 클릭을 자동화하는 방법은 권하지 않습니다. 학칙 위반으로 수강이
+        취소되거나 계정이 정지될 수 있고, 기술적으로도 잘 통하지 않습니다.
+        자세한 이유는 <a href="/guide/macro-risk">매크로가 위험한 이유</a>에서 다룹니다.
+      </blockquote>
+
+      <div class="cta">
+        <p>압박 속에서 손이 어떻게 움직이는지, 지금 확인해 보세요.</p>
+        <a class="btn" href="/">수강신청 광클 연습하기</a>
+      </div>
+
+      <div class="related">
+        <h2>이어서 읽기</h2>
+        <ul>
+          <li><a href="/guide/preparation">수강신청 전날까지 끝내야 할 준비 체크리스트</a></li>
+          <li><a href="/guide/registration-failed">수강신청에 실패했을 때 대처법</a></li>
+          <li><a href="/guide/macro-risk">매크로·자동 프로그램이 위험한 이유</a></li>
+        </ul>
+      </div>
+    </article>
+  </div>
+
+  <footer class="site-footer">
+    <p>ClassPick — 연습용 모의 수강신청 시스템. 실제 대학교 시스템과 무관하며 학습 목적으로 제작되었습니다.</p>
+    <div class="site-footer__links">
+      <a href="/about">소개</a>
+      <a href="/guide">가이드</a>
+      <a href="/privacy">개인정보처리방침</a>
+      <a href="/terms">이용약관</a>
+    </div>
+    <p>&copy; 2026 ClassPick. Educational use only.</p>
+  </footer>
+</body>
+</html>

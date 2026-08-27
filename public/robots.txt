@@ -1,16 +1,20 @@
-# 아래 경로들은 앱 흐름(설정 → 로그인 대기 → 수강신청) 안에서 localStorage에
-# 저장된 상태를 이어받아야만 실제 콘텐츠가 그려진다. 크롤러(Googlebot,
-# Mediapartners-Google 포함)는 항상 그 이전 단계를 거치지 않고 URL에 콜드로
-# 접속하므로, 이 경로들은 크롤러 입장에서 영원히 "콘텐츠 없음 → 안내문 잠깐
-# 표시 → 홈으로 리디렉션"만 보게 된다. 실제 사용자는 앱 내부 이동으로만
-# 도달하므로 광고 노출에는 영향이 없고, robots.txt는 봇에게만 적용된다.
+# /feedback 은 운영자 전용 관리 화면(비밀번호 로그인 후 피드백/랭킹 관리)이라
+# 일반 방문자용 콘텐츠가 아니므로 크롤링 대상에서 제외한다.
 #
-# /register, /result: 상태 없이 접속하면 즉시 "/"로 리디렉션됨 (RegisterPage,
-#   ResultPage 참고) — 애드센스 정책의 "콘텐츠가 없는 화면", "알림·이동·기타
-#   행동 목적으로 사용되는 화면"에 정확히 해당해 심사 반려의 원인이 됨.
-# /feedback: 일반 방문자를 위한 콘텐츠가 아니라 운영자 전용 관리 화면(비밀번호
-#   로그인 후 피드백/랭킹 관리).
+# /register, /result 는 앱 흐름(설정 → 로그인 대기 → 수강신청) 안에서 상태를
+# 이어받아야 실제 화면이 그려지지만, 상태 없이 접속해도 이제는 빈 화면이나
+# 즉시 리디렉트가 아니라 "이 화면은 무엇이고 어떻게 들어오는지" 안내 콘텐츠를
+# 보여준다. 색인은 필요 없어 각 페이지에서 meta robots=noindex 로 처리하고,
+# 크롤러 접근 자체는 막지 않는다(광고 심사 크롤러 포함).
+
 User-agent: *
-Disallow: /register
-Disallow: /result
 Disallow: /feedback
+
+# 애드센스/애드 크롤러는 명시적으로 전체 허용
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: AdsBot-Google
+Allow: /
+
+Sitemap: https://classpick.netlify.app/sitemap.xml

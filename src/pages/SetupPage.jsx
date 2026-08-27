@@ -749,6 +749,113 @@ export default function SetupPage() {
           </section>
         </div>
       </main>
+
+      {/* 서비스 소개 · 사용법 · FAQ — 검색엔진과 처음 방문자를 위한 본문 콘텐츠.
+          로그인 그리드(.login-layout) 밖에 두어 전체 폭으로 배치한다. */}
+      <section
+        className="home-about"
+        style={{ width: "1000px", margin: "8px auto 0" }}
+      >
+        <div className="card" style={{ padding: "28px 32px" }}>
+          <h2
+            style={{
+              fontSize: "18px",
+              fontWeight: 700,
+              margin: "0 0 10px",
+              letterSpacing: "-0.3px",
+            }}
+          >
+            ClassPick은 어떤 서비스인가요?
+          </h2>
+          <p style={{ fontSize: "14px", color: "#4b5563", lineHeight: 1.8, margin: "0 0 12px" }}>
+            ClassPick은 대학 수강신청 과정을 실제와 비슷한 압박 속에서 미리 연습해
+            볼 수 있는 무료 웹 시뮬레이터입니다. 로그인 대기, 접속 직후의 빈 화면,
+            캡차 입력, 과목의 무작위 마감을 재현해서, 실제 수강신청 날에 손이 먼저
+            움직이도록 동선을 익히는 것이 목적입니다. 실제 학교 시스템과는 아무런
+            관련이 없고, 신청 결과에도 영향을 주지 않습니다. 더 자세한 배경은{" "}
+            <a href="/about" style={{ color: "#478ef0" }}>
+              소개 페이지
+            </a>
+            에서 볼 수 있습니다.
+          </p>
+
+          <h3 style={{ fontSize: "15px", fontWeight: 700, margin: "20px 0 8px" }}>
+            사용법 3단계
+          </h3>
+          <ol style={{ fontSize: "14px", color: "#4b5563", lineHeight: 1.9, paddingLeft: "20px", margin: 0 }}>
+            <li>
+              <strong>과목 설정</strong> — 신청할 과목을 수강꾸러미에 담고, 마감
+              난이도를 고릅니다. 코드 입력 과목은 강좌번호를 따로 외워 둡니다.
+            </li>
+            <li>
+              <strong>수강신청 시작</strong> — 로그인 대기 화면에서 정해진 시각에
+              입장하고, 잠깐 나타나는 빈 화면을 지나 캡차를 입력합니다.
+            </li>
+            <li>
+              <strong>신청과 결과 확인</strong> — 과목을 하나씩 신청합니다. 모든
+              과목이 신청되거나 마감되면 걸린 시간과 성공·실패 과목이 정리됩니다.
+            </li>
+          </ol>
+
+          <h3 style={{ fontSize: "15px", fontWeight: 700, margin: "20px 0 8px" }}>
+            자주 묻는 질문
+          </h3>
+          <dl style={{ fontSize: "14px", color: "#4b5563", lineHeight: 1.8, margin: 0 }}>
+            <dt style={{ fontWeight: 700, color: "#1e2532", marginTop: "10px" }}>
+              Q. 우리 학교 수강신청과 똑같이 생겼나요?
+            </dt>
+            <dd style={{ margin: "2px 0 0" }}>
+              아닙니다. 특정 학교 수강신청 사이트의 소스를 그대로 가져다 쓰면
+              저작권 문제가 되므로, 소스는 활용하지 않고 로그인 대기·캡차·학수번호
+              입력·과목 마감 같은 공통 흐름만 참고해 최대한 유사하게 직접
+              구현했습니다. 흐름을 익히는 용도로 봐 주세요.
+            </dd>
+            <dt style={{ fontWeight: 700, color: "#1e2532", marginTop: "10px" }}>
+              Q. 기록이 저장되나요?
+            </dt>
+            <dd style={{ margin: "2px 0 0" }}>
+              과목 설정 등 대부분의 데이터는 사용자 브라우저(로컬스토리지)에만
+              저장됩니다. 랭킹 도전 모드의 기록만 닉네임과 함께 익명으로 서버에
+              저장됩니다.
+            </dd>
+            <dt style={{ fontWeight: 700, color: "#1e2532", marginTop: "10px" }}>
+              Q. 광클 연습은 어떻게 하나요?
+            </dt>
+            <dd style={{ margin: "2px 0 0" }}>
+              같은 동선을 반복해 손에 익히는 것이 핵심입니다. 방법은{" "}
+              <a href="/guide/fast-clicking" style={{ color: "#478ef0" }}>
+                광클 연습법
+              </a>
+              , 전날까지의 준비는{" "}
+              <a href="/guide/preparation" style={{ color: "#478ef0" }}>
+                준비 체크리스트
+              </a>
+              에 정리해 두었습니다.
+            </dd>
+            <dt style={{ fontWeight: 700, color: "#1e2532", marginTop: "10px" }}>
+              Q. 매크로를 쓰면 안 되나요?
+            </dt>
+            <dd style={{ margin: "2px 0 0" }}>
+              권하지 않습니다. 학칙 위반으로 수강이 취소되거나 계정이 정지될 수
+              있고, 캡차·토큰·봇 탐지 때문에 실제로도 잘 통하지 않습니다. 자세한
+              내용은{" "}
+              <a href="/guide/macro-risk" style={{ color: "#478ef0" }}>
+                매크로가 위험한 이유
+              </a>
+              를 참고하세요.
+            </dd>
+          </dl>
+
+          <p style={{ fontSize: "13px", color: "#8c96ae", margin: "20px 0 0" }}>
+            수강신청 준비·전략에 대한 더 많은 글은{" "}
+            <a href="/guide" style={{ color: "#478ef0" }}>
+              수강신청 가이드
+            </a>
+            에서 볼 수 있습니다.
+          </p>
+        </div>
+      </section>
+
       <Footer variant="setup" />
 
       {/* 도움말 모달 */}

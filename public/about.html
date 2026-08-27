@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ClassPick 소개 — 연습용 모의 수강신청 시스템</title>
+  <meta name="description" content="ClassPick은 대학 수강신청의 로그인 대기, 서버 지연, 과목 마감을 실제와 비슷하게 재현한 무료 연습 시뮬레이터입니다. 만들어진 이유와 사용법, 세 가지 연습 모드를 소개합니다." />
+  <link rel="canonical" href="https://classpick.netlify.app/about" />
+  <link rel="stylesheet" href="/content.css" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4120579869884035" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-header__brand" href="/">🎓 ClassPick</a>
+      <nav class="site-header__nav">
+        <a href="/guide">수강신청 가이드</a>
+        <a href="/about">소개</a>
+        <a href="/">연습 시작</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="content-wrap">
+    <div class="breadcrumb"><a href="/">홈</a> &rsaquo; 소개</div>
+
+    <article>
+      <h1>ClassPick 소개</h1>
+      <p class="lead">
+        ClassPick은 대학 수강신청 과정을 실제와 비슷한 압박 속에서 미리 연습해 볼 수 있는
+        무료 웹 시뮬레이터입니다. 실제 학교 시스템과는 아무런 관련이 없으며, 오로지 연습을
+        위해 만들어졌습니다.
+      </p>
+
+      <h2>왜 만들었나</h2>
+      <p>
+        수강신청은 대부분의 대학에서 학기마다 단 한 번, 정해진 시각에 수천 명이 동시에
+        몰리는 이벤트입니다. 서버가 열리는 정확한 순간, 로그인 후 나타나는 빈 화면,
+        과목마다 제각각인 마감 속도처럼 처음 겪으면 당황하기 쉬운 요소가 많습니다.
+        그런데 이걸 미리 겪어볼 방법은 사실상 없습니다. 실전은 1년에 두 번뿐이고,
+        한 번 놓친 과목은 되돌리기 어렵습니다.
+      </p>
+      <p>
+        ClassPick은 그 "처음"을 없애기 위한 도구입니다. 로그인 대기, 접속 직후의
+        흰 화면, 캡차 입력, 과목의 무작위 마감을 재현해서, 실제 수강신청 날에
+        손이 먼저 움직이도록 동선을 몸에 익히는 것이 목적입니다.
+      </p>
+
+      <h2>어떻게 동작하나</h2>
+      <p>
+        실제 수강신청 흐름을 그대로 따라갑니다. 먼저 신청할 과목을 수강꾸러미에 담고
+        난이도를 정합니다. 정해진 시각이 되면 로그인 대기 화면에서 입장하고, 접속 직후
+        잠깐 나타나는 빈 화면을 지나 캡차를 입력한 뒤, 과목을 하나씩 신청합니다.
+        각 과목은 설정한 난이도에 따라 무작위 시각에 마감되며, 마감 여부는 직접
+        신청 버튼을 눌러봐야 알 수 있습니다. 모든 과목이 신청되거나 마감되면
+        결과 화면에서 걸린 시간과 성공/실패 과목을 확인합니다.
+      </p>
+
+      <h3>세 가지 모드</h3>
+      <ul>
+        <li>
+          <strong>실전 연습 모드</strong> — 내가 직접 과목과 난이도를 설정해 반복
+          연습합니다. 기록은 저장되지 않으니 부담 없이 여러 번 시도할 수 있습니다.
+        </li>
+        <li>
+          <strong>체험 모드</strong> — 미리 준비된 6개 과목으로 설정 없이 바로
+          한 판 돌려봅니다. 처음 온 사람이 흐름만 빠르게 파악하기 좋습니다.
+        </li>
+        <li>
+          <strong>랭킹 도전 모드</strong> — 모든 참가자가 동일한 과목·동일한 조건에서
+          전 과목 신청까지 걸린 시간을 겨룹니다. 시간은 서버 기준으로 측정돼 조작할 수
+          없고, 전 과목을 모두 신청해야만 기록이 남습니다.
+        </li>
+      </ul>
+
+      <h2>누구에게 도움이 되나</h2>
+      <ul>
+        <li>첫 수강신청을 앞둔 신입생·편입생</li>
+        <li>지난 학기에 원하는 과목을 놓쳐 이번엔 준비하려는 재학생</li>
+        <li>복학 후 오랜만에 수강신청을 하는 학생</li>
+      </ul>
+
+      <h2>알아두어야 할 점</h2>
+      <p>
+        ClassPick은 특정 대학의 수강신청 시스템을 복제하거나 대행하지 않습니다.
+        화면 구성과 용어는 여러 학교의 공통 요소를 참고해 재구성한 것이며, 실제
+        신청 결과에는 아무 영향을 주지 않습니다. 과목 설정 등 대부분의 데이터는
+        사용자 브라우저에만 저장되고, 랭킹 도전 기록만 익명으로 서버에 저장됩니다.
+        자세한 내용은 <a href="/privacy">개인정보처리방침</a>을 참고하세요.
+      </p>
+
+      <div class="cta">
+        <p>흐름을 글로만 읽는 것보다 한 번 직접 해보는 편이 훨씬 빠릅니다.</p>
+        <a class="btn" href="/">지금 수강신청 연습하기</a>
+      </div>
+
+      <div class="related">
+        <h2>함께 보면 좋은 글</h2>
+        <ul>
+          <li><a href="/guide/preparation">수강신청 전날까지 끝내야 할 준비 체크리스트</a></li>
+          <li><a href="/guide/fast-clicking">수강신청 광클, 어떻게 연습해야 효과 있을까</a></li>
+          <li><a href="/guide">수강신청 가이드 전체 보기</a></li>
+        </ul>
+      </div>
+    </article>
+  </div>
+
+  <footer class="site-footer">
+    <p>ClassPick — 연습용 모의 수강신청 시스템. 실제 대학교 시스템과 무관하며 학습 목적으로 제작되었습니다.</p>
+    <div class="site-footer__links">
+      <a href="/about">소개</a>
+      <a href="/guide">가이드</a>
+      <a href="/privacy">개인정보처리방침</a>
+      <a href="/terms">이용약관</a>
+    </div>
+    <p>&copy; 2026 ClassPick. Educational use only.</p>
+  </footer>
+</body>
+</html>
